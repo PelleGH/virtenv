@@ -9,7 +9,7 @@ void SetupEditorStyle()
 void DrawEditorUI()
 {
     ImGui::Begin("Assets");
-    ImGui::Button("Cube");
+    ImGui::Button("tile");
     ImGui::Button("NPC");
     ImGui::End();
 
