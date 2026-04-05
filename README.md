@@ -1,0 +1,1 @@
+build with "cmake --build build --config Debug" and run the exe in build/Debug

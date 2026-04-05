@@ -1,0 +1,29 @@
+# Build output
+/build/
+/out/
+/bin/
+/Debug/
+/Release/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Visual Studio (in case it appears)
+.vs/
+*.vcxproj.user
+*.sln
+
+# ImGui runtime config
+imgui.ini
+
+# OS junk
+.DS_Store
+Thumbs.db
