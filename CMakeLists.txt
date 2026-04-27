@@ -10,6 +10,7 @@ add_executable(VirtenEditor
     src/main.cpp
     src/editor/EditorApp.cpp
     src/editor/gui/EditorUI.cpp
+    src/engine/core/Engine.cpp
 
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

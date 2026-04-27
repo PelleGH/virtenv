@@ -1,14 +1,15 @@
-#include "editor/EditorApp.h"
+#include "engine/core/Engine.h"
 
 int main()
 {
-    EditorApp app;
+    Engine engine;
 
-    if (!app.init())
+    if (!engine.init())
         return 1;
 
-    app.run();
-    app.shutdown();
+    engine.run();
+
+    engine.shutdown();
 
     return 0;
 }
