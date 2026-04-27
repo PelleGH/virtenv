@@ -12,7 +12,7 @@ bool Engine::init()
 
 void Engine::run()
 {
-    using clock = std::chrono::high_resolution_clock;
+    using clock = std::chrono::steady_clock;
 
     auto lastTime = clock::now(); // get time in whatever format the clock uses
 
