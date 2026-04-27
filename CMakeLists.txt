@@ -8,6 +8,7 @@ find_package(glfw3 CONFIG REQUIRED)
 
 add_executable(VirtenEditor
     src/main.cpp
+    src/editor/EditorApp.cpp
     src/editor/gui/EditorUI.cpp
 
     external/imgui/imgui.cpp
