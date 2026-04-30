@@ -16,7 +16,7 @@ bool Engine::init()
     camera.projection = CAMERA_PERSPECTIVE;
 
     running = true;
-    return currentScene.load("assets/scenes/room_01.json");
+    return sceneManager.loadScene("assets/scenes/room_01.json");
 }
 
 void Engine::run()
@@ -35,33 +35,34 @@ void Engine::run()
 
         update(dt);
         render();
-
-        // // temporary so we don't have an infinite loop while working
-        // static int frameCount = 0;
-        // frameCount++;
-
-        // if (frameCount > 300)
-        //     running = false;
     }
 }
 
 void Engine::update(float dt)
 {
     std::cout << "Updating engine. dt: " << dt << '\n';
-    currentScene.update(dt);
+    
+    if (IsKeyPressed(KEY_ONE)) // TODO: temporary way to switch scenes for testing, will be moved to eventbus when it's implemented
+        sceneManager.requestSceneChange("assets/scenes/room_01.json");
+
+    if (IsKeyPressed(KEY_TWO))
+        sceneManager.requestSceneChange("assets/scenes/room_02.json");
+
+    sceneManager.update(dt);
+    sceneManager.applyPendingSceneChange();
 }
 
 void Engine::render()
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    currentScene.render(camera);
+    sceneManager.render(camera);
     EndDrawing();
 }
 
 void Engine::shutdown()
 {
-    currentScene.unload();
+    sceneManager.shutdown();
     CloseWindow();
     std::cout << "Engine shutdown\n";
 }

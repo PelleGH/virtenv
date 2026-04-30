@@ -1,0 +1,9 @@
+{
+  "name": "room_02",
+  "cubes": [
+    { "position": [0, 0, 0], "type": "floor", "solid": false, "trigger": false },
+    { "position": [1, 0, 0], "type": "floor", "solid": false, "trigger": false },
+    { "position": [0, 1, 0], "type": "wall", "solid": true, "trigger": false },
+    { "position": [1, 1, 0], "type": "door", "solid": false, "trigger": true, "targetScene": "room_01" }
+  ]
+}

@@ -22,7 +22,7 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
     outData.name = sceneJson["name"];
     outData.cubes.clear();
 
-    for (const auto& cubeJson : sceneJson["cubes"])
+    for (const auto& cubeJson : sceneJson["cubes"]) // instantiate cubes from json
     {
         GridCube cube;
 
@@ -34,7 +34,7 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
         cube.solid = cubeJson["solid"];
         cube.trigger = cubeJson["trigger"];
 
-        if (cubeJson.contains("targetScene"))
+        if (cubeJson.contains("targetScene")) // "door" cube that leads to another scene (just a flag for now)
             cube.targetScene = cubeJson["targetScene"];
 
         outData.cubes.push_back(cube);
