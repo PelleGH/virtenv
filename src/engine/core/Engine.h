@@ -1,5 +1,6 @@
 #pragma once
-
+#include "raylib.h"
+#include "engine/scene/SceneManager.h"
 class Engine
 {
 public:
@@ -10,6 +11,8 @@ public:
 private:
     bool running = false;
 
+    SceneManager sceneManager;
+    Camera3D camera;
     void update(float dt);
     void render();
 };

@@ -1,0 +1,29 @@
+// SceneManager
+// Controls active scene and handles safe scene switching.
+// Scene changes are queued and applied at the end of the frame.
+
+#pragma once
+
+#include <string>
+#include "Scene.h"
+#include "raylib.h"
+
+class SceneManager
+{
+
+
+public:
+    bool loadScene(const std::string& path);
+
+    void update(float dt);
+    void render(const Camera3D& camera);
+    void shutdown();
+
+    void requestSceneChange(const std::string& path);
+    void applyPendingSceneChange();
+
+private:
+    Scene currentScene;
+    std::string pendingScenePath;
+    bool hasPendingSceneChange = false;
+};
