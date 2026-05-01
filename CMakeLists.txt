@@ -24,6 +24,8 @@ add_executable(VirtenEditor
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
     src/engine/scene/SceneManager.cpp
+
+    src/engine/ecs/EntityManager.cpp
 )
 
 target_include_directories(VirtenEditor PRIVATE
