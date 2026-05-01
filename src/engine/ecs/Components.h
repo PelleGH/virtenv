@@ -9,8 +9,10 @@
 struct Transform {
     float x = 0.0f;
     float y = 0.0f;
+    float z = 0.0f;
     float width = 32.0f;
     float height = 32.0f;
+    float depth = 32.0f;
 };
 
 struct Renderer {
@@ -21,6 +23,7 @@ struct Renderer {
 struct Collider {
     float width = 32.0f;
     float height = 32.0f;
+    float depth = 32.0f;
     bool isTrigger = false; // True for pickups/doors (overlap), false for walls (block)
 };
 
@@ -97,6 +100,7 @@ struct SceneTransition {
     std::string targetScene; // e.g., "tavern_interior"
     float spawnX = 0.0f;     // Where to place the player after loading
     float spawnY = 0.0f;
+    float spawnZ = 0.0f;
 };
 
 struct DialogueSource {

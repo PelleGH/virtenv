@@ -16,7 +16,7 @@ private:
 
     // Internal helper: Finds the drawer and safely casts it to the exact type you need
     template <typename T>
-    std::shared_ptr<ComponentArray<T>> GetComponentArray() {
+    std::unique_ptr<ComponentArray<T>> GetComponentArray() {
         std::type_index typeName = typeid(T);
         assert(componentArrays.find(typeName) != componentArrays.end() && "Component not registered before use.");
         
