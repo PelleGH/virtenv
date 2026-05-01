@@ -2,6 +2,7 @@
 #include "SceneLoader.h"
 
 #include <iostream>
+#include <cstdint>
 
 bool Scene::load(const std::string& scenePath)
 {
@@ -44,10 +45,31 @@ void Scene::render(const Camera3D& camera)
         DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
     }
 
+    renderEntities();
     EndMode3D();
 }
 
 void Scene::unload()
 {
     std::cout << "Scene unloaded: " << data.name << '\n';
+}
+
+void Scene::renderEntities(){
+    for (Entity e : activeEntities){
+        if (entityManager.isAlive(e)){
+            std::uint32_t index = e.getIndex();
+
+            Transform& tf = transform[index];
+            //Renderer& r = render[index];
+
+            Vector3 pos = {
+                tf.x,
+                tf.y,
+                tf.z
+            };
+
+            DrawCube(pos, 1.0f, 1.0f, 1.0f, GRAY);
+            DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+        }
+    }
 }
