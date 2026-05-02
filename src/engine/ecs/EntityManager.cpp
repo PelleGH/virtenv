@@ -1,4 +1,6 @@
 #include "EntityManager.h"
+#include "Entity.h"
+
 
 Entity EntityManager::createEntity(){
     //New entity with unique ID
