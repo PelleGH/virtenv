@@ -40,7 +40,7 @@ void Engine::run()
 
 void Engine::update(float dt)
 {
-    std::cout << "Updating engine. dt: " << dt << '\n';
+    //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene());
     movementSystem.update(sceneManager.getCurrentScene(), dt);
     if (IsKeyPressed(KEY_ONE)) // TODO: temporary way to switch scenes for testing, will be moved to eventbus when it's implemented
