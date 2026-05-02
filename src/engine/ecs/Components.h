@@ -6,7 +6,7 @@
 
 // CORE ENGINE COMPONENTS
 
-struct Transform {
+struct TransformComponent {
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
@@ -52,8 +52,8 @@ struct Attack {
 };
 
 struct Loadout {
-    Entity weaponSlot = 0; // ID of the equipped weapon entity
-    Entity armorSlot = 0;  // ID of the equipped armor entity
+    Entity weaponSlot{}; // ID of the equipped weapon entity
+    Entity armorSlot{};  // ID of the equipped armor entity
 };
 
 

@@ -12,6 +12,26 @@ bool Scene::load(const std::string& scenePath)
     std::cout << "Loaded scene: " << data.name << '\n';
     std::cout << "Cubes: " << data.cubes.size() << '\n';
 
+    //Hardcoded at the moment to verify that entities is generated and visible
+    for (int i=0; i <= 3; i++){
+        
+        //Creates entities
+        Entity newEntity = entityManager.createEntity(); 
+        
+        //Add the entity to the list
+        activeEntitiesList.push_back(newEntity);
+
+        //Checks that transforms "list" have enough space to handle all entities
+        if (transforms.size() <= newEntity.getIndex()) {
+            transforms.resize(newEntity.getIndex() + 1);
+        }
+
+        //Gets entities and places them in the world
+        TransformComponent& tf = transforms[newEntity.getIndex()];
+        tf.x = i* 1.0f;
+        tf.y = 2.0f;
+        tf.z = 0.0f;
+    }
     return true;
 }
 
@@ -55,21 +75,25 @@ void Scene::unload()
 }
 
 void Scene::renderEntities(){
-    for (Entity e : activeEntities){
-        if (entityManager.isAlive(e)){
-            std::uint32_t index = e.getIndex();
 
-            Transform& tf = transform[index];
+    for (Entity e : activeEntitiesList){
+        if (entityManager.isAlive(e)){
+
+            //Gets entity ID and their coordinates
+            std::uint32_t index = e.getIndex();
+            TransformComponent& tf = transforms[index];
+
             //Renderer& r = render[index];
 
+            //Translate coordinates for Raylib
             Vector3 pos = {
                 tf.x,
                 tf.y,
                 tf.z
             };
 
-            DrawCube(pos, 1.0f, 1.0f, 1.0f, GRAY);
-            DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+            DrawCube(pos, 0.5f, 0.5f, 0.5f, RED);
+            DrawCubeWires(pos, 0.5f, 0.5f, 0.5f, MAROON);
         }
     }
 }

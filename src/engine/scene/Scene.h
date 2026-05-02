@@ -20,9 +20,9 @@ private:
     SceneData data;
 
     EntityManager entityManager;
-    std::vector <Transform> transform;
-    //std::vector <Renderer> render;
-    std::vector <Entity> activeEntities;
+    std::vector <TransformComponent> transforms;
+    //std::vector <Renderer> renders;
+    std::vector <Entity> activeEntitiesList;
 
     void renderEntities();
 };
