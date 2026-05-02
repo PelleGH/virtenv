@@ -1,0 +1,15 @@
+{
+  "dependencies": [
+    "glfw3",
+    "glm",
+    "raylib",
+    "nlohmann-json"
+  ],
+  "overrides": [
+    {
+      "name": "raylib",
+      "version": "5.5"
+    }
+  ],
+  "builtin-baseline": "77df67cfff9c12ccfdb52284e07c87c75092f723"
+}
