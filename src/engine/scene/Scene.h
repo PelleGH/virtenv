@@ -5,6 +5,7 @@
 
 #include "engine/ecs/EntityManager.h"
 #include "engine/ecs/Components.h"
+#include "engine/ecs/ComponentStorage.h"
 #include <vector>
 
 class Scene
@@ -12,17 +13,21 @@ class Scene
 public:
     bool load(const std::string& scenePath);
     void update(float dt);
-    void render(const Camera3D& camera);
     void unload();
+
+    const SceneData& getData() const;
+    const std::vector<Entity>& getActiveEntities() const;
+
+    EntityManager& getEntityManager();
+    ComponentStorage& getComponentStorage();
 private:
     std::string name;
 
     SceneData data;
 
     EntityManager entityManager;
-    std::vector <TransformComponent> transforms;
+    ComponentStorage componentStorage;
     //std::vector <Renderer> renders;
     std::vector <Entity> activeEntitiesList;
 
-    void renderEntities();
 };

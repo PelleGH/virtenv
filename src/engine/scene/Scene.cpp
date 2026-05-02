@@ -11,7 +11,19 @@ bool Scene::load(const std::string& scenePath)
 
     std::cout << "Loaded scene: " << data.name << '\n';
     std::cout << "Cubes: " << data.cubes.size() << '\n';
+    
+    componentStorage.RegisterComponent<TransformComponent>();
+    componentStorage.RegisterComponent<Renderer>();
+    componentStorage.RegisterComponent<PlayerInput>();
 
+    // Create player (hardocoded for now, will be data-driven later)
+    Entity player = entityManager.createEntity();
+    activeEntitiesList.push_back(player);
+    Renderer r;
+    r.color = BLUE;
+    componentStorage.AddComponent(player, TransformComponent{0.0f, 1.0f, 0.0f});
+    componentStorage.AddComponent(player, r);
+    componentStorage.AddComponent(player, PlayerInput{});
     //Hardcoded at the moment to verify that entities is generated and visible
     for (int i=0; i <= 3; i++){
         
@@ -22,15 +34,13 @@ bool Scene::load(const std::string& scenePath)
         activeEntitiesList.push_back(newEntity);
 
         //Checks that transforms "list" have enough space to handle all entities
-        if (transforms.size() <= newEntity.getIndex()) {
-            transforms.resize(newEntity.getIndex() + 1);
-        }
+        componentStorage.AddComponent(newEntity, TransformComponent{
+            i * 1.0f,
+            2.0f,
+            0.0f
+        });
 
-        //Gets entities and places them in the world
-        TransformComponent& tf = transforms[newEntity.getIndex()];
-        tf.x = i* 1.0f;
-        tf.y = 2.0f;
-        tf.z = 0.0f;
+        componentStorage.AddComponent(newEntity, Renderer{});
     }
     return true;
 }
@@ -49,51 +59,31 @@ void Scene::update(float dt)
     }
 }
 
-void Scene::render(const Camera3D& camera)
-{
-    BeginMode3D(camera);
-
-    for (const auto& cube : data.cubes)
-    {
-        Vector3 pos = {
-            (float)cube.position.x,
-            (float)cube.position.y,
-            (float)cube.position.z
-        };
-
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, GRAY);
-        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
-    }
-
-    renderEntities();
-    EndMode3D();
-}
-
 void Scene::unload()
 {
-    std::cout << "Scene unloaded: " << data.name << '\n';
+    data.cubes.clear();
+    activeEntitiesList.clear();
+
+    entityManager = EntityManager();
+    componentStorage = ComponentStorage();
 }
 
-void Scene::renderEntities(){
+const SceneData& Scene::getData() const
+{
+    return data;
+}
 
-    for (Entity e : activeEntitiesList){
-        if (entityManager.isAlive(e)){
+const std::vector<Entity>& Scene::getActiveEntities() const
+{
+    return activeEntitiesList;
+}
 
-            //Gets entity ID and their coordinates
-            std::uint32_t index = e.getIndex();
-            TransformComponent& tf = transforms[index];
+ComponentStorage& Scene::getComponentStorage()
+{
+    return componentStorage;
+}
 
-            //Renderer& r = render[index];
-
-            //Translate coordinates for Raylib
-            Vector3 pos = {
-                tf.x,
-                tf.y,
-                tf.z
-            };
-
-            DrawCube(pos, 0.5f, 0.5f, 0.5f, RED);
-            DrawCubeWires(pos, 0.5f, 0.5f, 0.5f, MAROON);
-        }
-    }
+EntityManager& Scene::getEntityManager()
+{
+    return entityManager;
 }

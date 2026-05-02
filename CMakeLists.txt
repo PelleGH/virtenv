@@ -16,16 +16,19 @@ add_executable(VirtenEditor
     src/engine/scene/Scene.cpp
     src/engine/scene/SceneLoader.cpp
     src/engine/scene/SceneManager.cpp
-
+    src/engine/systems/RenderSystem.cpp
+    src/engine/systems/InputSystem.cpp
+    src/engine/systems/MovementSystem.cpp
+    src/engine/ecs/EntityManager.cpp
+    
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
     external/imgui/imgui_tables.cpp
     external/imgui/imgui_widgets.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
-    src/engine/scene/SceneManager.cpp
 
-    src/engine/ecs/EntityManager.cpp
+
 )
 
 target_include_directories(VirtenEditor PRIVATE

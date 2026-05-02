@@ -16,9 +16,9 @@ public:
     bool loadScene(const std::string& path);
 
     void update(float dt);
-    void render(const Camera3D& camera);
     void shutdown();
 
+    Scene& getCurrentScene();
     void requestSceneChange(const std::string& path);
     void applyPendingSceneChange();
 

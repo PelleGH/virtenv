@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include "Entity.h"
-
+#include "raylib.h"
 
 // CORE ENGINE COMPONENTS
 
@@ -17,6 +17,12 @@ struct TransformComponent {
 
 struct Renderer {
     std::string textureID; // e.g., "player_idle", "door_open"
+
+    float width = 0.5f;
+    float height = 0.5f;
+    float depth = 0.5f;
+    Color color = RED;
+    
     int zIndex = 0;
 };
 
