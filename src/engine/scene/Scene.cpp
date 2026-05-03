@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "SceneLoader.h"
+#include "../ecs/EntityFactory.h"
 
 #include <iostream>
 #include <cstdint>
@@ -86,4 +87,11 @@ ComponentStorage& Scene::getComponentStorage()
 EntityManager& Scene::getEntityManager()
 {
     return entityManager;
+}
+
+void Scene::saveState()
+{
+    // The Scene already knows about its own managers, so it's super clean!
+    EntityFactory factory(entityManager, componentStorage);
+    factory.saveEntitiesToFile(activeEntitiesList);
 }

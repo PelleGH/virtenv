@@ -1,0 +1,118 @@
+[
+    {
+        "PlayerInput": true,
+        "Renderer": {
+            "color": [
+                0,
+                121,
+                241,
+                255
+            ],
+            "depth": 0.5,
+            "height": 0.5,
+            "textureID": "",
+            "width": 0.5,
+            "zIndex": 0
+        },
+        "TransformComponent": {
+            "depth": 32.0,
+            "height": 32.0,
+            "width": 32.0,
+            "x": 0.0,
+            "y": 1.0,
+            "z": 0.0
+        }
+    },
+    {
+        "Renderer": {
+            "color": [
+                230,
+                41,
+                55,
+                255
+            ],
+            "depth": 0.5,
+            "height": 0.5,
+            "textureID": "",
+            "width": 0.5,
+            "zIndex": 0
+        },
+        "TransformComponent": {
+            "depth": 32.0,
+            "height": 32.0,
+            "width": 32.0,
+            "x": 0.0,
+            "y": 2.0,
+            "z": 0.0
+        }
+    },
+    {
+        "Renderer": {
+            "color": [
+                230,
+                41,
+                55,
+                255
+            ],
+            "depth": 0.5,
+            "height": 0.5,
+            "textureID": "",
+            "width": 0.5,
+            "zIndex": 0
+        },
+        "TransformComponent": {
+            "depth": 32.0,
+            "height": 32.0,
+            "width": 32.0,
+            "x": 1.0,
+            "y": 2.0,
+            "z": 0.0
+        }
+    },
+    {
+        "Renderer": {
+            "color": [
+                230,
+                41,
+                55,
+                255
+            ],
+            "depth": 0.5,
+            "height": 0.5,
+            "textureID": "",
+            "width": 0.5,
+            "zIndex": 0
+        },
+        "TransformComponent": {
+            "depth": 32.0,
+            "height": 32.0,
+            "width": 32.0,
+            "x": 2.0,
+            "y": 2.0,
+            "z": 0.0
+        }
+    },
+    {
+        "Renderer": {
+            "color": [
+                230,
+                41,
+                55,
+                255
+            ],
+            "depth": 0.5,
+            "height": 0.5,
+            "textureID": "",
+            "width": 0.5,
+            "zIndex": 0
+        },
+        "TransformComponent": {
+            "depth": 32.0,
+            "height": 32.0,
+            "width": 32.0,
+            "x": 3.0,
+            "y": 2.0,
+            "z": 0.0
+        }
+    }
+]

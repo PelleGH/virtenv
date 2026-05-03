@@ -20,6 +20,7 @@ add_executable(VirtenEditor
     src/engine/systems/InputSystem.cpp
     src/engine/systems/MovementSystem.cpp
     src/engine/ecs/EntityManager.cpp
+    src/engine/ecs/EntityFactory.cpp
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
