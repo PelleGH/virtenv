@@ -105,6 +105,17 @@ Entity EntityFactory::createTestCube(float x, float y, float z){
 json EntityFactory::serialize(Entity entity){
     json j;
 
+    // 1. Explicitly save the Entity ID!
+    j["id"] = entity.id; 
+
+    // 2. Serialize the SpawnPoint component
+    if (componentStorage.HasComponent<SpawnPoint>(entity)) {
+        const auto& sp = componentStorage.GetComponent<SpawnPoint>(entity);
+        j["SpawnPoint"] = {
+            {"entityToSpawn", sp.entityToSpawn},
+            {"hasSpawned", sp.hasSpawned}
+        };
+    }
     // 1. Serialize TransformComponent
     if (componentStorage.HasComponent<TransformComponent>(entity)) {
         const auto& t = componentStorage.GetComponent<TransformComponent>(entity);
@@ -175,40 +186,39 @@ Entity EntityFactory::deserialize(const json& j){
         componentStorage.AddComponent(entity, PlayerInput{});
     }
 
+    if (j.contains("SpawnPoint")) {
+        SpawnPoint sp;
+        sp.entityToSpawn = j["SpawnPoint"].value("entityToSpawn", "");
+        sp.hasSpawned = j["SpawnPoint"].value("hasSpawned", false);
+        componentStorage.AddComponent(entity, sp);
+    }
+
     // Add other components following the same pattern...
 
     return entity;
 }
 
-bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities){
-    const std::string savePath = "src/engine/ecs/saved_entities.json";
-
-    // Create an empty JSON array
+bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename)
+{
     json jsonArray = json::array();
 
-    // Loop through every entity, serialize it, and add it to the array
-    for (Entity entity : entities)
-    {
+    for (Entity entity : entities) {
         json entityData = serialize(entity);
-        
-        // Only add it if it actually has data (isn't totally empty)
         if (!entityData.empty()) {
             jsonArray.push_back(entityData);
         }
     }
 
-    // Open the file using your savePath variable!
-    std::ofstream file(savePath);
-    if (!file.is_open())
-    {
-        std::cout << "Error: Could not open file for saving -> " << savePath << '\n';
+    // Open the file using the parameter!
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error: Could not open file for saving -> " << filename << '\n';
         return false;
     }
 
-    // Write the JSON array to the file with 4 spaces of indentation
     file << jsonArray.dump(4);
     file.close();
 
-    std::cout << "Successfully saved " << jsonArray.size() << " entities to " << savePath << '\n';
+    std::cout << "Successfully saved " << jsonArray.size() << " entities to " << filename << '\n';
     return true;
 }

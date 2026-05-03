@@ -26,7 +26,7 @@ public:
     Entity deserialize(const nlohmann::json& j);
 
     // Converts a list of entities to JSON and saves them to a specific file
-    bool saveEntitiesToFile(const std::vector<Entity>& entities);
+    bool saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename = "src/engine/ecs/saved_entities.json");
 
 private:
     EntityManager& entityManager;

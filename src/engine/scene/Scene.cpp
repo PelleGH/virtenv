@@ -95,3 +95,8 @@ void Scene::saveState()
     EntityFactory factory(entityManager, componentStorage);
     factory.saveEntitiesToFile(activeEntitiesList);
 }
+
+void Scene::addEntityToScene(Entity entity) 
+{
+    activeEntitiesList.push_back(entity);
+}
