@@ -29,13 +29,13 @@ void SceneManager::update(float dt)
     currentScene.update(dt);
 }
 
-void SceneManager::render(const Camera3D& camera)
-{
-    currentScene.render(camera);
-}
-
 void SceneManager::shutdown()
 {
     currentScene.unload();
+}
+
+Scene& SceneManager::getCurrentScene()
+{
+    return currentScene;
 }
 

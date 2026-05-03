@@ -1,23 +1,31 @@
 #pragma once
+
 #include <cstdint>
+#include <cstddef>
+#include <functional>
 
 struct Entity {
     std::uint32_t id;
 
-    // id consists of 20 bit + 12 bit
-    // The last 20 bits = index
-    // The first 12 bits = generation (is used in order to reuse id:s)
-
-    std::uint32_t getIndex() const{
+    std::uint32_t getIndex() const {
         return id & 0xFFFFF;
     }
 
-    std::uint32_t getGeneration() const{
+    std::uint32_t getGeneration() const {
         return (id >> 20) & 0xFFF;
     }
 
-    // Possible future use to compare different entities
-    bool operator == (const Entity& other) const{
+    bool operator==(const Entity& other) const {
         return id == other.id;
     }
 };
+
+// Specialize std::hash for Entity so it can be used in unordered containers in ComponentArray
+namespace std {
+    template <>
+    struct hash<Entity> {
+        std::size_t operator()(const Entity& entity) const {
+            return std::hash<std::uint32_t>{}(entity.id);
+        }
+    };
+}
