@@ -15,7 +15,6 @@ public:
     EntityFactory(EntityManager& em, ComponentStorage& cs);
 
     Entity createPlayer(float x, float y, float z);
-    Entity createFromGridCube(const GridCube& cubeData);
     Entity createTestCube(float x, float y, float z);
 
     // --- NEW JSON SERIALIZATION ---

@@ -2,7 +2,6 @@
 #include "engine/ecs/EntityManager.h"
 #include "engine/ecs/ComponentStorage.h"
 #include "engine/ecs/Components.h"
-#include "engine/scene/SceneData.h"
 #include <fstream>
 #include <iostream>
 
@@ -39,48 +38,6 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     return player;
 }
 
-Entity EntityFactory::createFromGridCube(const GridCube& cubeData){
-    Entity entity = entityManager.createEntity();
-
-    // Convert grid position to world coordinates
-    TransformComponent transform;
-    transform.x = static_cast<float>(cubeData.position.x);
-    transform.y = static_cast<float>(cubeData.position.y);
-    transform.z = static_cast<float>(cubeData.position.z);
-    componentStorage.AddComponent(entity, transform);
-
-    Renderer r;
-    // Set color or size based on the string type
-    if (cubeData.type == "floor") {
-        r.color = DARKGRAY;
-    } else if (cubeData.type == "wall") {
-        r.color = GRAY;
-    } else if (cubeData.type == "door") {
-        r.color = BROWN;
-        
-        // Add a SceneTransition component if it's a door
-        SceneTransition transition;
-        transition.targetScene = cubeData.targetScene;
-        componentStorage.AddComponent(entity, transition);
-    }
-    componentStorage.AddComponent(entity, r);
-
-    // Add collision if solid
-    if (cubeData.solid) {
-        Collider col;
-        col.isTrigger = false;
-        componentStorage.AddComponent(entity, col);
-    }
-
-    // Add trigger collision if it's a trigger
-    if (cubeData.trigger) {
-        Collider col;
-        col.isTrigger = true;
-        componentStorage.AddComponent(entity, col);
-    }
-
-    return entity;
-}
 
 Entity EntityFactory::createTestCube(float x, float y, float z){
     Entity entity = entityManager.createEntity();

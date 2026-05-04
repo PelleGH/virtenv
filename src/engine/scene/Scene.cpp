@@ -32,12 +32,6 @@ bool Scene::load(const std::string& scenePath)
 
     EntityFactory factory(entityManager, componentStorage);
 
-    // 3. Skapa kartans entiteter (från SceneLoader)
-    for (const auto& cube : data.cubes) {
-        Entity mapEntity = factory.createFromGridCube(cube);
-        addEntityToScene(mapEntity);
-    }
-
     // 4. Ladda in dina spawners från JSON-filen
     std::ifstream file("src/engine/ecs/saved_entities.json");
     if (file.is_open()) {
