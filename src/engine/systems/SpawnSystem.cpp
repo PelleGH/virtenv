@@ -1,12 +1,13 @@
 #include "SpawnSystem.h"
 #include "engine/ecs/Components.h"
+#include "engine/scene/Scene.h"
 
 SpawnSystem::SpawnSystem(ComponentStorage& cs, EntityFactory& ef)
     : componentStorage(cs), entityFactory(ef) 
 {
 }
 
-void SpawnSystem::Update() {
+void SpawnSystem::Update(Scene* currentScene) {
     // 1. Get ALL entities that have a SpawnPoint component
     auto& spawnTypes = componentStorage.GetComponents<SpawnType>();
 
@@ -20,16 +21,19 @@ void SpawnSystem::Update() {
             // 4. Look for a TransformComponent so we know WHERE to spawn it
             if (componentStorage.HasComponent<TransformComponent>(entity)) {
                 auto& transform = componentStorage.GetComponent<TransformComponent>(entity);
-
+                Entity newEntity;
                 // 5. Spawn the correct entity based on the string ID
                 if (spawnType.entityToSpawn == "player") {
-                    entityFactory.createPlayer(transform.x, transform.y, transform.z);
+                    newEntity = entityFactory.createPlayer(transform.x, transform.y, transform.z);
                 } 
                 else if (spawnType.entityToSpawn == "test_cube") {
-                    entityFactory.createTestCube(transform.x, transform.y, transform.z);
+                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z);
                 }
                 // Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
-
+                
+                if (currentScene != nullptr) {
+                    currentScene->addEntityToScene(newEntity);
+                }
                 // 6. Mark it as spawned so we don't spawn infinite copies!
                 spawnType.hasSpawned = true;
             }

@@ -33,8 +33,8 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     componentStorage.AddComponent(player, PlayerInput{});
 
     // Stats
-    componentStorage.AddComponent(player, Health{100, 100});
-    componentStorage.AddComponent(player, Attack{});
+    //componentStorage.AddComponent(player, Health{100, 100});
+    //componentStorage.AddComponent(player, Attack{});
 
     return player;
 }

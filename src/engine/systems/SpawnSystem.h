@@ -2,6 +2,8 @@
 #include "engine/ecs/ComponentStorage.h"
 #include "engine/ecs/EntityFactory.h"
 
+class Scene;
+
 class SpawnSystem {
 private:
     ComponentStorage& componentStorage;
@@ -10,5 +12,5 @@ private:
 public:
     SpawnSystem(ComponentStorage& cs, EntityFactory& ef);
     
-    void Update(); 
+    void Update(Scene* currentScene);
 };
