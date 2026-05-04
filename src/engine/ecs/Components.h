@@ -42,7 +42,7 @@ struct PlayerInput {
     bool interact = false;
 };
 
-struct SpawnPoint {
+struct SpawnType {
     std::string entityToSpawn; // e.g., "player", "npc_merchant", "enemy_goblin"
     bool hasSpawned = false;   // Used to ensure we only spawn it once on startup
 };

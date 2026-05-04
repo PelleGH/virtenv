@@ -108,10 +108,10 @@ json EntityFactory::serialize(Entity entity){
     // 1. Explicitly save the Entity ID!
     j["id"] = entity.id; 
 
-    // 2. Serialize the SpawnPoint component
-    if (componentStorage.HasComponent<SpawnPoint>(entity)) {
-        const auto& sp = componentStorage.GetComponent<SpawnPoint>(entity);
-        j["SpawnPoint"] = {
+    // 2. Serialize the SpawnType component
+    if (componentStorage.HasComponent<SpawnType>(entity)) {
+        const auto& sp = componentStorage.GetComponent<SpawnType>(entity);
+        j["SpawnType"] = {
             {"entityToSpawn", sp.entityToSpawn},
             {"hasSpawned", sp.hasSpawned}
         };
@@ -186,11 +186,11 @@ Entity EntityFactory::deserialize(const json& j){
         componentStorage.AddComponent(entity, PlayerInput{});
     }
 
-    if (j.contains("SpawnPoint")) {
-        SpawnPoint sp;
-        sp.entityToSpawn = j["SpawnPoint"].value("entityToSpawn", "");
-        sp.hasSpawned = j["SpawnPoint"].value("hasSpawned", false);
-        componentStorage.AddComponent(entity, sp);
+    if (j.contains("SpawnType")) {
+        SpawnType st;
+        st.entityToSpawn = j["SpawnType"].value("entityToSpawn", "");
+        st.hasSpawned = j["SpawnType"].value("hasSpawned", false);
+        componentStorage.AddComponent(entity, st);
     }
 
     // Add other components following the same pattern...
