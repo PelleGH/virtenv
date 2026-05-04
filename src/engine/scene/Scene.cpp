@@ -11,11 +11,6 @@ bool Scene::load(const std::string& scenePath)
 
     std::cout << "Loaded scene: " << data.name << '\n';
     std::cout << "Cubes: " << data.cubes.size() << '\n';
-    
-    componentStorage.RegisterComponent<TransformComponent>();
-    componentStorage.RegisterComponent<Renderer>();
-    componentStorage.RegisterComponent<PlayerInput>();
-    componentStorage.RegisterComponent<Collider>();
 
     // Create player (hardocoded for now, will be data-driven later)
     Entity player = entityManager.createEntity();
