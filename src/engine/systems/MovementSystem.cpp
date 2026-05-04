@@ -35,6 +35,10 @@ void MovementSystem::update(Scene& scene, float dt)
 
         float speed = 3.0f;
 
+        transform.previousX = transform.x;
+        transform.previousY = transform.y;
+        transform.previousZ = transform.z;
+
         transform.x += moveX * speed * dt;
         transform.z += moveZ * speed * dt;
     }

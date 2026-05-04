@@ -15,6 +15,7 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<TransformComponent>();
     componentStorage.RegisterComponent<Renderer>();
     componentStorage.RegisterComponent<PlayerInput>();
+    componentStorage.RegisterComponent<Collider>();
 
     // Create player (hardocoded for now, will be data-driven later)
     Entity player = entityManager.createEntity();
@@ -24,6 +25,7 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.AddComponent(player, TransformComponent{0.0f, 1.0f, 0.0f});
     componentStorage.AddComponent(player, r);
     componentStorage.AddComponent(player, PlayerInput{});
+    componentStorage.AddComponent(player, Collider{0.5f,0.5f,0.5f,false});
     //Hardcoded at the moment to verify that entities is generated and visible
     for (int i=0; i <= 3; i++){
         

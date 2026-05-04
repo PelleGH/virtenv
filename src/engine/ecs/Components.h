@@ -10,6 +10,11 @@ struct TransformComponent {
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
+
+    float previousX = 0.0f;
+    float previousY = 0.0f;
+    float previousZ = 0.0f;
+
     float width = 32.0f;
     float height = 32.0f;
     float depth = 32.0f;

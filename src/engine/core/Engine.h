@@ -4,6 +4,12 @@
 #include "../systems/RenderSystem.h"
 #include "../systems/InputSystem.h"
 #include "../systems/MovementSystem.h"
+#include "../systems/CollisionSystem.h"
+#include "../systems/CameraSystem.h"
+#include "../systems/TriggerSystem.h"
+#include "../messaging/EventBus.h"
+
+
 class Engine
 {
 public:
@@ -17,6 +23,10 @@ private:
     SceneManager sceneManager;
     RenderSystem renderSystem;
     MovementSystem movementSystem;
+    CollisionSystem collisionSystem;
+    CameraSystem cameraSystem;
+    TriggerSystem triggerSystem;
+    EventBus eventBus;
     Camera3D camera;
     void update(float dt);
     void render();

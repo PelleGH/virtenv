@@ -21,7 +21,27 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
 
     outData.name = sceneJson["name"];
     outData.cubes.clear();
+    if (sceneJson.contains("camera"))
+    {
+        const auto& cameraJson = sceneJson["camera"];
 
+        if (cameraJson.contains("mode"))
+            outData.camera.mode = cameraJson["mode"];
+
+        if (cameraJson.contains("position"))
+        {
+            outData.camera.positionX = cameraJson["position"][0];
+            outData.camera.positionY = cameraJson["position"][1];
+            outData.camera.positionZ = cameraJson["position"][2];
+        }
+
+        if (cameraJson.contains("target"))
+        {
+            outData.camera.targetX = cameraJson["target"][0];
+            outData.camera.targetY = cameraJson["target"][1];
+            outData.camera.targetZ = cameraJson["target"][2];
+        }
+    }
     for (const auto& cubeJson : sceneJson["cubes"]) // instantiate cubes from json
     {
         GridCube cube;
