@@ -14,6 +14,8 @@ public:
     bool load(const std::string& scenePath);
     void update(float dt);
     void unload();
+    void saveState();
+    void addEntityToScene(Entity entity);
 
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;

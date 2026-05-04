@@ -51,6 +51,11 @@ void Engine::update(float dt)
     if (IsKeyPressed(KEY_TWO))
         sceneManager.requestSceneChange("assets/scenes/room_02.json");
 
+    if (IsKeyPressed(KEY_NINE)) 
+    {
+        sceneManager.getCurrentScene().saveState(); //saves all entities with componenents to saved_entities.json for test
+    }
+
     sceneManager.update(dt);
     sceneManager.applyPendingSceneChange();
 }
