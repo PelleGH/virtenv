@@ -1,47 +1,57 @@
 #include "Scene.h"
 #include "SceneLoader.h"
+#include "../ecs/EntityFactory.h"
+#include "../systems/SpawnSystem.h"
 
 #include <iostream>
+#include <fstream>
 #include <cstdint>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 bool Scene::load(const std::string& scenePath)
 {
+    // 1. Ladda in den statiska kartan (väggar, golv, dörrar)
     if (!SceneLoader::loadFromFile(scenePath, data))
         return false;
 
     std::cout << "Loaded scene: " << data.name << '\n';
     std::cout << "Cubes: " << data.cubes.size() << '\n';
     
+    // 2. Registrera alla komponenter du använder i scenen
     componentStorage.RegisterComponent<TransformComponent>();
     componentStorage.RegisterComponent<Renderer>();
     componentStorage.RegisterComponent<PlayerInput>();
+    componentStorage.RegisterComponent<SpawnType>();
 
-    // Create player (hardocoded for now, will be data-driven later)
-    Entity player = entityManager.createEntity();
-    activeEntitiesList.push_back(player);
-    Renderer r;
-    r.color = BLUE;
-    componentStorage.AddComponent(player, TransformComponent{0.0f, 1.0f, 0.0f});
-    componentStorage.AddComponent(player, r);
-    componentStorage.AddComponent(player, PlayerInput{});
-    //Hardcoded at the moment to verify that entities is generated and visible
-    for (int i=0; i <= 3; i++){
-        
-        //Creates entities
-        Entity newEntity = entityManager.createEntity(); 
-        
-        //Add the entity to the list
-        activeEntitiesList.push_back(newEntity);
+    //componentStorage.RegisterComponent<Health>();
+    //componentStorage.RegisterComponent<Attack>();
+    componentStorage.RegisterComponent<Collider>();
+    componentStorage.RegisterComponent<SceneTransition>();
 
-        //Checks that transforms "list" have enough space to handle all entities
-        componentStorage.AddComponent(newEntity, TransformComponent{
-            i * 1.0f,
-            2.0f,
-            0.0f
-        });
+    EntityFactory factory(entityManager, componentStorage);
 
-        componentStorage.AddComponent(newEntity, Renderer{});
+    // 4. Ladda in dina spawners från JSON-filen
+    std::ifstream file("src/engine/ecs/saved_entities.json");
+    if (file.is_open()) {
+        json entitiesJson;
+        file >> entitiesJson;
+        for (const auto& entityData : entitiesJson) {
+            // Skapar de "osynliga" spawner-entiteterna
+            Entity loadedEntity = factory.deserialize(entityData);
+            addEntityToScene(loadedEntity);
+        }
+    } else {
+        std::cout << "Warning: Could not find saved_entities.json\n";
     }
+
+    // 5. Kör SpawnSystemet!
+    // Det här systemet letar nu upp alla nyskapade SpawnTypes, läser deras X/Y/Z, 
+    // och ber EntityFactory att bygga den riktiga spelaren och de riktiga testkuberna.
+    SpawnSystem spawnSystem(componentStorage, factory);
+    spawnSystem.Update(this);
+
     return true;
 }
 
@@ -86,4 +96,16 @@ ComponentStorage& Scene::getComponentStorage()
 EntityManager& Scene::getEntityManager()
 {
     return entityManager;
+}
+
+void Scene::saveState()
+{
+    // The Scene already knows about its own managers, so it's super clean!
+    EntityFactory factory(entityManager, componentStorage);
+    factory.saveEntitiesToFile(activeEntitiesList);
+}
+
+void Scene::addEntityToScene(Entity entity) 
+{
+    activeEntitiesList.push_back(entity);
 }
