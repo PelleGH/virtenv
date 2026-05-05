@@ -34,7 +34,12 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     // Stats
     //componentStorage.AddComponent(player, Health{100, 100});
     //componentStorage.AddComponent(player, Attack{});
-
+    Collider collider;
+    collider.width = 0.5f;
+    collider.height = 0.5f;
+    collider.depth = 0.5f;
+    collider.isTrigger = false;
+    componentStorage.AddComponent(player, collider);
     return player;
 }
 

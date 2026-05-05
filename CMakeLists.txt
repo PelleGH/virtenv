@@ -19,6 +19,9 @@ add_executable(VirtenEditor
     src/engine/systems/RenderSystem.cpp
     src/engine/systems/InputSystem.cpp
     src/engine/systems/MovementSystem.cpp
+    src/engine/systems/CollisionSystem.cpp
+    src/engine/systems/CameraSystem.cpp
+    src/engine/systems/TriggerSystem.cpp
     src/engine/systems/SpawnSystem.cpp
     src/engine/ecs/EntityManager.cpp
     src/engine/ecs/EntityFactory.cpp
@@ -29,6 +32,7 @@ add_executable(VirtenEditor
     external/imgui/imgui_widgets.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
+
 
 
 )

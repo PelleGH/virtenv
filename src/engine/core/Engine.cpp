@@ -2,20 +2,17 @@
 
 #include <chrono>
 #include <iostream>
-#include "..\src\engine\ecs\EntityFactory.h"
 
 bool Engine::init()
 {
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
 
-    camera = { 0 };
-    camera.position = { 5.0f, 5.0f, 5.0f };
-    camera.target = { 0.0f, 0.0f, 0.0f };
-    camera.up = { 0.0f, 1.0f, 0.0f };
-    camera.fovy = 45.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-
+    cameraSystem.init(camera);
+    eventBus.subscribe([this](const SceneTransitionEvent& event)
+    {
+        sceneManager.requestSceneChange("assets/scenes/" + event.targetScene + ".json");
+    });
     running = true;
     return sceneManager.loadScene("assets/scenes/room_01.json");
 }
@@ -44,6 +41,10 @@ void Engine::update(float dt)
     //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene());
     movementSystem.update(sceneManager.getCurrentScene(), dt);
+    collisionSystem.update(sceneManager.getCurrentScene());
+    triggerSystem.update(sceneManager.getCurrentScene(), eventBus);
+    eventBus.dispatch();
+    cameraSystem.update(sceneManager.getCurrentScene(), camera);
     if (IsKeyPressed(KEY_ONE)) // TODO: temporary way to switch scenes for testing, will be moved to eventbus when it's implemented
         sceneManager.requestSceneChange("assets/scenes/room_01.json");
 
