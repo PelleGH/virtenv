@@ -8,6 +8,7 @@
 #include "../systems/CameraSystem.h"
 #include "../systems/TriggerSystem.h"
 #include "../messaging/EventBus.h"
+#include "../systems/CombatSystem.h"
 
 
 class Engine
@@ -28,6 +29,7 @@ private:
     TriggerSystem triggerSystem;
     EventBus eventBus;
     Camera3D camera;
+    CombatSystem combatSystem;
     void update(float dt);
     void render();
 };

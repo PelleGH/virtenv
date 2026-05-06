@@ -18,6 +18,16 @@ public:
         sceneHandlers.push_back(handler);
     }
 
+    void publish(const AttackEvent& event)
+    {
+        attackEvents.push_back(event);
+    }
+
+    void subscribe(std::function<void(const AttackEvent&)> handler)
+    {
+        attackHandlers.push_back(handler);
+    }
+
     void dispatch()
     {
         for (const auto& event : sceneEvents)
@@ -29,9 +39,21 @@ public:
         }
 
         sceneEvents.clear();
+
+        for (const auto& event : attackEvents)
+        {
+            for (auto& handler : attackHandlers)
+            {
+                handler(event);
+            }
+        }
+        attackEvents.clear();
     }
 
 private:
     std::vector<SceneTransitionEvent> sceneEvents;
     std::vector<std::function<void(const SceneTransitionEvent&)>> sceneHandlers;
+
+    std::vector<AttackEvent> attackEvents;
+    std::vector<std::function<void(const AttackEvent&)>> attackHandlers;
 };

@@ -14,7 +14,11 @@ bool Engine::init()
         sceneManager.requestSceneChange("assets/scenes/" + event.targetScene + ".json");
     });
     running = true;
-    return sceneManager.loadScene("assets/scenes/room_01.json");
+    bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
+
+    combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
+
+    return sceneLoaded;
 }
 
 void Engine::run()
@@ -39,7 +43,7 @@ void Engine::run()
 void Engine::update(float dt)
 {
     //std::cout << "Updating engine. dt: " << dt << '\n';
-    inputSystem.update(sceneManager.getCurrentScene());
+    inputSystem.update(sceneManager.getCurrentScene(), eventBus);
     movementSystem.update(sceneManager.getCurrentScene(), dt);
     collisionSystem.update(sceneManager.getCurrentScene());
     triggerSystem.update(sceneManager.getCurrentScene(), eventBus);

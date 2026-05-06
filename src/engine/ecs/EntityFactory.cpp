@@ -32,8 +32,8 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     componentStorage.AddComponent(player, PlayerInput{});
 
     // Stats
-    //componentStorage.AddComponent(player, Health{100, 100});
-    //componentStorage.AddComponent(player, Attack{});
+    componentStorage.AddComponent(player, Health{100, 100});
+    componentStorage.AddComponent(player, Attack{1.0f, 15, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
     Collider collider;
     collider.width = 0.5f;
     collider.height = 0.5f;
@@ -52,6 +52,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z){
     transform.y = y;
     transform.z = z;
     componentStorage.AddComponent(entity, transform);
+    componentStorage.AddComponent(entity, Health{30, 30});
 
     Renderer r;
     r.color = RED; // Default test cube color
