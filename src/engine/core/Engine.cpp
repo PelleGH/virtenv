@@ -41,6 +41,7 @@ void Engine::update(float dt)
     //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene());
     movementSystem.update(sceneManager.getCurrentScene(), dt);
+    conditionalSystem.update(sceneManager.getCurrentScene(), conditionManager);
     collisionSystem.update(sceneManager.getCurrentScene());
     triggerSystem.update(sceneManager.getCurrentScene(), eventBus);
     eventBus.dispatch();
@@ -55,7 +56,11 @@ void Engine::update(float dt)
     {
         sceneManager.getCurrentScene().saveState(); //saves all entities with componenents to saved_entities.json for test
     }
-
+    if (IsKeyPressed(KEY_Q))
+    {
+        conditionManager.debugUnlocked =
+            !conditionManager.debugUnlocked;
+    }
     sceneManager.update(dt);
     sceneManager.applyPendingSceneChange();
 }

@@ -17,14 +17,21 @@ EntityFactory::EntityFactory(EntityManager& em, ComponentStorage& cs)
 Entity EntityFactory::createPlayer(float x, float y, float z){
     Entity player = entityManager.createEntity();
     // Transform
+    float size = 0.5f;
     TransformComponent transform;
     transform.x = x;
     transform.y = y;
     transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
     componentStorage.AddComponent(player, transform);
 
     // Renderer
     Renderer r;
+    r.width = size;
+    r.height = size;
+    r.depth = size;
     r.color = BLUE; // Player is blue
     componentStorage.AddComponent(player, r);
 
@@ -35,27 +42,52 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     //componentStorage.AddComponent(player, Health{100, 100});
     //componentStorage.AddComponent(player, Attack{});
     Collider collider;
-    collider.width = 0.5f;
-    collider.height = 0.5f;
-    collider.depth = 0.5f;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
     collider.isTrigger = false;
     componentStorage.AddComponent(player, collider);
     return player;
 }
 
 
-Entity EntityFactory::createTestCube(float x, float y, float z){
+Entity EntityFactory::createTestCube(float x, float y, float z)
+{
     Entity entity = entityManager.createEntity();
+
+    float size = 1.0f;
 
     TransformComponent transform;
     transform.x = x;
     transform.y = y;
     transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
     componentStorage.AddComponent(entity, transform);
 
     Renderer r;
-    r.color = RED; // Default test cube color
+    r.width = size;
+    r.height = size;
+    r.depth = size;
+    r.color = RED;
     componentStorage.AddComponent(entity, r);
+
+    Collider collider;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
+    collider.isTrigger = false;
+    componentStorage.AddComponent(entity, collider);
+    ConditionalBlocker blocker;
+
+    Condition condition;
+    condition.type = "Debug";
+    condition.id = "debug_unlock";
+
+    blocker.conditions.push_back(condition);
+
+    componentStorage.AddComponent(entity, blocker);
 
     return entity;
 }

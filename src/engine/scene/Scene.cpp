@@ -24,6 +24,7 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Renderer>();
     componentStorage.RegisterComponent<PlayerInput>();
     componentStorage.RegisterComponent<SpawnType>();
+    componentStorage.RegisterComponent<ConditionalBlocker>();
 
     //componentStorage.RegisterComponent<Health>();
     //componentStorage.RegisterComponent<Attack>();
