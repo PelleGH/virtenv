@@ -24,6 +24,7 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Renderer>();
     componentStorage.RegisterComponent<PlayerInput>();
     componentStorage.RegisterComponent<SpawnType>();
+    componentStorage.RegisterComponent<ConditionalBlocker>();
 
     //componentStorage.RegisterComponent<Health>();
     //componentStorage.RegisterComponent<Attack>();
@@ -33,28 +34,45 @@ bool Scene::load(const std::string& scenePath)
     EntityFactory factory(entityManager, componentStorage);
 
     // 4. Ladda in dina spawners från JSON-filen
-    std::ifstream file("src/engine/ecs/saved_entities.json");
-    if (file.is_open()) {
-        json entitiesJson;
-        file >> entitiesJson;
-        for (const auto& entityData : entitiesJson) {
-            // Skapar de "osynliga" spawner-entiteterna
-            Entity loadedEntity = factory.deserialize(entityData);
-            addEntityToScene(loadedEntity);
-        }
-    } else {
-        std::cout << "Warning: Could not find saved_entities.json\n";
+    
+    for (const auto& entityData : data.entities)
+    {
+        Entity loadedEntity = factory.deserialize(entityData);
+        addEntityToScene(loadedEntity);
     }
 
-    // 5. Kör SpawnSystemet!
-    // Det här systemet letar nu upp alla nyskapade SpawnTypes, läser deras X/Y/Z, 
-    // och ber EntityFactory att bygga den riktiga spelaren och de riktiga testkuberna.
     SpawnSystem spawnSystem(componentStorage, factory);
     spawnSystem.Update(this);
 
     return true;
 }
+Entity Scene::spawnPlayerAt(const std::string& spawnId)
+{
+    EntityFactory factory(entityManager, componentStorage);
 
+    PlayerSpawn spawn;
+
+    auto it = data.playerSpawns.find(spawnId);
+
+    if (it != data.playerSpawns.end())
+    {
+        spawn = it->second;
+    }
+    else
+    {
+        auto defaultIt = data.playerSpawns.find("default");
+
+        if (defaultIt != data.playerSpawns.end())
+        {
+            spawn = defaultIt->second;
+        }
+    }
+
+    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z);
+    addEntityToScene(player);
+
+    return player;
+}
 void Scene::update(float dt)
 {
     std::cout << "Scene: " << data.name << '\n';

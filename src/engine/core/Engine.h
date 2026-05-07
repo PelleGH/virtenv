@@ -8,7 +8,8 @@
 #include "../systems/CameraSystem.h"
 #include "../systems/TriggerSystem.h"
 #include "../messaging/EventBus.h"
-
+#include "../systems/ConditionManager.h"
+#include "../systems/ConditionSystem.h"
 
 class Engine
 {
@@ -28,6 +29,8 @@ private:
     TriggerSystem triggerSystem;
     EventBus eventBus;
     Camera3D camera;
+    ConditionManager conditionManager;
+    ConditionSystem conditionalSystem;
     void update(float dt);
     void render();
 };

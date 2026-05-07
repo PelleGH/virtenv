@@ -16,7 +16,7 @@ public:
     void unload();
     void saveState();
     void addEntityToScene(Entity entity);
-
+    Entity spawnPlayerAt(const std::string& spawnId);
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;
 

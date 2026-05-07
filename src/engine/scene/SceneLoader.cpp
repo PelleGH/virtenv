@@ -8,6 +8,8 @@ using json = nlohmann::json;
 
 bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
 {
+    outData.entities.clear();
+    outData.playerSpawns.clear();
     std::ifstream file(path);
 
     if (!file.is_open())
@@ -42,6 +44,20 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
             outData.camera.targetZ = cameraJson["target"][2].get<float>();
         }
     }
+    if (sceneJson.contains("playerSpawns"))
+    {
+        for (const auto& spawnJson : sceneJson["playerSpawns"])
+        {
+            std::string id = spawnJson["id"];
+
+            PlayerSpawn spawn;
+            spawn.x = spawnJson["position"][0];
+            spawn.y = spawnJson["position"][1];
+            spawn.z = spawnJson["position"][2];
+
+            outData.playerSpawns[id] = spawn;
+        }
+    }
     for (const auto& cubeJson : sceneJson["cubes"]) // instantiate cubes from json
     {
         GridCube cube;
@@ -56,8 +72,19 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
 
         if (cubeJson.contains("targetScene")) // "door" cube that leads to another scene (just a flag for now)
             cube.targetScene = cubeJson["targetScene"];
+        if (cubeJson.find("targetSpawn") != cubeJson.end())
+            cube.targetSpawn = cubeJson["targetSpawn"];
 
         outData.cubes.push_back(cube);
+    }
+    outData.entities.clear();
+
+    if (sceneJson.contains("entities"))
+    {
+        for (const auto& entityJson : sceneJson["entities"])
+        {
+            outData.entities.push_back(entityJson);
+        }
     }
 
     return true;

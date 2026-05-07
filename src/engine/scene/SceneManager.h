@@ -13,17 +13,18 @@ class SceneManager
 
 
 public:
-    bool loadScene(const std::string& path);
+    bool loadScene(const std::string& path, const std::string& spawnId = "default");
 
     void update(float dt);
     void shutdown();
 
     Scene& getCurrentScene();
-    void requestSceneChange(const std::string& path);
+    void requestSceneChange(const std::string& path, const std::string& spawnId = "default");
     void applyPendingSceneChange();
-
+    
 private:
     Scene currentScene;
     std::string pendingScenePath;
+    std::string pendingSpawnId = "default";
     bool hasPendingSceneChange = false;
 };
