@@ -9,6 +9,7 @@
 #include "../systems/TriggerSystem.h"
 #include "../messaging/EventBus.h"
 #include "../systems/CombatSystem.h"
+#include "../systems/AISystem.h"
 
 
 class Engine
@@ -30,6 +31,7 @@ private:
     EventBus eventBus;
     Camera3D camera;
     CombatSystem combatSystem;
+    AISystem aiSystem;
     void update(float dt);
     void render();
 };

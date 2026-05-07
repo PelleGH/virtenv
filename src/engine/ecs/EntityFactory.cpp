@@ -53,6 +53,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z){
     transform.z = z;
     componentStorage.AddComponent(entity, transform);
     componentStorage.AddComponent(entity, Health{30, 30});
+    componentStorage.AddComponent(entity, Attack{2.0f, 5, 2.0f, 2.0f});
 
     Renderer r;
     r.color = RED; // Default test cube color
