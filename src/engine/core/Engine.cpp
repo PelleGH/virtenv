@@ -11,7 +11,10 @@ bool Engine::init()
     cameraSystem.init(camera);
     eventBus.subscribe([this](const SceneTransitionEvent& event)
     {
-        sceneManager.requestSceneChange("assets/scenes/" + event.targetScene + ".json");
+        sceneManager.requestSceneChange(
+            "assets/scenes/" + event.targetScene + ".json",
+            event.targetSpawn
+        );
     });
     running = true;
     return sceneManager.loadScene("assets/scenes/room_01.json");

@@ -1,5 +1,5 @@
 {
-    "name": "room_01",
+    "name": "room_07",
     "camera": {
         "mode": "fixed",
         "position": [
@@ -950,7 +950,7 @@
             "position": [
                 0,
                 1,
-                -4
+                4
             ],
             "type": "wall",
             "solid": true,
@@ -1170,13 +1170,13 @@
             "position": [
                 0,
                 1,
-                4
+                -4
             ],
             "type": "door",
             "solid": false,
             "trigger": true,
             "targetScene": "room_04",
-            "targetSpawn": "from_north"
+            "targetSpawn": "from_south"
         },
         {
             "position": [
@@ -1187,7 +1187,7 @@
             "type": "door",
             "solid": false,
             "trigger": true,
-            "targetScene": "room_02",
+            "targetScene": "room_08",
             "targetSpawn": "from_west"
         }
     ],
@@ -1198,7 +1198,7 @@
                 "hasSpawned": false
             },
             "TransformComponent": {
-                "x": -2.0,
+                "x": 2.0,
                 "y": 1.0,
                 "z": -2.0,
                 "width": 1.0,
@@ -1212,9 +1212,9 @@
                 "hasSpawned": false
             },
             "TransformComponent": {
-                "x": 2.0,
+                "x": -1.0,
                 "y": 1.0,
-                "z": 2.0,
+                "z": 1.0,
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
