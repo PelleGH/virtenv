@@ -154,7 +154,11 @@ Entity EntityFactory::deserialize(const json& j){
         t.depth = j["TransformComponent"].value("depth", 32.0f);
         componentStorage.AddComponent(entity, t);
     }
-
+    if (j.find("DialogueSource") != j.end()) {
+        DialogueSource dialogue;
+        dialogue.dialogueSetId = j["DialogueSource"].value("dialogueSetId", "");
+        componentStorage.AddComponent(entity, dialogue);
+    }
     // 2. Deserialize Renderer
     if (j.contains("Renderer")) {
         Renderer r;
@@ -191,7 +195,41 @@ Entity EntityFactory::deserialize(const json& j){
 
     return entity;
 }
+Entity EntityFactory::createNPC(float x, float y, float z, const std::string& dialogueSetId)
+{
+    Entity npc = entityManager.createEntity();
 
+    float size = 0.7f;
+
+    TransformComponent transform;
+    transform.x = x;
+    transform.y = y;
+    transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
+    componentStorage.AddComponent(npc, transform);
+
+    Renderer r;
+    r.width = size;
+    r.height = size;
+    r.depth = size;
+    r.color = ORANGE;
+    componentStorage.AddComponent(npc, r);
+
+    Collider collider;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
+    collider.isTrigger = false;
+    componentStorage.AddComponent(npc, collider);
+
+    DialogueSource dialogue;
+    dialogue.dialogueSetId = dialogueSetId;
+    componentStorage.AddComponent(npc, dialogue);
+
+    return npc;
+}
 bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename)
 {
     json jsonArray = json::array();

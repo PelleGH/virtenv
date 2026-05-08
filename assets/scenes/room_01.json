@@ -1208,6 +1208,20 @@
         },
         {
             "SpawnType": {
+                "entityToSpawn": "npc",
+                "hasSpawned": false
+            },
+            "TransformComponent": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "DialogueSource": {
+                "dialogueSetId": "old_man"
+            }
+        },
+        {
+            "SpawnType": {
                 "entityToSpawn": "test_cube",
                 "hasSpawned": false
             },
