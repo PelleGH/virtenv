@@ -10,6 +10,8 @@
 #include "../messaging/EventBus.h"
 #include "../systems/ConditionManager.h"
 #include "../systems/ConditionSystem.h"
+#include "../systems/DialogueManager.h"
+#include "../ecs/Components.h"
 
 class Engine
 {
@@ -31,6 +33,10 @@ private:
     Camera3D camera;
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
+
+    DialogueManager dialogueManager;
+    void debugNPCInteraction();
+    
     void update(float dt);
     void render();
 };

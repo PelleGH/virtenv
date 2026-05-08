@@ -130,7 +130,7 @@ struct SceneTransition {
 };
 
 struct DialogueSource {
-    int dialogueID = 0; 
+    std::string dialogueSetId;
 };
 
 // A Tag Component. The Combat System checks if an entity has this, and if its Health drops to 0, it drops loot and gets destroyed.
