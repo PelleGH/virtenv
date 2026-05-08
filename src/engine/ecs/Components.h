@@ -22,6 +22,7 @@ struct TransformComponent {
 
 struct Renderer {
     std::string textureID; // e.g., "player_idle", "door_open"
+    std::string modelID;
 
     float width = 0.5f;
     float height = 0.5f;
@@ -50,6 +51,7 @@ struct PlayerInput {
 struct SpawnType {
     std::string entityToSpawn; // e.g., "player", "npc_merchant", "enemy_goblin"
     bool hasSpawned = false;   // Used to ensure we only spawn it once on startup
+    int skinChoice = 1;
 };
 
 

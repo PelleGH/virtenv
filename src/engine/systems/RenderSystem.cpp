@@ -32,8 +32,14 @@ void RenderSystem::renderEntities(Scene& scene)
 
             auto& renderer = componentStorage.GetComponent<Renderer>(e);
 
-            DrawCube(pos, renderer.width, renderer.height, renderer.depth, renderer.color);
-            DrawCubeWires(pos, renderer.width, renderer.height, renderer.depth, MAROON);
+            if (renderer.modelID != "" && scene.getResourceManager().hasModel(renderer.modelID)) 
+            {
+                DrawModel(scene.getResourceManager().GetModel(renderer.modelID), pos, 1.0f, WHITE);
+            }else {
+
+                DrawCube(pos, renderer.width, renderer.height, renderer.depth, renderer.color);
+                DrawCubeWires(pos, renderer.width, renderer.height, renderer.depth, MAROON);
+            }
         }
     }
 }
@@ -49,7 +55,17 @@ void RenderSystem::renderGrid(Scene& scene)
             (float)cube.position.z
         };
 
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, GRAY);
-        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+        if (scene.getResourceManager().hasModel("wall_model")) 
+        {
+            Model wall = scene.getResourceManager().GetModel("wall_model");
+
+            DrawModel(wall, pos, 1.0f, WHITE);
+            DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+
+        }else {
+
+            DrawCube(pos, 1.0f, 1.0f, 1.0f, MAGENTA);
+            DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+        }
     }
 }

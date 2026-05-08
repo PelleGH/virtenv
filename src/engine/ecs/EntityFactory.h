@@ -14,8 +14,8 @@ class EntityFactory
 public:
     EntityFactory(EntityManager& em, ComponentStorage& cs);
 
-    Entity createPlayer(float x, float y, float z);
-    Entity createTestCube(float x, float y, float z);
+    Entity createPlayer(float x, float y, float z, int skinChoice = 1);
+    Entity createTestCube(float x, float y, float z, int skinChoice = 1);
 
     // --- NEW JSON SERIALIZATION ---
     // Converts an entity's components into a JSON object

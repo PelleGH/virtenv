@@ -2,7 +2,8 @@
     {
         "SpawnType": {
             "entityToSpawn": "player",
-            "hasSpawned": false
+            "hasSpawned": false,
+            "skinChoice": 1
         },
         "TransformComponent": {
             "x": 0.0,
@@ -15,8 +16,9 @@
     },
     {
         "SpawnType": {
-            "entityToSpawn": "test_cube",
-            "hasSpawned": false
+            "entityToSpawn": "test_cube1",
+            "hasSpawned": false,
+            "skinChoice": 1
         },
         "TransformComponent": {
             "x": 1.0,
@@ -29,8 +31,9 @@
     },
     {
         "SpawnType": {
-            "entityToSpawn": "test_cube",
-            "hasSpawned": false
+            "entityToSpawn": "test_cube2",
+            "hasSpawned": false,
+            "skinChoice": 2
         },
         "TransformComponent": {
             "x": 2.0,
@@ -43,8 +46,9 @@
     },
     {
         "SpawnType": {
-            "entityToSpawn": "test_cube",
-            "hasSpawned": false
+            "entityToSpawn": "test_cube3",
+            "hasSpawned": false,
+            "skinChoice": 3
         },
         "TransformComponent": {
             "x": 3.0,
@@ -58,7 +62,8 @@
     {
         "SpawnType": {
             "entityToSpawn": "test_cube",
-            "hasSpawned": false
+            "hasSpawned": false,
+            "skinChoice": 1
         },
         "TransformComponent": {
             "x": 4.0,

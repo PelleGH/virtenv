@@ -21,17 +21,32 @@ void SpawnSystem::Update(Scene* currentScene) {
             // 4. Look for a TransformComponent so we know WHERE to spawn it
             if (componentStorage.HasComponent<TransformComponent>(entity)) {
                 auto& transform = componentStorage.GetComponent<TransformComponent>(entity);
+                bool successfullyCreatedEntity = false;
                 Entity newEntity;
                 // 5. Spawn the correct entity based on the string ID
                 if (spawnType.entityToSpawn == "player") {
-                    newEntity = entityFactory.createPlayer(transform.x, transform.y, transform.z);
+                    newEntity = entityFactory.createPlayer(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
                 } 
                 else if (spawnType.entityToSpawn == "test_cube") {
                     newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z);
+                    successfullyCreatedEntity = true;
+                }
+                else if (spawnType.entityToSpawn == "test_cube1") {
+                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
+                }
+                else if (spawnType.entityToSpawn == "test_cube2") {
+                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
+                }
+                else if (spawnType.entityToSpawn == "test_cube3") {
+                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
                 }
                 // Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
                 
-                if (currentScene != nullptr) {
+                if (successfullyCreatedEntity && currentScene != nullptr) {
                     currentScene->addEntityToScene(newEntity);
                 }
                 // 6. Mark it as spawned so we don't spawn infinite copies!

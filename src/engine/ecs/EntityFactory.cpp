@@ -14,7 +14,7 @@ EntityFactory::EntityFactory(EntityManager& em, ComponentStorage& cs)
 
 // ENTITY CREATION
 
-Entity EntityFactory::createPlayer(float x, float y, float z){
+Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     Entity player = entityManager.createEntity();
     // Transform
     TransformComponent transform;
@@ -26,6 +26,13 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     // Renderer
     Renderer r;
     r.color = BLUE; // Player is blue
+
+    if (skinChoice == 1){
+        r.modelID = "player_model1";
+    }else if (skinChoice == 2){
+        r.modelID = "player_model2";
+    }
+
     componentStorage.AddComponent(player, r);
 
     // Input
@@ -44,7 +51,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
 }
 
 
-Entity EntityFactory::createTestCube(float x, float y, float z){
+Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     Entity entity = entityManager.createEntity();
 
     TransformComponent transform;
@@ -55,6 +62,15 @@ Entity EntityFactory::createTestCube(float x, float y, float z){
 
     Renderer r;
     r.color = RED; // Default test cube color
+
+    if (skinChoice == 1){
+        r.modelID = "test_cube";
+    }else if (skinChoice == 2){
+        r.modelID = "test_cube2";
+    }else if (skinChoice == 3){
+        r.modelID = "test_cube3";
+    }
+
     componentStorage.AddComponent(entity, r);
 
     return entity;
@@ -92,6 +108,7 @@ json EntityFactory::serialize(Entity entity){
         const auto& r = componentStorage.GetComponent<Renderer>(entity);
         j["Renderer"] = {
             {"textureID", r.textureID},
+            {"modelID", r.modelID},
             {"color", {r.color.r, r.color.g, r.color.b, r.color.a}}, // Raylib Color to array
             {"width", r.width}, {"height", r.height}, {"depth", r.depth},
             {"zIndex", r.zIndex}
@@ -127,6 +144,7 @@ Entity EntityFactory::deserialize(const json& j){
     if (j.contains("Renderer")) {
         Renderer r;
         r.textureID = j["Renderer"].value("textureID", "");
+        r.modelID = j["Renderer"].value("modelID", "");
         
         if (j["Renderer"].contains("color")) {
             r.color.r = j["Renderer"]["color"][0];
@@ -152,6 +170,8 @@ Entity EntityFactory::deserialize(const json& j){
         SpawnType st;
         st.entityToSpawn = j["SpawnType"].value("entityToSpawn", "");
         st.hasSpawned = j["SpawnType"].value("hasSpawned", false);
+        st.skinChoice = j["SpawnType"].value("skinChoice", 2);
+
         componentStorage.AddComponent(entity, st);
     }
 
