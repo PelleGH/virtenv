@@ -16,6 +16,7 @@ public:
     void unload();
     void saveState();
     void addEntityToScene(Entity entity);
+    Entity spawnPlayerAt(const std::string& spawnId);
     void queueEntityDestruction(Entity entity);
     void cleanupDestroyedEntities();
 

@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "engine/scene/Scene.h"
 
 #include <chrono>
 #include <iostream>
@@ -11,7 +12,10 @@ bool Engine::init()
     cameraSystem.init(camera);
     eventBus.subscribe([this](const SceneTransitionEvent& event)
     {
-        sceneManager.requestSceneChange("assets/scenes/" + event.targetScene + ".json");
+        sceneManager.requestSceneChange(
+            "assets/scenes/" + event.targetScene + ".json",
+            event.targetSpawn
+        );
     });
 
     eventBus.subscribe([this](const DeathEvent& event)
@@ -48,23 +52,39 @@ void Engine::run()
 
 void Engine::update(float dt)
 {
+    bool gameplayPaused = dialogueManager.isActive();
     //std::cout << "Updating engine. dt: " << dt << '\n';
-    inputSystem.update(sceneManager.getCurrentScene(), eventBus);
+    inputSystem.update(sceneManager.getCurrentScene());
+    debugNPCInteraction();
     aiSystem.update(sceneManager.getCurrentScene(), eventBus);
-    movementSystem.update(sceneManager.getCurrentScene(), dt);
-    collisionSystem.update(sceneManager.getCurrentScene());
-    triggerSystem.update(sceneManager.getCurrentScene(), eventBus);
+    if (!gameplayPaused)
+    {
+        movementSystem.update(sceneManager.getCurrentScene(), dt);
+
+        conditionalSystem.update(
+            sceneManager.getCurrentScene(),
+            conditionManager
+        );
+
+        collisionSystem.update(sceneManager.getCurrentScene());
+
+        triggerSystem.update(
+            sceneManager.getCurrentScene(),
+            eventBus
+        );
+    }
+    dialogueManager.update();
     eventBus.dispatch();
     cameraSystem.update(sceneManager.getCurrentScene(), camera);
-    if (IsKeyPressed(KEY_ONE)) // TODO: temporary way to switch scenes for testing, will be moved to eventbus when it's implemented
-        sceneManager.requestSceneChange("assets/scenes/room_01.json");
-
-    if (IsKeyPressed(KEY_TWO))
-        sceneManager.requestSceneChange("assets/scenes/room_02.json");
 
     if (IsKeyPressed(KEY_NINE)) 
     {
         sceneManager.getCurrentScene().saveState(); //saves all entities with componenents to saved_entities.json for test
+    }
+    if (IsKeyPressed(KEY_Q))
+    {
+        conditionManager.debugUnlocked =
+            !conditionManager.debugUnlocked;
     }
 
     sceneManager.update(dt);
@@ -78,6 +98,7 @@ void Engine::render()
     BeginDrawing();
     ClearBackground(RAYWHITE);
     renderSystem.render(sceneManager.getCurrentScene(), camera);
+    dialogueManager.render();
     EndDrawing();
 }
 
@@ -86,4 +107,53 @@ void Engine::shutdown()
     sceneManager.shutdown();
     CloseWindow();
     std::cout << "Engine shutdown\n";
+}
+
+void Engine::debugNPCInteraction()
+{
+    if (dialogueManager.isActive())
+        return;
+
+    Scene& scene = sceneManager.getCurrentScene();
+    ComponentStorage& storage = scene.getComponentStorage();
+
+    auto& players = storage.GetComponents<PlayerInput>();
+    auto& npcs = storage.GetComponents<DialogueSource>();
+
+    if (players.empty())
+        return;
+
+    if (!IsKeyPressed(KEY_E))
+        return;
+
+    Entity player = players.begin()->first;
+
+    if (!storage.HasComponent<TransformComponent>(player))
+        return;
+
+    TransformComponent& playerTransform =
+        storage.GetComponent<TransformComponent>(player);
+
+    for (auto& [npc, dialogue] : npcs)
+    {
+        if (!storage.HasComponent<TransformComponent>(npc))
+            continue;
+
+        TransformComponent& npcTransform =
+            storage.GetComponent<TransformComponent>(npc);
+
+        float dx = playerTransform.x - npcTransform.x;
+        float dz = playerTransform.z - npcTransform.z;
+
+        float distSq = dx * dx + dz * dz;
+
+        if (distSq < 2.25f)
+        {
+            dialogueManager.startDialogue(
+                dialogue.dialogueSetId
+            );
+
+            break;
+        }
+    }
 }

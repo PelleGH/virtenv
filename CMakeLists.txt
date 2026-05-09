@@ -23,6 +23,8 @@ add_executable(VirtenEditor
     src/engine/systems/CameraSystem.cpp
     src/engine/systems/TriggerSystem.cpp
     src/engine/systems/SpawnSystem.cpp
+    src/engine/systems/ConditionSystem.cpp
+    src/engine/systems/DialogueManager.cpp
     src/engine/systems/CombatSystem.cpp
     src/engine/systems/AISystem.cpp
     src/engine/ecs/EntityManager.cpp
