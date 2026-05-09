@@ -150,15 +150,21 @@ void Scene::cleanupDestroyedEntities()
     // 1. Tell your EntityManager to process the queue and update generations
     entityManager.destroyEntity();
 
-    // 2. Safely remove any dead entities from your active list
+    // 1. Tell your EntityManager to process the queue and update generations
+    entityManager.destroyEntity();
+
+    // 2. Safely remove any dead entities from your active list AND wipe their components
     activeEntitiesList.erase(
         std::remove_if(activeEntitiesList.begin(), activeEntitiesList.end(),
             [this](Entity e) { 
-                return !entityManager.isAlive(e); 
+                if (!entityManager.isAlive(e)) {
+                    // THE MISSING PIECE:
+                    // Tell the ComponentStorage to delete all data attached to this dead entity ID
+                    componentStorage.EntityDestroyed(e); 
+                    return true;
+                }
+                return false;
             }),
         activeEntitiesList.end()
     );
-
-    // Note: If your ComponentStorage has a method to clear an entity's components, 
-    // you would call it inside the lambda above!
 }

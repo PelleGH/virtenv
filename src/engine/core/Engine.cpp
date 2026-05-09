@@ -20,7 +20,28 @@ bool Engine::init()
 
     eventBus.subscribe([this](const DeathEvent& event)
     {
-        sceneManager.getCurrentScene().queueEntityDestruction(event.entity);
+        Scene& currentScene = sceneManager.getCurrentScene();
+        ComponentStorage& components = currentScene.getComponentStorage();
+
+        // Check if the entity that died is the player
+        if (components.HasComponent<PlayerInput>(event.entity))
+        {
+            std::cout << "Player died! Reloading scene...\n";
+            
+            // Get the current scene's name (e.g., "room_01")
+            std::string sceneName = currentScene.getData().name;
+            
+            // Queue a reload of the current scene, spawning at the default location
+            sceneManager.requestSceneChange(
+                "assets/scenes/" + sceneName + ".json", 
+                "default"
+            );
+        }
+        else
+        {
+            // It's just a normal enemy/cube, destroy it
+            currentScene.queueEntityDestruction(event.entity);
+        }
     });
 
     running = true;
