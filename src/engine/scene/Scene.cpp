@@ -109,3 +109,28 @@ void Scene::addEntityToScene(Entity entity)
 {
     activeEntitiesList.push_back(entity);
 }
+
+void Scene::queueEntityDestruction(Entity entity)
+{
+    std::cout << "Scene queuing entity for destruction: " << entity.getIndex() << '\n';
+    // Use your exact existing queue method!
+    entityManager.destroyEntityQueue(entity); 
+}
+
+void Scene::cleanupDestroyedEntities()
+{
+    // 1. Tell your EntityManager to process the queue and update generations
+    entityManager.destroyEntity();
+
+    // 2. Safely remove any dead entities from your active list
+    activeEntitiesList.erase(
+        std::remove_if(activeEntitiesList.begin(), activeEntitiesList.end(),
+            [this](Entity e) { 
+                return !entityManager.isAlive(e); 
+            }),
+        activeEntitiesList.end()
+    );
+
+    // Note: If your ComponentStorage has a method to clear an entity's components, 
+    // you would call it inside the lambda above!
+}

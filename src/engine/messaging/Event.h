@@ -14,3 +14,7 @@ struct AttackEvent
     float attackRange;
     int damage;
 };
+
+struct DeathEvent {
+    Entity entity;
+};

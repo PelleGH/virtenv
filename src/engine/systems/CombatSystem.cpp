@@ -57,15 +57,21 @@ void CombatSystem::onAttack(const AttackEvent& event)
         // Apply damage if within range
         if (distanceSquared <= rangeSquared)
         {
-            health.current -= event.damage; 
-            
-            std::cout << "Entity " << entity.id << " took " << event.damage 
-                      << " damage! HP remaining: " << health.current << '\n';
-
-            if (health.current <= 0)
+            // Only deal damage if they are actually alive
+            if (health.current > 0) 
             {
-                std::cout << "Entity " << entity.id << " died!\n";
-                // Optional: m_scene->getEntityManager().destroyEntity(entity);
+                health.current -= event.damage; 
+                std::cout << "Entity " << entity.id << " took " << event.damage 
+                          << " damage! HP remaining: " << health.current << '\n';
+
+                // If this hit killed them, publish the DeathEvent!
+                if (health.current <= 0)
+                {
+                    std::cout << "Entity " << entity.id << " died! Publishing DeathEvent.\n";
+                    DeathEvent death;
+                    death.entity = entity;
+                    eventBus.publish(death);
+                }
             }
         }
     }

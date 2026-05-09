@@ -16,6 +16,8 @@ public:
     void unload();
     void saveState();
     void addEntityToScene(Entity entity);
+    void queueEntityDestruction(Entity entity);
+    void cleanupDestroyedEntities();
 
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;

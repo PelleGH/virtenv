@@ -13,6 +13,12 @@ bool Engine::init()
     {
         sceneManager.requestSceneChange("assets/scenes/" + event.targetScene + ".json");
     });
+
+    eventBus.subscribe([this](const DeathEvent& event)
+    {
+        sceneManager.getCurrentScene().queueEntityDestruction(event.entity);
+    });
+
     running = true;
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
 
@@ -63,6 +69,8 @@ void Engine::update(float dt)
 
     sceneManager.update(dt);
     sceneManager.applyPendingSceneChange();
+
+    sceneManager.getCurrentScene().cleanupDestroyedEntities();
 }
 
 void Engine::render()
