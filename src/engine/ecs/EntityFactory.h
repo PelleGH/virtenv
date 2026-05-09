@@ -14,6 +14,7 @@ class EntityFactory
 public:
     EntityFactory(EntityManager& em, ComponentStorage& cs);
 
+    Entity createNPC(float x, float y, float z, const std::string& dialogueSetId);
     Entity createPlayer(float x, float y, float z);
     Entity createTestCube(float x, float y, float z);
 

@@ -1,0 +1,30 @@
+{
+  "id": "old_man",
+  "defaultStartNode": "intro",
+
+  "nodes": {
+    "intro": {
+      "text": "Hello traveler. This dungeon is dangerous.",
+      "choices": [
+        {
+          "text": "Who are you?",
+          "next": "who"
+        },
+        {
+          "text": "Goodbye.",
+          "next": "end"
+        }
+      ]
+    },
+
+    "who": {
+      "text": "I am just an old man watching over these rooms.",
+      "choices": [
+        {
+          "text": "Goodbye.",
+          "next": "end"
+        }
+      ]
+    }
+  }
+}

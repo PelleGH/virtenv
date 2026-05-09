@@ -48,8 +48,13 @@ void RenderSystem::renderGrid(Scene& scene)
             (float)cube.position.y,
             (float)cube.position.z
         };
+        Color cubeColor = GRAY;
 
-        DrawCube(pos, 1.0f, 1.0f, 1.0f, GRAY);
+        if (cube.trigger && !cube.targetScene.empty())
+        {
+            cubeColor = GREEN;
+        }
+        DrawCube(pos, 1.0f, 1.0f, 1.0f, cubeColor);
         DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
     }
 }

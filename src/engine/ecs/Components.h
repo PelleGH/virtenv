@@ -15,27 +15,28 @@ struct TransformComponent {
     float previousY = 0.0f;
     float previousZ = 0.0f;
 
-    float width = 32.0f;
-    float height = 32.0f;
-    float depth = 32.0f;
+    float width = 1.0f;
+    float height = 1.0f;
+    float depth = 1.0f;
 };
 
 struct Renderer {
-    std::string textureID; // e.g., "player_idle", "door_open"
+    std::string textureID;
 
-    float width = 0.5f;
-    float height = 0.5f;
-    float depth = 0.5f;
+    float width = 1.0f;
+    float height = 1.0f;
+    float depth = 1.0f;
     Color color = RED;
-    
+
     int zIndex = 0;
 };
 
 struct Collider {
-    float width = 32.0f;
-    float height = 32.0f;
-    float depth = 32.0f;
-    bool isTrigger = false; // True for pickups/doors (overlap), false for walls (block)
+    float width = 1.0f;
+    float height = 1.0f;
+    float depth = 1.0f;
+    bool isTrigger = false;
+    bool enabled = true;
 };
 
 struct PlayerInput {
@@ -52,7 +53,16 @@ struct SpawnType {
     bool hasSpawned = false;   // Used to ensure we only spawn it once on startup
 };
 
+struct Condition
+{
+    std::string type;
+    std::string id;
+};
 
+struct ConditionalBlocker
+{
+    std::vector<Condition> conditions;
+};
 // COMBAT & STATS
 
 struct Health {
@@ -120,7 +130,7 @@ struct SceneTransition {
 };
 
 struct DialogueSource {
-    int dialogueID = 0; 
+    std::string dialogueSetId;
 };
 
 // A Tag Component. The Combat System checks if an entity has this, and if its Health drops to 0, it drops loot and gets destroyed.
