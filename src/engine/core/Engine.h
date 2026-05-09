@@ -37,7 +37,6 @@ private:
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
     DialogueManager dialogueManager;
-    DialogueManager dialogueManager;
     CombatSystem combatSystem;
     AISystem aiSystem;
     void debugNPCInteraction();

@@ -14,4 +14,5 @@ private:
     void onAttack(const AttackEvent& event);
 
     Scene* m_scene = nullptr;
+    EventBus* m_eventBus = nullptr;
 };

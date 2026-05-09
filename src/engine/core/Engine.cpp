@@ -54,7 +54,7 @@ void Engine::update(float dt)
 {
     bool gameplayPaused = dialogueManager.isActive();
     //std::cout << "Updating engine. dt: " << dt << '\n';
-    inputSystem.update(sceneManager.getCurrentScene());
+    inputSystem.update(sceneManager.getCurrentScene(), eventBus);
     debugNPCInteraction();
     aiSystem.update(sceneManager.getCurrentScene(), eventBus);
     if (!gameplayPaused)

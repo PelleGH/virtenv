@@ -6,6 +6,7 @@
 void CombatSystem::initialize(Scene& scene, EventBus& eventBus)
 {
     m_scene = &scene;
+    m_eventBus = &eventBus;
 
     // Subscribe to the AttackEvent
     eventBus.subscribe([this](const AttackEvent& e) {
@@ -70,7 +71,7 @@ void CombatSystem::onAttack(const AttackEvent& event)
                     std::cout << "Entity " << entity.id << " died! Publishing DeathEvent.\n";
                     DeathEvent death;
                     death.entity = entity;
-                    eventBus.publish(death);
+                    m_eventBus->publish(death);
                 }
             }
         }
