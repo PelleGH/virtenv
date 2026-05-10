@@ -1,14 +1,18 @@
 #pragma once
+
 #include <string>
 #include <unordered_map>
+#include "../systems/ConditionManager.h"
 
-enum class QuestStatus {
+enum class QuestStatus
+{
     NotStarted,
     Active,
     Completed
 };
 
-struct Quest {
+struct Quest
+{
     std::string id;
     std::string name;
     QuestStatus status = QuestStatus::NotStarted;
@@ -21,17 +25,22 @@ struct Quest {
     std::string rewardItem;
 };
 
-class QuestManager {
+class QuestManager
+{
 public:
-    void addQuest(const Quest& quest);
-    void startQuest(const std::string& questId);
-    void completeQuest(const std::string& questId);
+    bool loadQuests(const std::string& path);
 
+    void startQuest(const std::string& questId);
     void onEvent(const std::string& eventType, const std::string& targetId);
+    void completeQuest(const std::string& questId);
 
     bool isQuestActive(const std::string& questId) const;
     bool isQuestCompleted(const std::string& questId) const;
 
+    void setConditionManager(ConditionManager* manager);
+    
+    QuestStatus getQuestStatus(const std::string& questId) const;
 private:
     std::unordered_map<std::string, Quest> quests;
+    ConditionManager* conditionManager = nullptr;
 };

@@ -25,7 +25,7 @@ add_executable(VirtenEditor
     src/engine/systems/SpawnSystem.cpp
     src/engine/systems/ConditionSystem.cpp
     src/engine/systems/DialogueManager.cpp
-    
+    src/engine/managers/QuestManager.cpp
     src/engine/ecs/EntityManager.cpp
     src/engine/ecs/EntityFactory.cpp
     
@@ -35,7 +35,7 @@ add_executable(VirtenEditor
     external/imgui/imgui_widgets.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
-    src/engine/managers/QuestManager.h
+
 
 
 

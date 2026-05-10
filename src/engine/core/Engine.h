@@ -11,6 +11,7 @@
 #include "../systems/ConditionManager.h"
 #include "../systems/ConditionSystem.h"
 #include "../systems/DialogueManager.h"
+#include "../managers/QuestManager.h"
 #include "../ecs/Components.h"
 
 class Engine
@@ -33,7 +34,7 @@ private:
     Camera3D camera;
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
-
+    QuestManager questManager;
     DialogueManager dialogueManager;
     void debugNPCInteraction();
     

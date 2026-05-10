@@ -7,8 +7,12 @@ bool Engine::init()
 {
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
-
     cameraSystem.init(camera);
+
+    questManager.setConditionManager(&conditionManager);
+    questManager.loadQuests("assets/quests.json");
+    dialogueManager.setQuestManager(&questManager);
+
     eventBus.subscribe([this](const SceneTransitionEvent& event)
     {
         sceneManager.requestSceneChange(
@@ -17,6 +21,7 @@ bool Engine::init()
         );
     });
     running = true;
+
     return sceneManager.loadScene("assets/scenes/room_01.json");
 }
 
@@ -45,7 +50,10 @@ void Engine::update(float dt)
     //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene());
     debugNPCInteraction();
-
+    if (IsKeyPressed(KEY_K))
+    {
+        questManager.onEvent("enemy_killed", "enemy");
+    }
     if (!gameplayPaused){
         movementSystem.update(sceneManager.getCurrentScene(), dt);
         conditionalSystem.update(sceneManager.getCurrentScene(), conditionManager);
