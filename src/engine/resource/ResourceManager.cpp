@@ -19,6 +19,13 @@ void ResourceManager::LoadModel3D(const std::string& id, const std::string& file
 }
 
 void ResourceManager::AddModel(const std::string& id, Model model){
+    auto findID = models.find(id);
+
+    if (findID != models.end())
+    {
+        UnloadModel(findID -> second);
+    }
+    
     models[id] = model;
 }
 
