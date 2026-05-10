@@ -12,6 +12,7 @@
 #include "../systems/ConditionSystem.h"
 #include "../systems/DialogueManager.h"
 #include "../ecs/Components.h"
+#include "../resource/ResourceManager.h"
 
 class Engine
 {
@@ -33,6 +34,7 @@ private:
     Camera3D camera;
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
+    ResourceManager resourceManager;
 
     DialogueManager dialogueManager;
     void debugNPCInteraction();

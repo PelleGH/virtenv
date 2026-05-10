@@ -6,6 +6,7 @@
 #include "engine/ecs/EntityManager.h"
 #include "engine/ecs/Components.h"
 #include "engine/ecs/ComponentStorage.h"
+#include "engine/resource/ResourceManager.h"
 #include <vector>
 
 class Scene
@@ -31,5 +32,4 @@ private:
     ComponentStorage componentStorage;
     //std::vector <Renderer> renders;
     std::vector <Entity> activeEntitiesList;
-
 };

@@ -13,6 +13,8 @@ class SceneManager
 
 
 public:
+    void init(ResourceManager& rm);
+
     bool loadScene(const std::string& path, const std::string& spawnId = "default");
 
     void update(float dt);
@@ -27,4 +29,6 @@ private:
     std::string pendingScenePath;
     std::string pendingSpawnId = "default";
     bool hasPendingSceneChange = false;
+
+    ResourceManager* resourceManager = nullptr;
 };
