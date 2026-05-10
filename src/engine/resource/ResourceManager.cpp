@@ -1,5 +1,9 @@
 #include "ResourceManager.h"
 
+#include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
+
 void ResourceManager::LoadTexture2D(const std::string& id, const std::string& filepath){
     if (textures.find(id) == textures.end()) {
         textures[id] = LoadTexture(filepath.c_str());
@@ -38,6 +42,40 @@ bool ResourceManager::hasModel(const std::string& id) {
         return true;
     }
     return false;
+}
+
+void ResourceManager::LoadFromManifest(const std::string& path){
+    std::ifstream file(path);
+    
+    if (!file.is_open())
+    {
+        std::cerr << "FEL: Kunde inte hitta manifest-filen: " << path << std::endl;
+        return;
+    }
+    nlohmann::json data;
+    file >> data;
+
+    for (auto& tex : data["textures"])
+    {
+        LoadTexture2D(tex["id"], tex["path"]);
+    }
+
+    for (auto& m : data["cube_models"])
+    {
+        float s = m["size"];
+        std::string modelID = m["id"];
+        std::string texID = m["textureId"];
+
+        Model model = LoadModelFromMesh(GenMeshCube(s, s, s));
+
+        if (hasTexture(texID))
+        {
+            model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = GetTexture(texID);
+        }
+
+        AddModel(modelID, model);
+        
+    }
 }
 
 void ResourceManager::clear() {

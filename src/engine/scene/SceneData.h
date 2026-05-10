@@ -26,6 +26,7 @@ struct PlayerSpawn
     float x = 0.0f;
     float y = 1.0f;
     float z = 0.0f;
+    int skinChoice = 1; 
 };
 struct SceneCameraData
 {

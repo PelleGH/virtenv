@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <string>
 
 class ResourceManager {
     public: 
@@ -16,6 +17,8 @@ class ResourceManager {
 
         bool hasModel(const std::string& id);
         bool hasTexture(const std::string& id);
+
+        void LoadFromManifest(const std::string& path);
 
         void clear();
 

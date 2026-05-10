@@ -55,6 +55,10 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
             spawn.y = spawnJson["position"][1];
             spawn.z = spawnJson["position"][2];
 
+            if (spawnJson.contains("skinChoice")){
+                spawn.skinChoice = spawnJson["skinChoice"];
+            }
+
             outData.playerSpawns[id] = spawn;
         }
     }

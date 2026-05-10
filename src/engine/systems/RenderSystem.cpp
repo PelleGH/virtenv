@@ -34,7 +34,7 @@ void RenderSystem::renderEntities(Scene& scene)
 
             if (renderer.modelID != "" && scene.getResourceManager().hasModel(renderer.modelID)) 
             {
-                DrawModel(scene.getResourceManager().GetModel(renderer.modelID), pos, 1.0f, WHITE);
+                DrawModel(scene.getResourceManager().GetModel(renderer.modelID), pos, renderer.width, WHITE);
             }else {
 
                 DrawCube(pos, renderer.width, renderer.height, renderer.depth, renderer.color);

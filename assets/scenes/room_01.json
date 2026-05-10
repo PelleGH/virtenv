@@ -20,7 +20,8 @@
                 0,
                 1,
                 0
-            ]
+            ],
+            "skinChoice": 1
         },
         {
             "id": "from_north",
@@ -1195,7 +1196,8 @@
         {
             "SpawnType": {
                 "entityToSpawn": "test_cube",
-                "hasSpawned": false
+                "hasSpawned": false,
+                "skinChoice": 1
             },
             "TransformComponent": {
                 "x": -2.0,
@@ -1223,7 +1225,8 @@
         {
             "SpawnType": {
                 "entityToSpawn": "test_cube",
-                "hasSpawned": false
+                "hasSpawned": false,
+                "skinChoice": 1
             },
             "TransformComponent": {
                 "x": 2.0,

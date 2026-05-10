@@ -32,13 +32,14 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     r.width = size;
     r.height = size;
     r.depth = size;
-    r.color = BLUE; // Player is blue
+    r.color = WHITE; // Player is white
 
-    if (skinChoice == 1){
-        r.modelID = "player_model1";
-    }else if (skinChoice == 2){
-        r.modelID = "player_model2";
+    if (skinChoice == 2){
+        r.modelID = "player_skin2";
+    }else{
+         r.modelID = "player_skin1";
     }
+       
 
     componentStorage.AddComponent(player, r);
 
@@ -73,20 +74,20 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     componentStorage.AddComponent(entity, transform);
 
     Renderer r;
-    r.color = RED; // Default test cube color
+    r.color = WHITE; // Default test cube color
 
-    if (skinChoice == 1){
-        r.modelID = "test_cube";
-    }else if (skinChoice == 2){
-        r.modelID = "test_cube2";
+    if (skinChoice == 2){
+        r.modelID = "test_cube_skin2";
     }else if (skinChoice == 3){
-        r.modelID = "test_cube3";
+        r.modelID = "test_cube_skin3";
+    }else{
+        r.modelID = "test_cube_skin1";
     }
 
     r.width = size;
     r.height = size;
     r.depth = size;
-    r.color = RED;
+    r.color = WHITE;
     componentStorage.AddComponent(entity, r);
 
     Collider collider;
@@ -206,7 +207,7 @@ Entity EntityFactory::deserialize(const json& j){
         SpawnType st;
         st.entityToSpawn = j["SpawnType"].value("entityToSpawn", "");
         st.hasSpawned = j["SpawnType"].value("hasSpawned", false);
-        st.skinChoice = j["SpawnType"].value("skinChoice", 2);
+        st.skinChoice = j["SpawnType"].value("skinChoice", 1);
 
         componentStorage.AddComponent(entity, st);
     }
@@ -235,6 +236,7 @@ Entity EntityFactory::createNPC(float x, float y, float z, const std::string& di
     r.height = size;
     r.depth = size;
     r.color = ORANGE;
+    r.modelID = "npc_skin";
     componentStorage.AddComponent(npc, r);
 
     Collider collider;

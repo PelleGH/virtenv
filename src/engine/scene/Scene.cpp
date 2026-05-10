@@ -12,19 +12,7 @@ using json = nlohmann::json;
 
 bool Scene::load(const std::string& scenePath)
 {
-    auto loadCubeModel = [&](const std::string& texID, const std::string& imgPath, const std::string& modelID, float size){
-        resourceManager.LoadTexture2D(texID, imgPath);
-        Model model = LoadModelFromMesh(GenMeshCube(size, size, size));
-        model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = resourceManager.GetTexture(texID);
-        resourceManager.AddModel(modelID, model);
-    };
-
-    loadCubeModel("wall_tex",   "src/engine/assets/wall_texture.jpg", "wall_model",    1.0f);
-    loadCubeModel("player_tex", "src/engine/assets/player1.jpg", "player_model1", 0.8f);
-    loadCubeModel("player_tex2","src/engine/assets/player2.jpg", "player_model2", 0.8f);
-    loadCubeModel("enemy_tex1", "src/engine/assets/enemy.jpg", "test_cube",     0.8f);
-    loadCubeModel("enemy_tex2", "src/engine/assets/enemy2.jpg", "test_cube2",    0.8f);
-    loadCubeModel("enemy_tex3", "src/engine/assets/enemy3.jpg", "test_cube3",    0.8f);
+    resourceManager.LoadFromManifest("src/engine/assets/assets.json");
 
     // 1. Ladda in den statiska kartan (väggar, golv, dörrar)
     if (!SceneLoader::loadFromFile(scenePath, data))
@@ -82,7 +70,7 @@ Entity Scene::spawnPlayerAt(const std::string& spawnId)
         }
     }
 
-    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z);
+    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z, spawn.skinChoice);
     addEntityToScene(player);
 
     return player;
@@ -93,8 +81,7 @@ void Scene::update(float dt)
 
     for (const auto& cube : data.cubes)
     {
-        Texture2D blockMaterial = resourceManager.GetTexture("wall_tex");
-
+        
         std::cout << "Cube at ("
                   << cube.position.x << ", "
                   << cube.position.y << ", "

@@ -29,23 +29,10 @@ void SpawnSystem::Update(Scene* currentScene) {
                     successfullyCreatedEntity = true;
                 } 
                 else if (spawnType.entityToSpawn == "test_cube") {
-                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z);
-                    successfullyCreatedEntity = true;
-                }
-                else if (spawnType.entityToSpawn == "test_cube1") {
                     newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
                     successfullyCreatedEntity = true;
-                }
-                else if (spawnType.entityToSpawn == "test_cube2") {
-                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
-                    successfullyCreatedEntity = true;
-                }
-                else if (spawnType.entityToSpawn == "test_cube3") {
-                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
-                    successfullyCreatedEntity = true;
-                }
-                // Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
-                
+
+                }// Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
                 else if (spawnType.entityToSpawn == "npc")
                 {
                     std::string dialogueSetId = "";
