@@ -117,10 +117,6 @@ EntityManager& Scene::getEntityManager()
     return entityManager;
 }
 
-ResourceManager& Scene::getResourceManager() { 
-    return resourceManager; 
-}
-
 void Scene::saveState()
 {
     // The Scene already knows about its own managers, so it's super clean!

@@ -21,8 +21,6 @@ public:
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;
 
-    ResourceManager& getResourceManager();
-
     EntityManager& getEntityManager();
     ComponentStorage& getComponentStorage();
 private:
@@ -34,7 +32,4 @@ private:
     ComponentStorage componentStorage;
     //std::vector <Renderer> renders;
     std::vector <Entity> activeEntitiesList;
-
-    ResourceManager resourceManager;
-
 };
