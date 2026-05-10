@@ -1,5 +1,6 @@
 #pragma once
-
+#include <unordered_map>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 
@@ -17,8 +18,14 @@ struct GridCube
     std::string type;       // "floor", "wall", "door"
     bool solid = false;
     bool trigger = false;
-
+    std::string targetSpawn; // used for triggers to specify where the player should spawn in the next scene
     std::string targetScene; // used later for doors
+};
+struct PlayerSpawn
+{
+    float x = 0.0f;
+    float y = 1.0f;
+    float z = 0.0f;
 };
 struct SceneCameraData
 {
@@ -36,7 +43,8 @@ struct SceneData
 {
     std::string name;
     std::vector<GridCube> cubes;
-
+    std::vector<nlohmann::json> entities; 
+    std::unordered_map<std::string, PlayerSpawn> playerSpawns;
     GridPosition playerSpawn;
     SceneCameraData camera;
 };

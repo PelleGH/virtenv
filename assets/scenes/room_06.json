@@ -1,5 +1,5 @@
 {
-    "name": "room_01",
+    "name": "room_06",
     "camera": {
         "mode": "fixed",
         "position": [
@@ -948,16 +948,6 @@
         },
         {
             "position": [
-                0,
-                1,
-                -4
-            ],
-            "type": "wall",
-            "solid": true,
-            "trigger": false
-        },
-        {
-            "position": [
                 1,
                 1,
                 -4
@@ -1098,7 +1088,7 @@
         },
         {
             "position": [
-                -4,
+                4,
                 1,
                 0
             ],
@@ -1170,25 +1160,37 @@
             "position": [
                 0,
                 1,
+                -4
+            ],
+            "type": "door",
+            "solid": false,
+            "trigger": true,
+            "targetScene": "room_03",
+            "targetSpawn": "from_south"
+        },
+        {
+            "position": [
+                0,
+                1,
                 4
             ],
             "type": "door",
             "solid": false,
             "trigger": true,
-            "targetScene": "room_04",
+            "targetScene": "room_09",
             "targetSpawn": "from_north"
         },
         {
             "position": [
-                4,
+                -4,
                 1,
                 0
             ],
             "type": "door",
             "solid": false,
             "trigger": true,
-            "targetScene": "room_02",
-            "targetSpawn": "from_west"
+            "targetScene": "room_05",
+            "targetSpawn": "from_east"
         }
     ],
     "entities": [
@@ -1198,26 +1200,12 @@
                 "hasSpawned": false
             },
             "TransformComponent": {
-                "x": -2.0,
+                "x": -1.0,
                 "y": 1.0,
-                "z": -2.0,
+                "z": 2.0,
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
-            }
-        },
-        {
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
-            },
-            "TransformComponent": {
-                "x": 1,
-                "y": 1,
-                "z": 1
-            },
-            "DialogueSource": {
-                "dialogueSetId": "old_man"
             }
         },
         {
@@ -1228,7 +1216,7 @@
             "TransformComponent": {
                 "x": 2.0,
                 "y": 1.0,
-                "z": 2.0,
+                "z": -1.0,
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0

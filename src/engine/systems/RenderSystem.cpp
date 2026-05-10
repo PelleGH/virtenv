@@ -54,18 +54,27 @@ void RenderSystem::renderGrid(Scene& scene)
             (float)cube.position.y,
             (float)cube.position.z
         };
+        Color cubeColor = GRAY;
 
-        if (scene.getResourceManager().hasModel("wall_model")) 
+        if (cube.trigger && !cube.targetScene.empty())
         {
-            Model wall = scene.getResourceManager().GetModel("wall_model");
-
-            DrawModel(wall, pos, 1.0f, WHITE);
+            cubeColor = GREEN;
+            DrawCube(pos, 1.0f, 1.0f, 1.0f, cubeColor);
             DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+        }else{
 
-        }else {
+            if (scene.getResourceManager().hasModel("wall_model")) {
+                Model wall = scene.getResourceManager().GetModel("wall_model");
 
-            DrawCube(pos, 1.0f, 1.0f, 1.0f, MAGENTA);
-            DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
-        }
+                DrawModel(wall, pos, 1.0f, WHITE);
+                DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+
+            }else {
+
+                DrawCube(pos, 1.0f, 1.0f, 1.0f, MAGENTA);
+                DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+            }
+
+        } 
     }
 }

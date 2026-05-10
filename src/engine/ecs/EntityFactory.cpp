@@ -17,14 +17,21 @@ EntityFactory::EntityFactory(EntityManager& em, ComponentStorage& cs)
 Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     Entity player = entityManager.createEntity();
     // Transform
+    float size = 0.5f;
     TransformComponent transform;
     transform.x = x;
     transform.y = y;
     transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
     componentStorage.AddComponent(player, transform);
 
     // Renderer
     Renderer r;
+    r.width = size;
+    r.height = size;
+    r.depth = size;
     r.color = BLUE; // Player is blue
 
     if (skinChoice == 1){
@@ -42,9 +49,9 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     //componentStorage.AddComponent(player, Health{100, 100});
     //componentStorage.AddComponent(player, Attack{});
     Collider collider;
-    collider.width = 0.5f;
-    collider.height = 0.5f;
-    collider.depth = 0.5f;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
     collider.isTrigger = false;
     componentStorage.AddComponent(player, collider);
     return player;
@@ -54,10 +61,15 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
 Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     Entity entity = entityManager.createEntity();
 
+    float size = 1.0f;
+
     TransformComponent transform;
     transform.x = x;
     transform.y = y;
     transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
     componentStorage.AddComponent(entity, transform);
 
     Renderer r;
@@ -71,7 +83,27 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
         r.modelID = "test_cube3";
     }
 
+    r.width = size;
+    r.height = size;
+    r.depth = size;
+    r.color = RED;
     componentStorage.AddComponent(entity, r);
+
+    Collider collider;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
+    collider.isTrigger = false;
+    componentStorage.AddComponent(entity, collider);
+    ConditionalBlocker blocker;
+
+    Condition condition;
+    condition.type = "Debug";
+    condition.id = "debug_unlock";
+
+    blocker.conditions.push_back(condition);
+
+    componentStorage.AddComponent(entity, blocker);
 
     return entity;
 }
@@ -139,7 +171,11 @@ Entity EntityFactory::deserialize(const json& j){
         t.depth = j["TransformComponent"].value("depth", 32.0f);
         componentStorage.AddComponent(entity, t);
     }
-
+    if (j.find("DialogueSource") != j.end()) {
+        DialogueSource dialogue;
+        dialogue.dialogueSetId = j["DialogueSource"].value("dialogueSetId", "");
+        componentStorage.AddComponent(entity, dialogue);
+    }
     // 2. Deserialize Renderer
     if (j.contains("Renderer")) {
         Renderer r;
@@ -179,7 +215,41 @@ Entity EntityFactory::deserialize(const json& j){
 
     return entity;
 }
+Entity EntityFactory::createNPC(float x, float y, float z, const std::string& dialogueSetId)
+{
+    Entity npc = entityManager.createEntity();
 
+    float size = 0.7f;
+
+    TransformComponent transform;
+    transform.x = x;
+    transform.y = y;
+    transform.z = z;
+    transform.width = size;
+    transform.height = size;
+    transform.depth = size;
+    componentStorage.AddComponent(npc, transform);
+
+    Renderer r;
+    r.width = size;
+    r.height = size;
+    r.depth = size;
+    r.color = ORANGE;
+    componentStorage.AddComponent(npc, r);
+
+    Collider collider;
+    collider.width = size;
+    collider.height = size;
+    collider.depth = size;
+    collider.isTrigger = false;
+    componentStorage.AddComponent(npc, collider);
+
+    DialogueSource dialogue;
+    dialogue.dialogueSetId = dialogueSetId;
+    componentStorage.AddComponent(npc, dialogue);
+
+    return npc;
+}
 bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename)
 {
     json jsonArray = json::array();

@@ -22,7 +22,7 @@
         },
         "TransformComponent": {
             "x": 1.0,
-            "y": 2.0,
+            "y": 1.0,
             "z": 4.0,
             "width": 32.0,
             "height": 32.0,
@@ -37,7 +37,7 @@
         },
         "TransformComponent": {
             "x": 2.0,
-            "y": 2.0,
+            "y": 1.0,
             "z": 5.0,
             "width": 32.0,
             "height": 32.0,
@@ -52,7 +52,7 @@
         },
         "TransformComponent": {
             "x": 3.0,
-            "y": 2.0,
+            "y": 1.0,
             "z": -2.0,
             "width": 32.0,
             "height": 32.0,
@@ -67,7 +67,7 @@
         },
         "TransformComponent": {
             "x": 4.0,
-            "y": 2.0,
+            "y": 1.0,
             "z": 0.0,
             "width": 32.0,
             "height": 32.0,

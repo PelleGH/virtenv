@@ -87,7 +87,10 @@ void TriggerSystem::update(Scene& scene, EventBus& eventBus)
             {
                 SceneTransitionEvent event;
                 event.targetScene = cube.targetScene;
-                eventBus.publish(event);
+                eventBus.publish(SceneTransitionEvent{
+                    cube.targetScene,
+                    cube.targetSpawn
+                });
             }
         }
     }

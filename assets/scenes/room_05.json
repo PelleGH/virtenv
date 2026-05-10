@@ -1,5 +1,5 @@
 {
-    "name": "room_01",
+    "name": "room_05",
     "camera": {
         "mode": "fixed",
         "position": [
@@ -948,16 +948,6 @@
         },
         {
             "position": [
-                0,
-                1,
-                -4
-            ],
-            "type": "wall",
-            "solid": true,
-            "trigger": false
-        },
-        {
-            "position": [
                 1,
                 1,
                 -4
@@ -1100,16 +1090,6 @@
             "position": [
                 -4,
                 1,
-                0
-            ],
-            "type": "wall",
-            "solid": true,
-            "trigger": false
-        },
-        {
-            "position": [
-                -4,
-                1,
                 1
             ],
             "type": "wall",
@@ -1170,28 +1150,66 @@
             "position": [
                 0,
                 1,
-                4
-            ],
-            "type": "door",
-            "solid": false,
-            "trigger": true,
-            "targetScene": "room_04",
-            "targetSpawn": "from_north"
-        },
-        {
-            "position": [
-                4,
-                1,
-                0
+                -4
             ],
             "type": "door",
             "solid": false,
             "trigger": true,
             "targetScene": "room_02",
+            "targetSpawn": "from_south"
+        },
+        {
+            "position": [
+                0,
+                1,
+                4
+            ],
+            "type": "door",
+            "solid": false,
+            "trigger": true,
+            "targetScene": "room_08",
+            "targetSpawn": "from_north"
+        },
+        {
+            "position": [
+                -4,
+                1,
+                0
+            ],
+            "type": "door",
+            "solid": false,
+            "trigger": true,
+            "targetScene": "room_04",
+            "targetSpawn": "from_east"
+        },
+        {
+            "position": [
+                4,
+                1,
+                0
+            ],
+            "type": "door",
+            "solid": false,
+            "trigger": true,
+            "targetScene": "room_06",
             "targetSpawn": "from_west"
         }
     ],
     "entities": [
+        {
+            "SpawnType": {
+                "entityToSpawn": "test_cube",
+                "hasSpawned": false
+            },
+            "TransformComponent": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0,
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            }
+        },
         {
             "SpawnType": {
                 "entityToSpawn": "test_cube",
@@ -1204,20 +1222,6 @@
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
-            }
-        },
-        {
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
-            },
-            "TransformComponent": {
-                "x": 1,
-                "y": 1,
-                "z": 1
-            },
-            "DialogueSource": {
-                "dialogueSetId": "old_man"
             }
         },
         {

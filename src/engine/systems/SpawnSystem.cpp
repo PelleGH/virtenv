@@ -46,11 +46,33 @@ void SpawnSystem::Update(Scene* currentScene) {
                 }
                 // Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
                 
+                else if (spawnType.entityToSpawn == "npc")
+                {
+                    std::string dialogueSetId = "";
+
+                    if (componentStorage.HasComponent<DialogueSource>(entity))
+                    {
+                        dialogueSetId = componentStorage.GetComponent<DialogueSource>(entity).dialogueSetId;
+                    }
+
+                    newEntity = entityFactory.createNPC(
+                        transform.x,
+                        transform.y,
+                        transform.z,
+                        dialogueSetId
+                    );
+
+                    successfullyCreatedEntity = true;
+                }
+
                 if (successfullyCreatedEntity && currentScene != nullptr) {
                     currentScene->addEntityToScene(newEntity);
+                    spawnType.hasSpawned = true;
+                }else if (!successfullyCreatedEntity){
+                    // 6. Mark it as spawned so we don't spawn infinite copies!
+                    spawnType.hasSpawned = true;
+
                 }
-                // 6. Mark it as spawned so we don't spawn infinite copies!
-                spawnType.hasSpawned = true;
             }
         }
     }
