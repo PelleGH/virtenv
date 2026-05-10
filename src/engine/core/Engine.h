@@ -13,6 +13,7 @@
 #include "../systems/DialogueManager.h"
 #include "../managers/QuestManager.h"
 #include "../ecs/Components.h"
+#include "../resource/ResourceManager.h"
 
 class Engine
 {
@@ -35,6 +36,8 @@ private:
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
     QuestManager questManager;
+    ResourceManager resourceManager;
+
     DialogueManager dialogueManager;
     void debugNPCInteraction();
     

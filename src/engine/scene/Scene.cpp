@@ -68,7 +68,7 @@ Entity Scene::spawnPlayerAt(const std::string& spawnId)
         }
     }
 
-    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z);
+    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z, spawn.skinChoice);
     addEntityToScene(player);
 
     return player;
@@ -79,6 +79,7 @@ void Scene::update(float dt)
 
     for (const auto& cube : data.cubes)
     {
+        
         std::cout << "Cube at ("
                   << cube.position.x << ", "
                   << cube.position.y << ", "

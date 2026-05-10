@@ -1,5 +1,9 @@
 #include "SceneManager.h"
 
+void SceneManager::init(ResourceManager& rm){
+    resourceManager = &rm;
+}
+
 bool SceneManager::loadScene(const std::string& path, const std::string& spawnId)
 {
     currentScene.unload();
