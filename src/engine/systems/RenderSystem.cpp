@@ -4,17 +4,17 @@
 
 #include <cstdint>
 
-void RenderSystem::render(Scene& scene, const Camera3D& camera)
+void RenderSystem::render(Scene& scene, ResourceManager& resourceManager, const Camera3D& camera)
 {
     BeginMode3D(camera);
 
-    renderGrid(scene);
-    renderEntities(scene);
+    renderGrid(scene, resourceManager);
+    renderEntities(scene, resourceManager);
 
     EndMode3D();
 }
 
-void RenderSystem::renderEntities(Scene& scene)
+void RenderSystem::renderEntities(Scene& scene, ResourceManager& resourceManager)
 {
     const auto& activeEntities = scene.getActiveEntities();
     ComponentStorage& componentStorage = scene.getComponentStorage();
@@ -32,9 +32,9 @@ void RenderSystem::renderEntities(Scene& scene)
 
             auto& renderer = componentStorage.GetComponent<Renderer>(e);
 
-            if (renderer.modelID != "" && scene.getResourceManager().hasModel(renderer.modelID)) 
+            if (renderer.modelID != "" && resourceManager.hasModel(renderer.modelID)) 
             {
-                DrawModel(scene.getResourceManager().GetModel(renderer.modelID), pos, renderer.width, WHITE);
+                DrawModel(resourceManager.GetModel(renderer.modelID), pos, renderer.width, WHITE);
             }else {
 
                 DrawCube(pos, renderer.width, renderer.height, renderer.depth, renderer.color);
@@ -43,7 +43,7 @@ void RenderSystem::renderEntities(Scene& scene)
         }
     }
 }
-void RenderSystem::renderGrid(Scene& scene)
+void RenderSystem::renderGrid(Scene& scene, ResourceManager& resourceManager)
 {
     const SceneData& data = scene.getData();
 
@@ -63,8 +63,8 @@ void RenderSystem::renderGrid(Scene& scene)
             DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
         }else{
 
-            if (scene.getResourceManager().hasModel("wall_model")) {
-                Model wall = scene.getResourceManager().GetModel("wall_model");
+            if (resourceManager.hasModel("wall_model")) {
+                Model wall = resourceManager.GetModel("wall_model");
 
                 DrawModel(wall, pos, 1.0f, WHITE);
                 DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);

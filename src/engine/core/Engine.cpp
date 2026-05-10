@@ -8,6 +8,9 @@ bool Engine::init()
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
 
+    resourceManager.LoadFromManifest("src/engine/assets/assets.json");
+    sceneManager.init(resourceManager);
+
     cameraSystem.init(camera);
     eventBus.subscribe([this](const SceneTransitionEvent& event)
     {
@@ -75,7 +78,7 @@ void Engine::render()
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    renderSystem.render(sceneManager.getCurrentScene(), camera);
+    renderSystem.render(sceneManager.getCurrentScene(), resourceManager, camera);
     dialogueManager.render();
     EndDrawing();
 }

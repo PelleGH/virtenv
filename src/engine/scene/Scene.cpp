@@ -12,8 +12,6 @@ using json = nlohmann::json;
 
 bool Scene::load(const std::string& scenePath)
 {
-    resourceManager.LoadFromManifest("src/engine/assets/assets.json");
-
     // 1. Ladda in den statiska kartan (väggar, golv, dörrar)
     if (!SceneLoader::loadFromFile(scenePath, data))
         return false;
@@ -92,8 +90,6 @@ void Scene::update(float dt)
 
 void Scene::unload()
 {
-    resourceManager.clear();
-    
     data.cubes.clear();
     activeEntitiesList.clear();
 

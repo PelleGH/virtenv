@@ -79,6 +79,13 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
         if (cubeJson.find("targetSpawn") != cubeJson.end())
             cube.targetSpawn = cubeJson["targetSpawn"];
 
+        if (cubeJson.contains("modelID"))
+        {
+            cube.modelID = cubeJson["modelID"];
+        }else{
+            cube.modelID = "wall_model";
+        }
+        
         outData.cubes.push_back(cube);
     }
     outData.entities.clear();
