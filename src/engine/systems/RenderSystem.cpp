@@ -63,8 +63,8 @@ void RenderSystem::renderGrid(Scene& scene, ResourceManager& resourceManager)
             DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
         }else{
 
-            if (resourceManager.hasModel("wall_model")) {
-                Model wall = resourceManager.GetModel("wall_model");
+            if (cube.modelID != "" && resourceManager.hasModel(cube.modelID)) {
+                Model wall = resourceManager.GetModel(cube.modelID);
 
                 DrawModel(wall, pos, 1.0f, WHITE);
                 DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
