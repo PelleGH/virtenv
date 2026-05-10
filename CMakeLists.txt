@@ -35,6 +35,7 @@ add_executable(VirtenEditor
     external/imgui/imgui_widgets.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
+    src/engine/managers/QuestManager.h
 
 
 
