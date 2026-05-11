@@ -3,6 +3,10 @@
 #include <fstream>
 #include <iostream>
 
+void DialogueManager::setQuestManager(QuestManager* manager)
+{
+    questManager = manager;
+}
 bool DialogueManager::loadDialogue(const std::string& dialogueSetId)
 {
     std::string path = "assets/dialogue/" + dialogueSetId + ".json";
@@ -58,31 +62,41 @@ void DialogueManager::update()
     if (node.find("choices") == node.end() || !node["choices"].is_array())
         return;
 
-    auto& choices = node["choices"];
-
     if (IsKeyPressed(KEY_ONE))
-    {
-        if (choices.size() > 0 && choices[0].is_object())
-        {
-            currentNodeId = choices[0].value("next", "end");
-
-            if (currentNodeId == "end")
-                active = false;
-        }
-    }
+        selectChoice(0);
 
     if (IsKeyPressed(KEY_TWO))
-    {
-        if (choices.size() > 1 && choices[1].is_object())
-        {
-            currentNodeId = choices[1].value("next", "end");
+        selectChoice(1);
 
-            if (currentNodeId == "end")
-                active = false;
-        }
-    }
+    if (IsKeyPressed(KEY_THREE))
+        selectChoice(2);
+
+    if (IsKeyPressed(KEY_FOUR))
+        selectChoice(3);
 }
+void DialogueManager::selectChoice(int visibleChoiceIndex)
+{
+    std::vector<int> visibleChoices = getVisibleChoiceIndices();
 
+    if (visibleChoiceIndex < 0 || visibleChoiceIndex >= visibleChoices.size())
+        return;
+
+    int realChoiceIndex = visibleChoices[visibleChoiceIndex];
+
+    auto& choice = dialogueData["nodes"][currentNodeId]["choices"][realChoiceIndex];
+
+    std::string startQuest = choice.value("startQuest", "");
+
+    if (!startQuest.empty() && questManager != nullptr)
+    {
+        questManager->startQuest(startQuest);
+    }
+
+    currentNodeId = choice.value("next", "end");
+
+    if (currentNodeId == "end")
+        active = false;
+}
 void DialogueManager::render()
 {
     if (!active)
@@ -117,17 +131,85 @@ void DialogueManager::render()
     {
         int y = 570;
 
-        for (int i = 0; i < node["choices"].size(); i++)
+    std::vector<int> visibleChoices = getVisibleChoiceIndices();
+
+    for (int displayIndex = 0; displayIndex < visibleChoices.size(); displayIndex++)
+    {
+        int realChoiceIndex = visibleChoices[displayIndex];
+        const auto& choice = node["choices"][realChoiceIndex];
+
+        std::string choiceText =
+            std::to_string(displayIndex + 1) + ". " +
+            choice.value("text", "");
+
+        Color choiceColor = DARKGRAY;
+
+        if (!choice.value("startQuest", "").empty())
         {
-            if (!node["choices"][i].is_object())
-                continue;
+            choiceColor = ORANGE;
+        }
 
-            std::string choiceText =
-                std::to_string(i + 1) + ". " +
-                node["choices"][i].value("text", "");
+        DrawText(choiceText.c_str(), 110, y, 20, choiceColor);
+        y += 28;
+    }
+    }
+}
 
-            DrawText(choiceText.c_str(), 110, y, 20, DARKGRAY);
-            y += 28;
+bool DialogueManager::shouldShowChoice(const nlohmann::json& choice) const
+{
+    if (!choice.contains("showIfQuestStatus"))
+        return true;
+
+    if (questManager == nullptr)
+        return false;
+
+    auto condition = choice["showIfQuestStatus"];
+
+    std::string questId = condition.value("questId", "");
+    std::string status = condition.value("status", "");
+
+    QuestStatus currentStatus = questManager->getQuestStatus(questId);
+
+    if (status == "NotStarted")
+        return currentStatus == QuestStatus::NotStarted;
+
+    if (status == "Active")
+        return currentStatus == QuestStatus::Active;
+
+    if (status == "Completed")
+        return currentStatus == QuestStatus::Completed;
+
+    return false;
+}
+std::vector<int> DialogueManager::getVisibleChoiceIndices() const
+{
+    std::vector<int> visibleChoices;
+
+    if (!dialogueData.contains("nodes"))
+        return visibleChoices;
+
+    const auto& nodes = dialogueData["nodes"];
+
+    if (!nodes.contains(currentNodeId))
+        return visibleChoices;
+
+    const auto& node = nodes[currentNodeId];
+
+    if (!node.contains("choices") || !node["choices"].is_array())
+        return visibleChoices;
+
+    const auto& choices = node["choices"];
+
+    for (int i = 0; i < choices.size(); i++)
+    {
+        if (!choices[i].is_object())
+            continue;
+
+        if (shouldShowChoice(choices[i]))
+        {
+            visibleChoices.push_back(i);
         }
     }
+
+    return visibleChoices;
 }

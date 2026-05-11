@@ -1214,7 +1214,8 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "enemyType": "slime"
             }
         },
         {
@@ -1237,7 +1238,8 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "enemyType": "slime"
             }
         },
         {
@@ -1260,7 +1262,8 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "enemyType": "slime"
             }
         }
     ]

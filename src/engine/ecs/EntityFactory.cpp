@@ -166,7 +166,7 @@ json EntityFactory::serialize(Entity entity){
     // Serialize Attack
     if (componentStorage.HasComponent<Attack>(entity)) {
         const auto& a = componentStorage.GetComponent<Attack>(entity);
-        j["Attack"] = { {"range", a.range}, {"damage", a.damage}, {"cooldown", a.cooldown} };
+        j["Attack"] = { {"range", a.range}, {"damage", a.damage}, {"cooldown", a.cooldown}, {"enemyType", a.enemyType} };
     }
 
     return j;
@@ -241,6 +241,7 @@ Entity EntityFactory::deserialize(const json& j){
         a.damage = j["Attack"].value("damage", 10);
         a.cooldown = j["Attack"].value("cooldown", 1.0f);
         a.timeSinceLastAttack = a.cooldown; // Start ready to attack
+        a.enemyType = j["Attack"].value("enemyType", "enemy");
         componentStorage.AddComponent(entity, a);
     }
 

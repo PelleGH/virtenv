@@ -1,5 +1,6 @@
 #pragma once
 #include "../messaging/EventBus.h"
+#include "../messaging/Event.h"
 class Scene;
 class TriggerSystem
 {

@@ -77,6 +77,8 @@ struct Attack {
     int damage = 10;
     float cooldown = 1.0f;
     float timeSinceLastAttack = 0.0f; 
+
+    std::string enemyType = "enemy";
 };
 
 struct Loadout {

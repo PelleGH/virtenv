@@ -27,7 +27,7 @@ add_executable(VirtenEditor
     src/engine/systems/DialogueManager.cpp
     src/engine/systems/CombatSystem.cpp
     src/engine/systems/AISystem.cpp
-    
+    src/engine/managers/QuestManager.cpp
     src/engine/ecs/EntityManager.cpp
     src/engine/ecs/EntityFactory.cpp
     src/engine/resource/ResourceManager.cpp
@@ -38,6 +38,7 @@ add_executable(VirtenEditor
     external/imgui/imgui_widgets.cpp
     external/imgui/backends/imgui_impl_glfw.cpp
     external/imgui/backends/imgui_impl_opengl3.cpp
+
 
 
 

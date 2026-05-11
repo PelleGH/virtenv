@@ -11,6 +11,30 @@
           "next": "who"
         },
         {
+          "text": "Do you need help?",
+          "next": "quest_offer",
+          "showIfQuestStatus": {
+            "questId": "clear_dungeon",
+            "status": "NotStarted"
+          }
+        },
+        {
+          "text": "How is the quest going?",
+          "next": "quest_active",
+          "showIfQuestStatus": {
+            "questId": "clear_dungeon",
+            "status": "Active"
+          }
+        },
+        {
+          "text": "I finished the quest.",
+          "next": "quest_completed",
+          "showIfQuestStatus": {
+            "questId": "clear_dungeon",
+            "status": "Completed"
+          }
+        },
+        {
           "text": "Goodbye.",
           "next": "end"
         }
@@ -21,7 +45,50 @@
       "text": "I am just an old man watching over these rooms.",
       "choices": [
         {
+          "text": "Do you need help?",
+          "next": "quest_offer",
+          "showIfQuestStatus": {
+            "questId": "clear_dungeon",
+            "status": "NotStarted"
+          }
+        },
+        {
           "text": "Goodbye.",
+          "next": "end"
+        }
+      ]
+    },
+
+    "quest_offer": {
+      "text": "Yes. Defeat the enemies in this dungeon.",
+      "choices": [
+        {
+          "text": "I'll help.",
+          "next": "end",
+          "startQuest": "clear_dungeon"
+        },
+        {
+          "text": "Not right now.",
+          "next": "end"
+        }
+      ]
+    },
+
+    "quest_active": {
+      "text": "Defeat the enemies, then come back.",
+      "choices": [
+        {
+          "text": "Okay.",
+          "next": "end"
+        }
+      ]
+    },
+
+    "quest_completed": {
+      "text": "You did it. Thank you for clearing the dungeon.",
+      "choices": [
+        {
+          "text": "You're welcome.",
           "next": "end"
         }
       ]

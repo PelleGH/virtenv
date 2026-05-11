@@ -16,8 +16,8 @@ bool Scene::load(const std::string& scenePath)
     if (!SceneLoader::loadFromFile(scenePath, data))
         return false;
 
-    std::cout << "Loaded scene: " << data.name << '\n';
-    std::cout << "Cubes: " << data.cubes.size() << '\n';
+    //std::cout << "Loaded scene: " << data.name << '\n';
+    //std::cout << "Cubes: " << data.cubes.size() << '\n';
     
     // 2. Registrera alla komponenter du använder i scenen
     componentStorage.RegisterComponent<TransformComponent>();
@@ -79,16 +79,16 @@ Entity Scene::spawnPlayerAt(const std::string& spawnId)
 
 void Scene::update(float dt)
 {
-    std::cout << "Scene: " << data.name << '\n';
+    //std::cout << "Scene: " << data.name << '\n';
 
     for (const auto& cube : data.cubes)
     {
         
-        std::cout << "Cube at ("
-                  << cube.position.x << ", "
-                  << cube.position.y << ", "
-                  << cube.position.z << ") type: "
-                  << cube.type << '\n';
+        //std::cout << "Cube at ("
+        //          << cube.position.x << ", "
+        //          << cube.position.y << ", "
+        //          << cube.position.z << ") type: "
+        //          << cube.type << '\n';
     }
 }
 

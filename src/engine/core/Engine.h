@@ -8,9 +8,11 @@
 #include "../systems/CameraSystem.h"
 #include "../systems/TriggerSystem.h"
 #include "../messaging/EventBus.h"
+#include "../messaging/Event.h"
 #include "../systems/ConditionManager.h"
 #include "../systems/ConditionSystem.h"
 #include "../systems/DialogueManager.h"
+#include "../managers/QuestManager.h"
 #include "../ecs/Components.h"
 #include "../systems/CombatSystem.h"
 #include "../systems/AISystem.h"
@@ -37,6 +39,7 @@ private:
     Camera3D camera;
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
+    QuestManager questManager;
     DialogueManager dialogueManager;
     CombatSystem combatSystem;
     AISystem aiSystem;
