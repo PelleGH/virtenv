@@ -4,7 +4,7 @@
       "id": "clear_dungeon",
       "name": "Clear the Dungeon",
       "requiredEvent": "enemy_killed",
-      "targetId": "enemy",
+      "targetId": "slime",
       "requiredAmount": 3,
       "rewardItem": "small_key"
     }

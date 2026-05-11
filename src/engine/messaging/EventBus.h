@@ -1,81 +1,87 @@
 #pragma once
 
-#include <vector>
 #include <functional>
-
-#include "Event.h"
+#include <memory>
+#include <queue>
+#include <typeindex>
+#include <unordered_map>
+#include <vector>
 
 class EventBus
 {
 public:
-    void publish(const SceneTransitionEvent& event) // might need a guard to prevent multiple publishes in a frame (maybe?)
+    template<typename EventType>
+    void publish(const EventType& event)
     {
-        sceneEvents.push_back(event);
+        std::type_index type = std::type_index(typeid(EventType));
+
+        if (!eventQueues.contains(type))
+        {
+            eventQueues[type] = std::make_unique<EventQueue<EventType>>();
+        }
+
+        auto* queue =
+            static_cast<EventQueue<EventType>*>(eventQueues[type].get());
+
+        queue->events.push(event);
     }
 
-    void subscribe(std::function<void(const SceneTransitionEvent&)> handler)
+    template<typename EventType>
+    void subscribe(std::function<void(const EventType&)> handler)
     {
-        sceneHandlers.push_back(handler);
-    }
+        std::type_index type = std::type_index(typeid(EventType));
 
-    void publish(const AttackEvent& event)
-    {
-        attackEvents.push_back(event);
-    }
+        if (!eventQueues.contains(type))
+        {
+            eventQueues[type] = std::make_unique<EventQueue<EventType>>();
+        }
 
-    void subscribe(std::function<void(const AttackEvent&)> handler)
-    {
-        attackHandlers.push_back(handler);
-    }
+        auto* queue =
+            static_cast<EventQueue<EventType>*>(eventQueues[type].get());
 
-    void publish(const DeathEvent& event)
-    {
-        deathEvents.push_back(event);
-    }
-
-    void subscribe(std::function<void(const DeathEvent&)> handler)
-    {
-        deathHandlers.push_back(handler);
+        queue->handlers.push_back(handler);
     }
 
     void dispatch()
     {
-        for (const auto& event : sceneEvents)
+        for (auto& [type, queue] : eventQueues)
         {
-            for (auto& handler : sceneHandlers)
-            {
-                handler(event);
-            }
+            queue->dispatch();
         }
+    }
 
-        sceneEvents.clear();
-
-        for (const auto& event : attackEvents)
-        {
-            for (auto& handler : attackHandlers)
-            {
-                handler(event);
-            }
-        }
-        attackEvents.clear();
-
-        for (const auto& event : deathEvents)
-        {
-            for (auto& handler : deathHandlers)
-            {
-                handler(event);
-            }
-        }
-        deathEvents.clear();
+    void clear()
+    {
+        eventQueues.clear();
     }
 
 private:
-    std::vector<SceneTransitionEvent> sceneEvents;
-    std::vector<std::function<void(const SceneTransitionEvent&)>> sceneHandlers;
+    struct IEventQueue
+    {
+        virtual ~IEventQueue() = default;
+        virtual void dispatch() = 0;
+    };
 
-    std::vector<AttackEvent> attackEvents;
-    std::vector<std::function<void(const AttackEvent&)>> attackHandlers;
+    template<typename EventType>
+    struct EventQueue : IEventQueue
+    {
+        std::queue<EventType> events;
+        std::vector<std::function<void(const EventType&)>> handlers;
 
-    std::vector<DeathEvent> deathEvents;
-    std::vector<std::function<void(const DeathEvent&)>> deathHandlers;
+        void dispatch() override
+        {
+            while (!events.empty())
+            {
+                EventType event = events.front();
+                events.pop();
+
+                for (auto& handler : handlers)
+                {
+                    handler(event);
+                }
+            }
+        }
+    };
+
+    std::unordered_map<std::type_index, std::unique_ptr<IEventQueue>> eventQueues;
 };

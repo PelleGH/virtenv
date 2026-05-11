@@ -68,10 +68,23 @@ void CombatSystem::onAttack(const AttackEvent& event)
                 // If this hit killed them, publish the DeathEvent!
                 if (health.current <= 0)
                 {
-                    std::cout << "Entity " << entity.id << " died! Publishing DeathEvent.\n";
-                    DeathEvent death;
-                    death.entity = entity;
-                    m_eventBus->publish(death);
+                    if (!components.HasComponent<PlayerInput>(entity))
+                    {
+                        std::string enemyType = "enemy";
+
+                        if (components.HasComponent<Attack>(entity))
+                        {
+                            enemyType = components.GetComponent<Attack>(entity).enemyType;
+                        }
+
+                        EnemyKilledEvent killedEvent;
+                        killedEvent.enemyType = enemyType;
+                        m_eventBus->publish(killedEvent);
+                    }
+
+                    DeathEvent deathEvent;
+                    deathEvent.entity = entity;
+                    m_eventBus->publish(deathEvent);
                 }
             }
         }
