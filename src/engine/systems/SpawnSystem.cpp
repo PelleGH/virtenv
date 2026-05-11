@@ -49,6 +49,8 @@ void SpawnSystem::Update(Scene* currentScene) {
                         transform.z,
                         dialogueSetId
                     );
+
+                    successfullyCreatedEntity = true;
                 }
 
                 if (successfullyCreatedEntity && currentScene != nullptr) {
