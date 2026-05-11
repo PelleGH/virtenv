@@ -21,13 +21,35 @@ void SpawnSystem::Update(Scene* currentScene) {
             // 4. Look for a TransformComponent so we know WHERE to spawn it
             if (componentStorage.HasComponent<TransformComponent>(entity)) {
                 auto& transform = componentStorage.GetComponent<TransformComponent>(entity);
+                bool successfullyCreatedEntity = false;
                 Entity newEntity;
                 // 5. Spawn the correct entity based on the string ID
                 if (spawnType.entityToSpawn == "player") {
-                    newEntity = entityFactory.createPlayer(transform.x, transform.y, transform.z);
+                    newEntity = entityFactory.createPlayer(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
                 } 
                 else if (spawnType.entityToSpawn == "test_cube") {
-                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z);
+                    newEntity = entityFactory.createTestCube(transform.x, transform.y, transform.z, spawnType.skinChoice);
+                    successfullyCreatedEntity = true;
+
+                }// Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
+                else if (spawnType.entityToSpawn == "npc")
+                {
+                    std::string dialogueSetId = "";
+
+                    if (componentStorage.HasComponent<DialogueSource>(entity))
+                    {
+                        dialogueSetId = componentStorage.GetComponent<DialogueSource>(entity).dialogueSetId;
+                    }
+
+                    newEntity = entityFactory.createNPC(
+                        transform.x,
+                        transform.y,
+                        transform.z,
+                        dialogueSetId
+                    );
+
+                    successfullyCreatedEntity = true;
                 }
                 // Add your other entity types here (e.g., "enemy_goblin", "npc_merchant")
                 else if (spawnType.entityToSpawn == "npc")
@@ -46,11 +68,15 @@ void SpawnSystem::Update(Scene* currentScene) {
                         dialogueSetId
                     );
                 }
-                if (currentScene != nullptr) {
+
+                if (successfullyCreatedEntity && currentScene != nullptr) {
                     currentScene->addEntityToScene(newEntity);
+                    spawnType.hasSpawned = true;
+                }else if (!successfullyCreatedEntity){
+                    // 6. Mark it as spawned so we don't spawn infinite copies!
+                    spawnType.hasSpawned = true;
+
                 }
-                // 6. Mark it as spawned so we don't spawn infinite copies!
-                spawnType.hasSpawned = true;
             }
         }
     }

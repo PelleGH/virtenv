@@ -55,6 +55,10 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
             spawn.y = spawnJson["position"][1];
             spawn.z = spawnJson["position"][2];
 
+            if (spawnJson.contains("skinChoice")){
+                spawn.skinChoice = spawnJson["skinChoice"];
+            }
+
             outData.playerSpawns[id] = spawn;
         }
     }
@@ -75,6 +79,13 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
         if (cubeJson.find("targetSpawn") != cubeJson.end())
             cube.targetSpawn = cubeJson["targetSpawn"];
 
+        if (cubeJson.contains("modelID"))
+        {
+            cube.modelID = cubeJson["modelID"];
+        }else{
+            cube.modelID = "wall_model";
+        }
+        
         outData.cubes.push_back(cube);
     }
     outData.entities.clear();

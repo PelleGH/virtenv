@@ -20,6 +20,14 @@ struct GridCube
     bool trigger = false;
     std::string targetSpawn; // used for triggers to specify where the player should spawn in the next scene
     std::string targetScene; // used later for doors
+    std::string modelID;
+};
+struct PlayerSpawn
+{
+    float x = 0.0f;
+    float y = 1.0f;
+    float z = 0.0f;
+    int skinChoice = 1; 
 };
 struct PlayerSpawn
 {

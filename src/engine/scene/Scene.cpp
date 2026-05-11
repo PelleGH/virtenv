@@ -35,20 +35,22 @@ bool Scene::load(const std::string& scenePath)
 
     EntityFactory factory(entityManager, componentStorage);
 
+    // 4. Ladda in dina spawners från JSON-filen
+    
     for (const auto& entityData : data.entities)
     {
         Entity loadedEntity = factory.deserialize(entityData);
         addEntityToScene(loadedEntity);
     }
 
-    // 5. Kör SpawnSystemet!
-    // Det här systemet letar nu upp alla nyskapade SpawnTypes, läser deras X/Y/Z, 
-    // och ber EntityFactory att bygga den riktiga spelaren och de riktiga testkuberna.
     SpawnSystem spawnSystem(componentStorage, factory);
     spawnSystem.Update(this);
 
     return true;
 }
+Entity Scene::spawnPlayerAt(const std::string& spawnId)
+{
+    EntityFactory factory(entityManager, componentStorage);
 
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
@@ -72,12 +74,7 @@ Entity Scene::spawnPlayerAt(const std::string& spawnId)
         }
     }
 
-    Entity player = factory.createPlayer(
-        spawn.x,
-        spawn.y,
-        spawn.z
-    );
-
+    Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z, spawn.skinChoice);
     addEntityToScene(player);
 
     return player;
@@ -89,6 +86,7 @@ void Scene::update(float dt)
 
     for (const auto& cube : data.cubes)
     {
+        
         std::cout << "Cube at ("
                   << cube.position.x << ", "
                   << cube.position.y << ", "

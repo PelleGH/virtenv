@@ -15,6 +15,7 @@
 #include "../systems/CombatSystem.h"
 #include "../systems/AISystem.h"
 
+#include "../resource/ResourceManager.h"
 
 class Engine
 {
@@ -39,7 +40,11 @@ private:
     DialogueManager dialogueManager;
     CombatSystem combatSystem;
     AISystem aiSystem;
+    ResourceManager resourceManager;
+
+    DialogueManager dialogueManager;
     void debugNPCInteraction();
+    
     void update(float dt);
     void render();
 };

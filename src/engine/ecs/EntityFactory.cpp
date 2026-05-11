@@ -14,7 +14,7 @@ EntityFactory::EntityFactory(EntityManager& em, ComponentStorage& cs)
 
 // ENTITY CREATION
 
-Entity EntityFactory::createPlayer(float x, float y, float z){
+Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     Entity player = entityManager.createEntity();
     // Transform
     float size = 0.5f;
@@ -32,7 +32,15 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
     r.width = size;
     r.height = size;
     r.depth = size;
-    r.color = BLUE; // Player is blue
+    r.color = WHITE; // Player is white
+
+    if (skinChoice == 2){
+        r.modelID = "player_skin2";
+    }else{
+         r.modelID = "player_skin1";
+    }
+       
+
     componentStorage.AddComponent(player, r);
 
     // Input
@@ -51,8 +59,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z){
 }
 
 
-Entity EntityFactory::createTestCube(float x, float y, float z)
-{
+Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     Entity entity = entityManager.createEntity();
 
     float size = 1.0f;
@@ -69,10 +76,20 @@ Entity EntityFactory::createTestCube(float x, float y, float z)
     componentStorage.AddComponent(entity, Attack{2.0f, 5, 2.0f, 2.0f});
 
     Renderer r;
+    r.color = WHITE; // Default test cube color
+
+    if (skinChoice == 2){
+        r.modelID = "test_cube_skin2";
+    }else if (skinChoice == 3){
+        r.modelID = "test_cube_skin3";
+    }else{
+        r.modelID = "test_cube_skin1";
+    }
+
     r.width = size;
     r.height = size;
     r.depth = size;
-    r.color = RED;
+    r.color = WHITE;
     componentStorage.AddComponent(entity, r);
 
     Collider collider;
@@ -126,6 +143,7 @@ json EntityFactory::serialize(Entity entity){
         const auto& r = componentStorage.GetComponent<Renderer>(entity);
         j["Renderer"] = {
             {"textureID", r.textureID},
+            {"modelID", r.modelID},
             {"color", {r.color.r, r.color.g, r.color.b, r.color.a}}, // Raylib Color to array
             {"width", r.width}, {"height", r.height}, {"depth", r.depth},
             {"zIndex", r.zIndex}
@@ -165,6 +183,7 @@ Entity EntityFactory::deserialize(const json& j){
     if (j.contains("Renderer")) {
         Renderer r;
         r.textureID = j["Renderer"].value("textureID", "");
+        r.modelID = j["Renderer"].value("modelID", "");
         
         if (j["Renderer"].contains("color")) {
             r.color.r = j["Renderer"]["color"][0];
@@ -190,6 +209,8 @@ Entity EntityFactory::deserialize(const json& j){
         SpawnType st;
         st.entityToSpawn = j["SpawnType"].value("entityToSpawn", "");
         st.hasSpawned = j["SpawnType"].value("hasSpawned", false);
+        st.skinChoice = j["SpawnType"].value("skinChoice", 1);
+
         componentStorage.AddComponent(entity, st);
     }
 
@@ -217,6 +238,7 @@ Entity EntityFactory::createNPC(float x, float y, float z, const std::string& di
     r.height = size;
     r.depth = size;
     r.color = ORANGE;
+    r.modelID = "npc_skin";
     componentStorage.AddComponent(npc, r);
 
     Collider collider;
