@@ -18,6 +18,9 @@ public:
     void saveState();
     void addEntityToScene(Entity entity);
     Entity spawnPlayerAt(const std::string& spawnId);
+    void queueEntityDestruction(Entity entity);
+    void cleanupDestroyedEntities();
+
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;
 

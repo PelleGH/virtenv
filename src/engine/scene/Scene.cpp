@@ -24,10 +24,12 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Renderer>();
     componentStorage.RegisterComponent<PlayerInput>();
     componentStorage.RegisterComponent<SpawnType>();
+
     componentStorage.RegisterComponent<ConditionalBlocker>();
     componentStorage.RegisterComponent<DialogueSource>();
-    //componentStorage.RegisterComponent<Health>();
-    //componentStorage.RegisterComponent<Attack>();
+
+    componentStorage.RegisterComponent<Health>();
+    componentStorage.RegisterComponent<Attack>();
     componentStorage.RegisterComponent<Collider>();
     componentStorage.RegisterComponent<SceneTransition>();
 
@@ -46,6 +48,7 @@ bool Scene::load(const std::string& scenePath)
 
     return true;
 }
+
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
     EntityFactory factory(entityManager, componentStorage);
@@ -73,6 +76,7 @@ Entity Scene::spawnPlayerAt(const std::string& spawnId)
 
     return player;
 }
+
 void Scene::update(float dt)
 {
     std::cout << "Scene: " << data.name << '\n';
@@ -127,4 +131,32 @@ void Scene::saveState()
 void Scene::addEntityToScene(Entity entity) 
 {
     activeEntitiesList.push_back(entity);
+}
+
+void Scene::queueEntityDestruction(Entity entity)
+{
+    std::cout << "Scene queuing entity for destruction: " << entity.getIndex() << '\n';
+    // Use your exact existing queue method!
+    entityManager.destroyEntityQueue(entity); 
+}
+
+void Scene::cleanupDestroyedEntities()
+{
+
+    // 1. Tell your EntityManager to process the queue and update generations
+    entityManager.destroyEntity();
+
+    // 2. Safely remove any dead entities from your active list AND wipe their components
+    activeEntitiesList.erase(
+        std::remove_if(activeEntitiesList.begin(), activeEntitiesList.end(),
+            [this](Entity e) { 
+                if (!entityManager.isAlive(e)) {
+                    // Tell the ComponentStorage to delete all data attached to this dead entity ID
+                    componentStorage.EntityDestroyed(e); 
+                    return true;
+                }
+                return false;
+            }),
+        activeEntitiesList.end()
+    );
 }

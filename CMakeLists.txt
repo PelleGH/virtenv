@@ -25,6 +25,8 @@ add_executable(VirtenEditor
     src/engine/systems/SpawnSystem.cpp
     src/engine/systems/ConditionSystem.cpp
     src/engine/systems/DialogueManager.cpp
+    src/engine/systems/CombatSystem.cpp
+    src/engine/systems/AISystem.cpp
     src/engine/managers/QuestManager.cpp
     src/engine/ecs/EntityManager.cpp
     src/engine/ecs/EntityFactory.cpp

@@ -29,6 +29,7 @@ struct PlayerSpawn
     float z = 0.0f;
     int skinChoice = 1; 
 };
+
 struct SceneCameraData
 {
     std::string mode = "followPlayer"; // "followPlayer" or "fixed"

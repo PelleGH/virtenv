@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "engine/scene/Scene.h"
+
 #include <chrono>
 #include <iostream>
 
@@ -24,9 +25,40 @@ bool Engine::init()
             event.targetSpawn
         );
     });
+
+    eventBus.subscribe([this](const DeathEvent& event)
+    {
+        Scene& currentScene = sceneManager.getCurrentScene();
+        ComponentStorage& components = currentScene.getComponentStorage();
+
+        // Check if the entity that died is the player
+        if (components.HasComponent<PlayerInput>(event.entity))
+        {
+            std::cout << "Player died! Reloading scene...\n";
+            
+            // Get the current scene's name (e.g., "room_01")
+            std::string sceneName = currentScene.getData().name;
+            
+            // Queue a reload of the current scene, spawning at the default location
+            sceneManager.requestSceneChange(
+                "assets/scenes/" + sceneName + ".json", 
+                "default"
+            );
+        }
+        else
+        {
+            // It's just a normal enemy/cube, destroy it
+            currentScene.queueEntityDestruction(event.entity);
+        }
+    });
+
     running = true;
 
-    return sceneManager.loadScene("assets/scenes/room_01.json");
+    bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
+
+    combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
+
+    return sceneLoaded;
 }
 
 void Engine::run()
@@ -52,22 +84,34 @@ void Engine::update(float dt)
 {
     bool gameplayPaused = dialogueManager.isActive();
     //std::cout << "Updating engine. dt: " << dt << '\n';
-    inputSystem.update(sceneManager.getCurrentScene());
+    inputSystem.update(sceneManager.getCurrentScene(), eventBus);
     debugNPCInteraction();
+    
     if (IsKeyPressed(KEY_K))
     {
         questManager.onEvent("enemy_killed", "enemy");
     }
-    if (!gameplayPaused){
+    
+    if (!gameplayPaused)
+    {
+        aiSystem.update(sceneManager.getCurrentScene(), eventBus);
+
         movementSystem.update(sceneManager.getCurrentScene(), dt);
-        conditionalSystem.update(sceneManager.getCurrentScene(), conditionManager);
+
+        conditionalSystem.update(
+            sceneManager.getCurrentScene(),
+            conditionManager
+        );
+
         collisionSystem.update(sceneManager.getCurrentScene());
-        triggerSystem.update(sceneManager.getCurrentScene(), eventBus);
+
+        triggerSystem.update(
+            sceneManager.getCurrentScene(),
+            eventBus
+        );
     }
     dialogueManager.update();
-
     eventBus.dispatch();
-
     cameraSystem.update(sceneManager.getCurrentScene(), camera);
 
     if (IsKeyPressed(KEY_NINE)) 
@@ -79,8 +123,11 @@ void Engine::update(float dt)
         conditionManager.debugUnlocked =
             !conditionManager.debugUnlocked;
     }
+
     sceneManager.update(dt);
     sceneManager.applyPendingSceneChange();
+
+    sceneManager.getCurrentScene().cleanupDestroyedEntities();
 }
 
 void Engine::render()
@@ -98,6 +145,7 @@ void Engine::shutdown()
     CloseWindow();
     std::cout << "Engine shutdown\n";
 }
+
 void Engine::debugNPCInteraction()
 {
     if (dialogueManager.isActive())
