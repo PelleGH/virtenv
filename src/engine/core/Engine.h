@@ -42,7 +42,6 @@ private:
     AISystem aiSystem;
     ResourceManager resourceManager;
 
-    DialogueManager dialogueManager;
     void debugNPCInteraction();
     
     void update(float dt);

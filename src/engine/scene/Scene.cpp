@@ -48,9 +48,6 @@ bool Scene::load(const std::string& scenePath)
 
     return true;
 }
-Entity Scene::spawnPlayerAt(const std::string& spawnId)
-{
-    EntityFactory factory(entityManager, componentStorage);
 
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
@@ -145,8 +142,6 @@ void Scene::queueEntityDestruction(Entity entity)
 
 void Scene::cleanupDestroyedEntities()
 {
-    // 1. Tell your EntityManager to process the queue and update generations
-    entityManager.destroyEntity();
 
     // 1. Tell your EntityManager to process the queue and update generations
     entityManager.destroyEntity();
@@ -156,7 +151,6 @@ void Scene::cleanupDestroyedEntities()
         std::remove_if(activeEntitiesList.begin(), activeEntitiesList.end(),
             [this](Entity e) { 
                 if (!entityManager.isAlive(e)) {
-                    // THE MISSING PIECE:
                     // Tell the ComponentStorage to delete all data attached to this dead entity ID
                     componentStorage.EntityDestroyed(e); 
                     return true;
