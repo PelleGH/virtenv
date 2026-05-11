@@ -48,7 +48,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
 
     // Stats
     componentStorage.AddComponent(player, Health{100, 100});
-    componentStorage.AddComponent(player, Attack{1.0f, 15, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
+    componentStorage.AddComponent(player, Attack{2.0f, 30, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
     Collider collider;
     collider.width = size;
     collider.height = size;
@@ -155,7 +155,17 @@ json EntityFactory::serialize(Entity entity){
         j["PlayerInput"] = true; 
     }
 
-    // Add other components (Health, Collider, etc.) following the same pattern...
+    // Serialize Health
+    if (componentStorage.HasComponent<Health>(entity)) {
+        const auto& h = componentStorage.GetComponent<Health>(entity);
+        j["Health"] = { {"current", h.current}, {"max", h.max} };
+    }
+
+    // Serialize Attack
+    if (componentStorage.HasComponent<Attack>(entity)) {
+        const auto& a = componentStorage.GetComponent<Attack>(entity);
+        j["Attack"] = { {"range", a.range}, {"damage", a.damage}, {"cooldown", a.cooldown} };
+    }
 
     return j;
 }
@@ -214,7 +224,23 @@ Entity EntityFactory::deserialize(const json& j){
         componentStorage.AddComponent(entity, st);
     }
 
-    // Add other components following the same pattern...
+    // Deserialize Health
+    if (j.contains("Health")) {
+        Health h;
+        h.current = j["Health"].value("current", 100);
+        h.max = j["Health"].value("max", 100);
+        componentStorage.AddComponent(entity, h);
+    }
+
+    // Deserialize Attack
+    if (j.contains("Attack")) {
+        Attack a;
+        a.range = j["Attack"].value("range", 10.0f);
+        a.damage = j["Attack"].value("damage", 10);
+        a.cooldown = j["Attack"].value("cooldown", 1.0f);
+        a.timeSinceLastAttack = a.cooldown; // Start ready to attack
+        componentStorage.AddComponent(entity, a);
+    }
 
     return entity;
 }
