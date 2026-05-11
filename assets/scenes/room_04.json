@@ -1206,6 +1206,15 @@
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
+            },
+            "Health": {
+                "current": 150,
+                "max": 150
+            },
+            "Attack": {
+                "damage": 20,
+                "range": 1.0,
+                "cooldown": 1.5
             }
         },
         {
@@ -1220,6 +1229,15 @@
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
+            },
+            "Health": {
+                "current": 150,
+                "max": 150
+            },
+            "Attack": {
+                "damage": 20,
+                "range": 1.0,
+                "cooldown": 1.5
             }
         },
         {
@@ -1234,6 +1252,15 @@
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
+            },
+            "Health": {
+                "current": 150,
+                "max": 150
+            },
+            "Attack": {
+                "damage": 20,
+                "range": 1.0,
+                "cooldown": 1.5
             }
         }
     ]

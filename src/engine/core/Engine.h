@@ -12,6 +12,9 @@
 #include "../systems/ConditionSystem.h"
 #include "../systems/DialogueManager.h"
 #include "../ecs/Components.h"
+#include "../systems/CombatSystem.h"
+#include "../systems/AISystem.h"
+
 #include "../resource/ResourceManager.h"
 
 class Engine
@@ -34,9 +37,11 @@ private:
     Camera3D camera;
     ConditionManager conditionManager;
     ConditionSystem conditionalSystem;
+    DialogueManager dialogueManager;
+    CombatSystem combatSystem;
+    AISystem aiSystem;
     ResourceManager resourceManager;
 
-    DialogueManager dialogueManager;
     void debugNPCInteraction();
     
     void update(float dt);
