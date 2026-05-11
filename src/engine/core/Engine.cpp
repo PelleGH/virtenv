@@ -80,9 +80,11 @@ void Engine::update(float dt)
     //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene(), eventBus);
     debugNPCInteraction();
-    aiSystem.update(sceneManager.getCurrentScene(), eventBus);
+    
     if (!gameplayPaused)
     {
+        aiSystem.update(sceneManager.getCurrentScene(), eventBus);
+
         movementSystem.update(sceneManager.getCurrentScene(), dt);
 
         conditionalSystem.update(
