@@ -9,6 +9,7 @@ bool Engine::init()
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
 
+    //Reads and creates the models and texture for the world
     resourceManager.LoadFromManifest("src/engine/assets/assets.json");
     sceneManager.init(resourceManager);
 

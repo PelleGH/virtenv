@@ -34,6 +34,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     r.depth = size;
     r.color = WHITE; // Player is white
 
+    // Checks for which skin to use
     if (skinChoice == 2){
         r.modelID = "player_skin2";
     }else{
@@ -78,6 +79,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     Renderer r;
     r.color = WHITE; // Default test cube color
 
+    // Checks for which skin to use
     if (skinChoice == 2){
         r.modelID = "test_cube_skin2";
     }else if (skinChoice == 3){
