@@ -21,8 +21,8 @@ struct TransformComponent {
 };
 
 struct Renderer {
-    std::string textureID; // e.g., "player_idle", "door_open"
-    std::string modelID;
+    std::string textureID;  // Used for texture, e.g. "player_tex1"
+    std::string modelID;    // Used for models, e.g. "player_skin1"
 
     float width = 1.0f;
     float height = 1.0f;
@@ -52,7 +52,7 @@ struct PlayerInput {
 struct SpawnType {
     std::string entityToSpawn; // e.g., "player", "npc_merchant", "enemy_goblin"
     bool hasSpawned = false;   // Used to ensure we only spawn it once on startup
-    int skinChoice = 1;
+    int skinChoice = 1;        // Default skin if nothing else is written in json
 };
 
 struct Condition

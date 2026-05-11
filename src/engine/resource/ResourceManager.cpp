@@ -7,20 +7,21 @@
 void ResourceManager::LoadTexture2D(const std::string& id, const std::string& filepath){
     if (textures.find(id) == textures.end()) {
         textures[id] = LoadTexture(filepath.c_str());
-        std::cout << "Laddade textur: " << id << '\n';
+        std::cout << "Loaded texture: " << id << '\n';
     }
 }
 
 void ResourceManager::LoadModel3D(const std::string& id, const std::string& filepath) {
     if (models.find(id) == models.end()) {
         models[id] = LoadModel(filepath.c_str());
-        std::cout << "Laddade 3D-modell: " << id << '\n';
+        std::cout << "Loaded 3D model: " << id << '\n';
     }
 }
 
 void ResourceManager::AddModel(const std::string& id, Model model){
     auto findID = models.find(id);
 
+    // Checks wether the ID already exist, throw away the old ID
     if (findID != models.end())
     {
         UnloadModel(findID -> second);
@@ -51,22 +52,25 @@ bool ResourceManager::hasModel(const std::string& id) {
     return false;
 }
 
+// Opens "assets.json" and builds at start
 void ResourceManager::LoadFromManifest(const std::string& path){
     std::ifstream file(path);
     
     if (!file.is_open())
     {
-        std::cerr << "FEL: Kunde inte hitta manifest-filen: " << path << std::endl;
+        std::cerr << "ERROR: Could not find manifest file: " << path << std::endl;
         return;
     }
     nlohmann::json data;
     file >> data;
 
+    // Loads all textures
     for (auto& tex : data["textures"])
     {
         LoadTexture2D(tex["id"], tex["path"]);
     }
 
+    // Builds cubes with textures
     for (auto& m : data["cube_models"])
     {
         float s = m["size"];
