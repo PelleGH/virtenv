@@ -48,6 +48,11 @@ bool Scene::load(const std::string& scenePath)
 
     return true;
 }
+Entity Scene::spawnPlayerAt(const std::string& spawnId)
+{
+    EntityFactory factory(entityManager, componentStorage);
+
+    PlayerSpawn spawn;
 
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
