@@ -77,7 +77,7 @@ void QuestManager::startQuest(const std::string& questId)
     std::cout << "Quest started: " << quest.name << '\n';
 }
 
-void QuestManager::onEvent(const std::string& eventType, const std::string& targetId)
+void QuestManager::onEvent(const std::string& eventType, const std::string& targetId, int amount)
 {
     for (auto& pair : quests)
     {
@@ -92,7 +92,7 @@ void QuestManager::onEvent(const std::string& eventType, const std::string& targ
         if (quest.targetId != targetId)
             continue;
 
-        quest.currentAmount++;
+        quest.currentAmount += amount;
 
         std::cout << "Quest progress: " << quest.name << " "
                   << quest.currentAmount << "/"

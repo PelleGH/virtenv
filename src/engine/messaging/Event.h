@@ -23,9 +23,10 @@ struct DeathEvent {
 struct EnemyKilledEvent {
     std::string enemyType; // e.g., "slime", "goblin"
 };
-struct QuestProgressEvent {
-    std::string eventType;
+struct GameplayEvent {
+    std::string type;
     std::string targetId;
+    int amount = 1;
 };
 
 struct DialogueStartEvent {

@@ -2,7 +2,7 @@
 
 #include "../scene/Scene.h"
 #include "../messaging/EventBus.h"
-
+#include "../messaging/Event.h"
 class AISystem
 {
 public:

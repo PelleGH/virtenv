@@ -31,7 +31,7 @@ public:
     bool loadQuests(const std::string& path);
 
     void startQuest(const std::string& questId);
-    void onEvent(const std::string& eventType, const std::string& targetId);
+    void onEvent(const std::string& eventType, const std::string& targetId, int amount = 1);
     void completeQuest(const std::string& questId);
 
     bool isQuestActive(const std::string& questId) const;

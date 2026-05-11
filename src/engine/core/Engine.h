@@ -8,6 +8,7 @@
 #include "../systems/CameraSystem.h"
 #include "../systems/TriggerSystem.h"
 #include "../messaging/EventBus.h"
+#include "../messaging/Event.h"
 #include "../systems/ConditionManager.h"
 #include "../systems/ConditionSystem.h"
 #include "../systems/DialogueManager.h"

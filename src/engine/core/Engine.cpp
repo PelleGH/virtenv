@@ -18,7 +18,7 @@ bool Engine::init()
     questManager.loadQuests("assets/quests.json");
     dialogueManager.setQuestManager(&questManager);
 
-    eventBus.subscribe([this](const SceneTransitionEvent& event)
+    eventBus.subscribe<SceneTransitionEvent>([this](const SceneTransitionEvent& event)
     {
         sceneManager.requestSceneChange(
             "assets/scenes/" + event.targetScene + ".json",
@@ -26,7 +26,7 @@ bool Engine::init()
         );
     });
 
-    eventBus.subscribe([this](const DeathEvent& event)
+    eventBus.subscribe<DeathEvent>([this](const DeathEvent& event)
     {
         Scene& currentScene = sceneManager.getCurrentScene();
         ComponentStorage& components = currentScene.getComponentStorage();
@@ -51,7 +51,20 @@ bool Engine::init()
             currentScene.queueEntityDestruction(event.entity);
         }
     });
+    eventBus.subscribe<EnemyKilledEvent>([this](const EnemyKilledEvent& event)
+    {
+        GameplayEvent gameplayEvent;
+        gameplayEvent.type = "enemy_killed";
+        gameplayEvent.targetId = event.enemyType;
+        gameplayEvent.amount = 1;
 
+        eventBus.publish(gameplayEvent);
+    });
+
+    eventBus.subscribe<GameplayEvent>([this](const GameplayEvent& event)
+    {
+        questManager.onEvent(event.type, event.targetId, event.amount);
+    });
     running = true;
 
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
@@ -89,7 +102,7 @@ void Engine::update(float dt)
     
     if (IsKeyPressed(KEY_K))
     {
-        questManager.onEvent("enemy_killed", "enemy");
+        questManager.onEvent("enemy_killed", "enemy", 1);
     }
     
     if (!gameplayPaused)

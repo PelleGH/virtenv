@@ -1,3 +1,17 @@
+// Generic event bus used for communication between systems/managers.
+//
+// Systems publish events when something happens.
+// Other systems can subscribe to specific event types.
+//
+// Example:
+// eventBus.publish(EnemyKilledEvent{...});
+//
+// eventBus.subscribe<EnemyKilledEvent>([](const EnemyKilledEvent& e) {
+//     // react to enemy death
+// });
+//
+// Events are queued and processed later through dispatch().
+
 #pragma once
 
 #include <functional>
@@ -15,7 +29,7 @@ public:
     {
         std::type_index type = std::type_index(typeid(EventType));
 
-        if (!eventQueues.contains(type))
+        if (eventQueues.find(type) == eventQueues.end())
         {
             eventQueues[type] = std::make_unique<EventQueue<EventType>>();
         }
@@ -31,7 +45,7 @@ public:
     {
         std::type_index type = std::type_index(typeid(EventType));
 
-        if (!eventQueues.contains(type))
+        if (eventQueues.find(type) == eventQueues.end())
         {
             eventQueues[type] = std::make_unique<EventQueue<EventType>>();
         }

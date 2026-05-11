@@ -9,7 +9,7 @@ void CombatSystem::initialize(Scene& scene, EventBus& eventBus)
     m_eventBus = &eventBus;
 
     // Subscribe to the AttackEvent
-    eventBus.subscribe([this](const AttackEvent& e) {
+    eventBus.subscribe<AttackEvent>([this](const AttackEvent& e) {
         this->onAttack(e);
     });
 }
