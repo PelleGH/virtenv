@@ -111,6 +111,7 @@ void Engine::update(float dt)
         aiSystem.update(sceneManager.getCurrentScene(), eventBus);
 
         movementSystem.update(sceneManager.getCurrentScene(), dt);
+        projectileSystem.update(sceneManager.getCurrentScene(), eventBus, dt);
 
         conditionalSystem.update(
             sceneManager.getCurrentScene(),

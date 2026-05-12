@@ -242,6 +242,8 @@ Entity EntityFactory::deserialize(const json& j){
         a.cooldown = j["Attack"].value("cooldown", 1.0f);
         a.timeSinceLastAttack = a.cooldown; // Start ready to attack
         a.enemyType = j["Attack"].value("enemyType", "enemy");
+        a.isRanged = j["Attack"].value("isRanged", false);
+        a.projectileSpeed = j["Attack"].value("projectileSpeed", 5.0f);
         componentStorage.AddComponent(entity, a);
     }
 
@@ -283,6 +285,33 @@ Entity EntityFactory::createNPC(float x, float y, float z, const std::string& di
 
     return npc;
 }
+
+Entity EntityFactory::createProjectile(float x, float y, float z, float velX, float velZ, int damage, Entity owner) {
+    Entity projectile = entityManager.createEntity();
+
+    float size = 0.2f; //Small cube for the projectile
+
+    TransformComponent t;
+    t.x = x; t.y = y; t.z = z;
+    t.width = size; t.height = size; t.depth = size;
+    componentStorage.AddComponent(projectile, t);
+
+    Renderer r;
+    r.width = size; r.height = size; r.depth = size;
+    r.color = RED;
+    componentStorage.AddComponent(projectile, r);
+
+    Projectile p;
+    p.velocityX = velX;
+    p.velocityZ = velZ;
+    p.damage = damage;
+    p.timeToLive = 5.0f;
+    p.owner = owner;
+    componentStorage.AddComponent(projectile, p);
+
+    return projectile;
+}
+
 bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename)
 {
     json jsonArray = json::array();

@@ -32,6 +32,7 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Attack>();
     componentStorage.RegisterComponent<Collider>();
     componentStorage.RegisterComponent<SceneTransition>();
+    componentStorage.RegisterComponent<Projectile>();
 
     EntityFactory factory(entityManager, componentStorage);
 

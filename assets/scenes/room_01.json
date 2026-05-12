@@ -1213,9 +1213,11 @@
             },
             "Attack": {
                 "damage": 20,
-                "range": 1.0,
+                "range": 8.0,
                 "cooldown": 1.5,
-                "enemyType": "goblin"
+                "enemyType": "goblin",
+                "isRanged": true,
+                "projectileSpeed": 4.0
             }
         },
         {
@@ -1254,7 +1256,10 @@
                 "damage": 20,
                 "range": 1.0,
                 "cooldown": 1.5,
-                "enemyType": "slime"
+                "enemyType": "slime",
+                "isRanged": false,
+                "projectileSpeed": 4.0
+
             }
         }
     ]

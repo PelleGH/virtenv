@@ -16,6 +16,7 @@
 #include "../ecs/Components.h"
 #include "../systems/CombatSystem.h"
 #include "../systems/AISystem.h"
+#include "../systems/ProjectileSystem.h"
 
 #include "../resource/ResourceManager.h"
 
@@ -44,6 +45,7 @@ private:
     CombatSystem combatSystem;
     AISystem aiSystem;
     ResourceManager resourceManager;
+    ProjectileSystem projectileSystem;
 
     void debugNPCInteraction();
     
