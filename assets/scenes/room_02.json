@@ -1213,8 +1213,9 @@
             },
             "Attack": {
                 "damage": 20,
-                "range": 1.0,
-                "cooldown": 1.5
+                "range": 5.0,
+                "cooldown": 1.5,
+                "isRanged": true
             }
         },
         {
@@ -1236,8 +1237,9 @@
             },
             "Attack": {
                 "damage": 20,
-                "range": 1.0,
-                "cooldown": 1.5
+                "range": 5.0,
+                "cooldown": 1.5,
+                "isRanged": true
             }
         }
     ]

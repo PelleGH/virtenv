@@ -84,9 +84,13 @@ struct Attack {
     float projectileSpeed = 5.0f;
 };
 
+struct Velocity {
+    float x = 0.0f;
+    float z = 0.0f;
+    float speed = 1.0f;
+};
+
 struct Projectile {
-    float velocityX = 0.0f;
-    float velocityZ = 0.0f;
     int damage = 10;
     float timeToLive = 5.0f; //Destroy projectile after 5 seconds
     Entity owner; //to prevent hitting themselves

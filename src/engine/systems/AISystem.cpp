@@ -59,8 +59,9 @@ void AISystem::update(Scene& scene, EventBus& eventBus)
                     enemyTransform.x, 
                     enemyTransform.y, 
                     enemyTransform.z, 
-                    dirX * attackStats.projectileSpeed, 
-                    dirZ * attackStats.projectileSpeed, 
+                    dirX,                            // Just the X direction
+                    dirZ,                            // Just the Z direction
+                    attackStats.projectileSpeed,     
                     attackStats.damage, 
                     entity
                 );

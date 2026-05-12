@@ -44,6 +44,44 @@ bool CollisionSystem::collidesWithSolidGrid(
 
     return false;
 }
+
+bool CollisionSystem::collidesWithGridDoor(
+    Scene& scene,
+    float x, float y, float z,
+    float width, float height, float depth
+)
+{
+    BoundingBox entityBox = {
+        { x - width / 2.0f, y - height / 2.0f, z - depth / 2.0f },
+        { x + width / 2.0f, y + height / 2.0f, z + depth / 2.0f }
+    };
+
+    const SceneData& data = scene.getData();
+
+    for (const auto& cube : data.cubes)
+    {
+        // ONLY check cubes that are doors
+        if (cube.type != "door")
+            continue;
+
+        float cubeX = static_cast<float>(cube.position.x);
+        float cubeZ = static_cast<float>(cube.position.z);
+        
+        if (fabs(cubeX - x) > 2.0f) continue;
+        if (fabs(cubeZ - z) > 2.0f) continue;
+
+        BoundingBox cubeBox = {
+            { cubeX - 0.5f, cube.position.y - 0.5f, cubeZ - 0.5f },
+            { cubeX + 0.5f, cube.position.y + 0.5f, cubeZ + 0.5f }
+        };
+
+        if (CheckCollisionBoxes(entityBox, cubeBox))
+            return true;
+    }
+
+    return false;
+}
+
 bool CollisionSystem::overlapsBox(
     float ax, float ay, float az,
     float aw, float ah, float ad,
@@ -110,7 +148,7 @@ bool CollisionSystem::collidesWithSolidEntities(
 
     return false;
 }
-void CollisionSystem::update(Scene& scene)
+void CollisionSystem::update(Scene& scene, EventBus& eventBus)
 {
     ComponentStorage& components = scene.getComponentStorage();
     auto& colliders = components.GetComponents<Collider>();
@@ -204,5 +242,59 @@ void CollisionSystem::update(Scene& scene)
 
         if (zOnlyBlocked)
             transform.z = transform.previousZ;
+    }
+
+    // Compare every collider against every other collider
+    for (auto itA = colliders.begin(); itA != colliders.end(); ++itA)
+    {
+        Entity entityA = itA->first;
+        auto& colA = itA->second;
+
+        if (!components.HasComponent<TransformComponent>(entityA)) continue;
+        auto& transA = components.GetComponent<TransformComponent>(entityA);
+
+        //TRIGGER VS WALL or DOOR CHECK
+        if (colA.isTrigger)
+        {
+            bool hitSolid = collidesWithSolidGrid(scene, transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth);
+            bool hitDoor = collidesWithGridDoor(scene, transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth);
+
+            // If it hits a solid wall OR a door, destroy it!
+            if (hitSolid || hitDoor)
+            {
+                OverlapEvent overlap;
+                overlap.entityA = entityA;
+                overlap.hitWall = true; 
+                eventBus.publish(overlap);
+            }
+        }
+
+        // Start itB at the next item so we don't compare A vs B and B vs A!
+        auto itB = itA;
+        ++itB;
+        //TRIGGER VS ENTITY CHECK
+        for (; itB != colliders.end(); ++itB)
+        {
+            Entity entityB = itB->first;
+            auto& colB = itB->second;
+
+            if (!components.HasComponent<TransformComponent>(entityB)) continue;
+            auto& transB = components.GetComponent<TransformComponent>(entityB);
+
+            // If AT LEAST ONE of them is a trigger, check for overlap
+            if (colA.isTrigger || colB.isTrigger)
+            {
+                if (overlapsBox(
+                    transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth,
+                    transB.x, transB.y, transB.z, colB.width, colB.height, colB.depth))
+                {
+                    // They touched! Tell the EventBus!
+                    OverlapEvent overlap;
+                    overlap.entityA = entityA;
+                    overlap.entityB = entityB;
+                    eventBus.publish(overlap);
+                }
+            }
+        }
     }
 }

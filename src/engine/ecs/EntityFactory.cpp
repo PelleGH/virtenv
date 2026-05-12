@@ -56,6 +56,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     collider.depth = size;
     collider.isTrigger = false;
     componentStorage.AddComponent(player, collider);
+    componentStorage.AddComponent(player, Velocity{0,0,3.0f});
     return player;
 }
 
@@ -286,10 +287,9 @@ Entity EntityFactory::createNPC(float x, float y, float z, const std::string& di
     return npc;
 }
 
-Entity EntityFactory::createProjectile(float x, float y, float z, float velX, float velZ, int damage, Entity owner) {
+Entity EntityFactory::createProjectile(float x, float y, float z, float dirX, float dirZ, float speed, int damage, Entity owner) {
     Entity projectile = entityManager.createEntity();
-
-    float size = 0.2f; //Small cube for the projectile
+    float size = 0.2f; 
 
     TransformComponent t;
     t.x = x; t.y = y; t.z = z;
@@ -298,12 +298,19 @@ Entity EntityFactory::createProjectile(float x, float y, float z, float velX, fl
 
     Renderer r;
     r.width = size; r.height = size; r.depth = size;
-    r.color = RED;
+    r.color = RED; 
     componentStorage.AddComponent(projectile, r);
 
+    // Give it standard physical properties
+    componentStorage.AddComponent(projectile, Velocity{dirX, dirZ, speed});
+    
+    Collider c;
+    c.width = size; c.height = size; c.depth = size;
+    c.isTrigger = true; // Triggers don't push things like walls do
+    componentStorage.AddComponent(projectile, c);
+
+    // Give it the projectile tag and stats
     Projectile p;
-    p.velocityX = velX;
-    p.velocityZ = velZ;
     p.damage = damage;
     p.timeToLive = 5.0f;
     p.owner = owner;

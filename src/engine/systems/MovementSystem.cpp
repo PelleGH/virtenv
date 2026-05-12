@@ -7,39 +7,19 @@
 void MovementSystem::update(Scene& scene, float dt)
 {
     ComponentStorage& components = scene.getComponentStorage();
-    auto& inputs = components.GetComponents<PlayerInput>();
+    auto& velocities = components.GetComponents<Velocity>();
 
-    for (auto& [entity, input] : inputs)
+    for (auto& [entity, vel] : velocities)
     {
-        if (!components.HasComponent<TransformComponent>(entity))
-            continue;
+        if (!components.HasComponent<TransformComponent>(entity)) continue;
 
-        TransformComponent& transform =
-            components.GetComponent<TransformComponent>(entity);
-
-        float moveX = 0.0f;
-        float moveZ = 0.0f;
-
-        if (input.right) moveX += 1.0f;
-        if (input.left)  moveX -= 1.0f;
-        if (input.up)    moveZ -= 1.0f;
-        if (input.down)  moveZ += 1.0f;
-
-        float length = std::sqrt(moveX * moveX + moveZ * moveZ);
-
-        if (length > 0.0f)
-        {
-            moveX /= length;
-            moveZ /= length;
-        }
-
-        float speed = 3.0f;
+        TransformComponent& transform = components.GetComponent<TransformComponent>(entity);
 
         transform.previousX = transform.x;
         transform.previousY = transform.y;
         transform.previousZ = transform.z;
 
-        transform.x += moveX * speed * dt;
-        transform.z += moveZ * speed * dt;
+        transform.x += vel.x * vel.speed * dt;
+        transform.z += vel.z * vel.speed * dt;
     }
 }
