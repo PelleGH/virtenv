@@ -2,6 +2,7 @@
 #include "../scene/Scene.h"
 #include "../ecs/Components.h"
 #include "../messaging/EventBus.h"
+#include "../ecs/EntityFactory.h"
 #include "raylib.h"
 
 void AISystem::update(Scene& scene, EventBus& eventBus)
@@ -34,9 +35,9 @@ void AISystem::update(Scene& scene, EventBus& eventBus)
         attackStats.timeSinceLastAttack += dt;
 
         // 3. Check distance to player
-        float dx = enemyTransform.x - playerTransform.x;
-        float dy = enemyTransform.y - playerTransform.y;
-        float dz = enemyTransform.z - playerTransform.z;
+        float dx = playerTransform.x - enemyTransform.x;
+        float dy = playerTransform.y - enemyTransform.y;
+        float dz = playerTransform.z - enemyTransform.z;
         float distSquared = (dx*dx) + (dy*dy) + (dz*dz);
         float rangeSquared = attackStats.range * attackStats.range;
 
@@ -45,12 +46,36 @@ void AISystem::update(Scene& scene, EventBus& eventBus)
         {
             attackStats.timeSinceLastAttack = 0.0f; // Reset timer
 
-            AttackEvent attackEvent;
-            attackEvent.attacker = entity;
-            attackEvent.attackRange = attackStats.range;
-            attackEvent.damage = attackStats.damage;
-            
-            eventBus.publish(attackEvent);
+            if (attackStats.isRanged) 
+            {
+                // Calculate normalized direction vector to player
+                float distance = std::sqrt(distSquared);
+                float dirX = dx / distance;
+                float dirZ = dz / distance;
+
+                // Spawn the physical projectile
+                EntityFactory factory(scene.getEntityManager(), components);
+                Entity proj = factory.createProjectile(
+                    enemyTransform.x, 
+                    enemyTransform.y, 
+                    enemyTransform.z, 
+                    dirX,                            // Just the X direction
+                    dirZ,                            // Just the Z direction
+                    attackStats.projectileSpeed,     
+                    attackStats.damage, 
+                    entity
+                );
+                scene.addEntityToScene(proj);
+            } 
+            else 
+            {
+                // Standard Melee Attack
+                AttackEvent attackEvent;
+                attackEvent.attacker = entity;
+                attackEvent.attackRange = attackStats.range;
+                attackEvent.damage = attackStats.damage;
+                eventBus.publish(attackEvent);
+            }
         }
     }
 }

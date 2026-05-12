@@ -56,6 +56,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     collider.depth = size;
     collider.isTrigger = false;
     componentStorage.AddComponent(player, collider);
+    componentStorage.AddComponent(player, Velocity{0,0,3.0f});
     return player;
 }
 
@@ -242,6 +243,8 @@ Entity EntityFactory::deserialize(const json& j){
         a.cooldown = j["Attack"].value("cooldown", 1.0f);
         a.timeSinceLastAttack = a.cooldown; // Start ready to attack
         a.enemyType = j["Attack"].value("enemyType", "enemy");
+        a.isRanged = j["Attack"].value("isRanged", false);
+        a.projectileSpeed = j["Attack"].value("projectileSpeed", 5.0f);
         componentStorage.AddComponent(entity, a);
     }
 
@@ -283,6 +286,39 @@ Entity EntityFactory::createNPC(float x, float y, float z, const std::string& di
 
     return npc;
 }
+
+Entity EntityFactory::createProjectile(float x, float y, float z, float dirX, float dirZ, float speed, int damage, Entity owner) {
+    Entity projectile = entityManager.createEntity();
+    float size = 0.2f; 
+
+    TransformComponent t;
+    t.x = x; t.y = y; t.z = z;
+    t.width = size; t.height = size; t.depth = size;
+    componentStorage.AddComponent(projectile, t);
+
+    Renderer r;
+    r.width = size; r.height = size; r.depth = size;
+    r.color = RED; 
+    componentStorage.AddComponent(projectile, r);
+
+    // Give it standard physical properties
+    componentStorage.AddComponent(projectile, Velocity{dirX, dirZ, speed});
+    
+    Collider c;
+    c.width = size; c.height = size; c.depth = size;
+    c.isTrigger = true; // Triggers don't push things like walls do
+    componentStorage.AddComponent(projectile, c);
+
+    // Give it the projectile tag and stats
+    Projectile p;
+    p.damage = damage;
+    p.timeToLive = 5.0f;
+    p.owner = owner;
+    componentStorage.AddComponent(projectile, p);
+
+    return projectile;
+}
+
 bool EntityFactory::saveEntitiesToFile(const std::vector<Entity>& entities, const std::string& filename)
 {
     json jsonArray = json::array();

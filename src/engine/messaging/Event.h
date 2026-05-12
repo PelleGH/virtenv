@@ -14,6 +14,8 @@ struct AttackEvent
     Entity attacker;
     float attackRange;
     int damage;
+    bool isDirectHit = false;
+    Entity directTarget;
 };
 
 struct DeathEvent {
@@ -31,4 +33,10 @@ struct GameplayEvent {
 
 struct DialogueStartEvent {
     std::string dialogueId;
+};
+
+struct OverlapEvent {
+    Entity entityA;
+    Entity entityB;
+    bool hitWall = false;
 };

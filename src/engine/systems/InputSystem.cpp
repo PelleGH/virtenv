@@ -22,6 +22,27 @@ void InputSystem::update(Scene& scene, EventBus& eventBus)
         input.attack = IsKeyPressed(KEY_SPACE);
         input.interact = IsKeyPressed(KEY_E);
 
+        // --- TRANSLATE INPUT TO VELOCITY ---
+        if (components.HasComponent<Velocity>(entity)) {
+            auto& vel = components.GetComponent<Velocity>(entity);
+            float moveX = 0.0f;
+            float moveZ = 0.0f;
+
+            if (input.right) moveX += 1.0f;
+            if (input.left)  moveX -= 1.0f;
+            if (input.up)    moveZ -= 1.0f;
+            if (input.down)  moveZ += 1.0f;
+
+            float length = std::sqrt(moveX * moveX + moveZ * moveZ);
+            if (length > 0.0f) {
+                moveX /= length;
+                moveZ /= length;
+            }
+
+            vel.x = moveX;
+            vel.z = moveZ;
+        }
+
         // --- DYNAMIC ATTACK & COOLDOWN LOGIC ---
         if (components.HasComponent<Attack>(entity))
         {

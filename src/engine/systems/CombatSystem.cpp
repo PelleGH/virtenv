@@ -32,60 +32,57 @@ void CombatSystem::onAttack(const AttackEvent& event)
 
     for (auto& [entity, health] : healthComponents)
     {
-        // Don't let the attacker damage themselves
         if (entity == event.attacker) continue;
-
-        // Ensure the target has a position in the world
         if (!components.HasComponent<TransformComponent>(entity)) continue;
 
-        // Check if the target is the player
         bool isTargetPlayer = components.HasComponent<PlayerInput>(entity);
-
-        // --- FRIENDLY FIRE FILTER ---
-        // If a player attacks a player, or an enemy attacks an enemy, skip it!
         if (isAttackerPlayer == isTargetPlayer) continue; 
 
-        auto& targetTransform = components.GetComponent<TransformComponent>(entity);
+        bool hitConfirmed = false;
 
-        // 3D Distance check
-        float dx = attackerTransform.x - targetTransform.x;
-        float dy = attackerTransform.y - targetTransform.y;
-        float dz = attackerTransform.z - targetTransform.z;
+        // DIRECT HIT (from a projectile)
+        if (event.isDirectHit) {
+            if (entity == event.directTarget) {
+                hitConfirmed = true;
+            }
+        } 
+        // SPHERICAL HIT (from melee)
+        else {
+            auto& targetTransform = components.GetComponent<TransformComponent>(entity);
+            float dx = attackerTransform.x - targetTransform.x;
+            float dy = attackerTransform.y - targetTransform.y;
+            float dz = attackerTransform.z - targetTransform.z;
 
-        float distanceSquared = (dx * dx) + (dy * dy) + (dz * dz);
-        float rangeSquared = event.attackRange * event.attackRange;
+            float distanceSquared = (dx * dx) + (dy * dy) + (dz * dz);
+            float rangeSquared = event.attackRange * event.attackRange;
 
-        // Apply damage if within range
-        if (distanceSquared <= rangeSquared)
+            if (distanceSquared <= rangeSquared) {
+                hitConfirmed = true;
+            }
+        }
+
+        // APPLY DAMAGE
+        if (hitConfirmed && health.current > 0)
         {
-            // Only deal damage if they are actually alive
-            if (health.current > 0) 
+            health.current -= event.damage; 
+            std::cout << "Entity " << entity.id << " took " << event.damage 
+                      << " damage! HP remaining: " << health.current << '\n';
+
+            if (health.current <= 0)
             {
-                health.current -= event.damage; 
-                std::cout << "Entity " << entity.id << " took " << event.damage 
-                          << " damage! HP remaining: " << health.current << '\n';
-
-                // If this hit killed them, publish the DeathEvent!
-                if (health.current <= 0)
-                {
-                    if (!components.HasComponent<PlayerInput>(entity))
-                    {
-                        std::string enemyType = "enemy";
-
-                        if (components.HasComponent<Attack>(entity))
-                        {
-                            enemyType = components.GetComponent<Attack>(entity).enemyType;
-                        }
-
-                        EnemyKilledEvent killedEvent;
-                        killedEvent.enemyType = enemyType;
-                        m_eventBus->publish(killedEvent);
+                if (!components.HasComponent<PlayerInput>(entity)) {
+                    std::string enemyType = "enemy";
+                    if (components.HasComponent<Attack>(entity)) {
+                        enemyType = components.GetComponent<Attack>(entity).enemyType;
                     }
-
-                    DeathEvent deathEvent;
-                    deathEvent.entity = entity;
-                    m_eventBus->publish(deathEvent);
+                    EnemyKilledEvent killedEvent;
+                    killedEvent.enemyType = enemyType;
+                    m_eventBus->publish(killedEvent);
                 }
+
+                DeathEvent deathEvent;
+                deathEvent.entity = entity;
+                m_eventBus->publish(deathEvent);
             }
         }
     }

@@ -71,6 +71,7 @@ bool Engine::init()
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
 
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
+    projectileSystem.initialize(sceneManager.getCurrentScene(), eventBus);
 
     return sceneLoaded;
 }
@@ -111,13 +112,14 @@ void Engine::update(float dt)
         aiSystem.update(sceneManager.getCurrentScene(), eventBus);
 
         movementSystem.update(sceneManager.getCurrentScene(), dt);
+        projectileSystem.update(sceneManager.getCurrentScene(), dt);
 
         conditionalSystem.update(
             sceneManager.getCurrentScene(),
             conditionManager
         );
 
-        collisionSystem.update(sceneManager.getCurrentScene());
+        collisionSystem.update(sceneManager.getCurrentScene(), eventBus);
 
         triggerSystem.update(
             sceneManager.getCurrentScene(),
