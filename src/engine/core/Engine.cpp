@@ -66,6 +66,16 @@ bool Engine::init()
     {
         questManager.onEvent(event.type, event.targetId, event.amount);
     });
+
+    // Interaction type
+    actionHandlers["StartDialogue"] = [this](const std::string& data){
+        this -> dialogueManager.startDialogue(data);
+    };
+
+    eventBus.subscribe<ActionEvent>([this](const ActionEvent& actionEvent) {
+        this->onActionEvent(actionEvent);
+    });
+    
     running = true;
 
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
@@ -100,7 +110,7 @@ void Engine::update(float dt)
     bool gameplayPaused = dialogueManager.isActive();
     //std::cout << "Updating engine. dt: " << dt << '\n';
     inputSystem.update(sceneManager.getCurrentScene(), eventBus);
-    debugNPCInteraction();
+    //debugNPCInteraction();
     
     if (IsKeyPressed(KEY_K))
     {
@@ -109,6 +119,8 @@ void Engine::update(float dt)
     
     if (!gameplayPaused)
     {
+        interactionSystem.update(sceneManager.getCurrentScene(), eventBus);
+
         aiSystem.update(sceneManager.getCurrentScene(), eventBus);
 
         movementSystem.update(sceneManager.getCurrentScene(), dt);
@@ -208,5 +220,18 @@ void Engine::debugNPCInteraction()
 
             break;
         }
+    }
+}
+
+void Engine::onActionEvent(const ActionEvent& actionEvent){
+
+    //Find the action
+    auto it = actionHandlers.find(actionEvent.actionType);
+
+    //If the action excist
+    if (it != actionHandlers.end()){
+        it -> second(actionEvent.targetData);
+    }else{
+       std::cout << "VARNING: Unknown actionType from JSON: " << actionEvent.actionType << '\n';
     }
 }
