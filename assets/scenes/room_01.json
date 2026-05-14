@@ -1232,6 +1232,36 @@
             },
             "DialogueSource": {
                 "dialogueSetId": "old_man"
+            },
+            "Interactable":{
+                "actions":[
+                    {
+                        "type": "StartDialogue",
+                        "target": "old_man"
+                    }
+                ]
+            }
+        },
+        {
+            "SpawnType": {
+                "entityToSpawn": "npc",
+                "hasSpawned": false
+            },
+            "TransformComponent": {
+                "x": -1,
+                "y": 1,
+                "z": 1
+            },
+            "DialogueSource": {
+                "dialogueSetId": "test_npc"
+            },
+            "Interactable":{
+                "actions":[
+                    {
+                        "type": "StartDialogue",
+                        "target": "test_npc"
+                    }
+                ]
             }
         },
         {

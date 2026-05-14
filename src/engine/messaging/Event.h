@@ -40,3 +40,10 @@ struct OverlapEvent {
     Entity entityB;
     bool hitWall = false;
 };
+
+struct ActionEvent{
+    Entity initiator;           //Who pressed the button
+    Entity targetEntity;        //What is pressed
+    std::string actionType;     //What to do e.g. "StartDialogue"
+    std::string targetData;     //Goal e.g. "old_man"
+};

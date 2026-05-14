@@ -35,6 +35,8 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Velocity>();
     componentStorage.RegisterComponent<Projectile>();
 
+    componentStorage.RegisterComponent<Interactable>();
+
 
     EntityFactory factory(entityManager, componentStorage);
 

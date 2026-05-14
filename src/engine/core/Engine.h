@@ -17,8 +17,12 @@
 #include "../systems/CombatSystem.h"
 #include "../systems/AISystem.h"
 #include "../systems/ProjectileSystem.h"
-
+#include "../systems/InteractionSystem.h"
 #include "../resource/ResourceManager.h"
+
+#include <unordered_map>
+#include <functional>
+#include <string>
 
 class Engine
 {
@@ -46,8 +50,14 @@ private:
     AISystem aiSystem;
     ResourceManager resourceManager;
     ProjectileSystem projectileSystem;
+    InteractionSystem interactionSystem;
 
     void debugNPCInteraction();
+
+    //Connects a string directly to the function instead of many if / else
+    std::unordered_map<std::string, std::function<void(const std::string&)>> actionHandlers;
+
+    void onActionEvent(const ActionEvent& actionEvent);
     
     void update(float dt);
     void render();

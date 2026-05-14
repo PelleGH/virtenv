@@ -156,3 +156,13 @@ struct DialogueSource {
 struct Breakable {
     std::string dropLootID = ""; 
 };
+
+struct ActionDefinition{
+    std::string type;       //What to do e.g. "StartDialogue"
+    std::string target;     //Goal e.g. "old_man"
+};
+
+struct Interactable{   
+    float interactionRadius = 1.0f;             //How close the player need to be to the object
+    std::vector<ActionDefinition> actions;      //List with all event that can be triggers      
+};
