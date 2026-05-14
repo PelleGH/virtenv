@@ -248,6 +248,25 @@ Entity EntityFactory::deserialize(const json& j){
         componentStorage.AddComponent(entity, a);
     }
 
+    // Deserialize Interaction
+    if (j.contains("Interactable")) {
+        Interactable interactable;
+        
+        const auto& interactJson = j["Interactable"];
+        interactable.interactionRadius = interactJson.value("interactionRadius", 1.0f);
+
+        if (interactJson.contains("actions") && interactJson["actions"].is_array()) {
+            for (const auto& actionJson : interactJson["actions"]) {
+                ActionDefinition actionDef;
+                actionDef.type = actionJson.value("type", "");
+                actionDef.target = actionJson.value("target", "");
+                interactable.actions.push_back(actionDef);
+            }
+        }
+
+        componentStorage.AddComponent(entity, interactable);
+    }
+    
     return entity;
 }
 Entity EntityFactory::createNPC(float x, float y, float z, const std::string& dialogueSetId)
