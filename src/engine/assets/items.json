@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "id": "iron_sword",
+      "name": "Iron Sword",
+      "slot": "Weapon",
+      "damageBonus": 25,
+      "healthBonus": 0,
+      "defenseBonus": 0
+    },
+    {
+      "id": "steel_armor",
+      "name": "Steel Armor",
+      "slot": "Armor",
+      "damageBonus": 0,
+      "healthBonus": 50,
+      "defenseBonus": 50
+    }
+  ]
+}

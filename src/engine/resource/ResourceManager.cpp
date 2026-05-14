@@ -95,3 +95,35 @@ void ResourceManager::clear() {
     textures.clear();
     models.clear();
 }
+
+bool ResourceManager::loadItems(const std::string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) return false;
+
+    nlohmann::json data;
+    file >> data;
+
+    for (const auto& itemJson : data["items"]) {
+        ItemData item;
+        item.id = itemJson.value("id", "");
+        item.name = itemJson.value("name", "Unknown");
+        
+        std::string slotStr = itemJson.value("slot", "None");
+        if (slotStr == "Weapon") item.slot = EquipSlot::Weapon;
+        else if (slotStr == "Armor") item.slot = EquipSlot::Armor;
+        
+        item.damageBonus = itemJson.value("damageBonus", 0);
+        item.healthBonus = itemJson.value("healthBonus", 0);
+
+        itemDatabase[item.id] = item;
+    }
+    std::cout << "Loaded " << itemDatabase.size() << " items into database.\n";
+    return true;
+}
+
+ItemData ResourceManager::getItem(const std::string& id) {
+    if (itemDatabase.find(id) != itemDatabase.end()) {
+        return itemDatabase[id];
+    }
+    return ItemData{}; // Return empty if not found
+}

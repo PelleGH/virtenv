@@ -97,8 +97,25 @@ struct Projectile {
 };
 
 struct Loadout {
-    Entity weaponSlot{}; // ID of the equipped weapon entity
-    Entity armorSlot{};  // ID of the equipped armor entity
+    std::string weaponId = ""; 
+    std::string armorId = "";
+};
+
+enum class EquipSlot {
+    None,
+    Weapon,
+    Armor
+};
+
+struct ItemData {
+    std::string id;         
+    std::string name;       
+    EquipSlot slot = EquipSlot::None;
+    
+    //Stats it gives when equipped
+    int damageBonus = 0;
+    int healthBonus = 0;
+    int defenseBonus = 0;
 };
 
 

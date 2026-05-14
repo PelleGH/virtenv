@@ -40,3 +40,14 @@ struct OverlapEvent {
     Entity entityB;
     bool hitWall = false;
 };
+
+struct PickupEvent {
+    Entity player;
+    Entity groundEntity; // The cube on the ground
+    std::string itemId;  // The data inside it
+};
+
+struct EquipEvent {
+    Entity player;
+    std::string itemId;  // The ID we want to equip from our inventory
+};

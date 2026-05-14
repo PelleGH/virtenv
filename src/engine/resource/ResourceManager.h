@@ -22,8 +22,12 @@ class ResourceManager {
 
         void clear();
 
+        ItemData getItem(const std::string& id);
+        bool loadItems(const std::string& path);
+
     private:
         std::unordered_map<std::string, Texture2D> textures;
         std::unordered_map<std::string, Model> models;
+        std::unordered_map<std::string, ItemData> itemDatabase;
 
 };
