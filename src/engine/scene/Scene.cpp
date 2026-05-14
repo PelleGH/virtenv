@@ -30,6 +30,7 @@ bool Scene::load(const std::string& scenePath)
 
     componentStorage.RegisterComponent<Health>();
     componentStorage.RegisterComponent<Attack>();
+    componentStorage.RegisterComponent<AIController>();
     componentStorage.RegisterComponent<Collider>();
     componentStorage.RegisterComponent<SceneTransition>();
     componentStorage.RegisterComponent<Velocity>();
