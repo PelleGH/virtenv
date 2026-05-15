@@ -34,6 +34,7 @@ add_executable(VirtenEditor
     src/engine/resource/ResourceManager.cpp
     src/engine/systems/InteractionSystem.cpp
     src/engine/systems/InventorySystem.cpp
+    src/engine/systems/InventoryUISystem.cpp
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

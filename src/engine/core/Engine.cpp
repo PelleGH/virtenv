@@ -80,7 +80,7 @@ bool Engine::init()
 
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
 
-    resourceManager.loadItems("assets/items.json"); 
+    resourceManager.loadItems("src/engine/assets/items.json"); 
     inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);
 
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
@@ -166,6 +166,7 @@ void Engine::render()
     BeginDrawing();
     ClearBackground(RAYWHITE);
     renderSystem.render(sceneManager.getCurrentScene(), resourceManager, camera);
+    inventoryUISystem.render(sceneManager.getCurrentScene(), resourceManager);
     dialogueManager.render();
     EndDrawing();
 }

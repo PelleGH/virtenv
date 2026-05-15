@@ -67,14 +67,22 @@ void InputSystem::update(Scene& scene, EventBus& eventBus)
             }
         }
 
-        // INVENTORY EQUIP
-        if (IsKeyPressed(KEY_ONE) && components.HasComponent<Inventory>(entity)) {
+        //INVENTORY EQUIP
+        //(Press 1-9 to equip item in that slot)
+        if (components.HasComponent<Inventory>(entity)) {
             auto& inv = components.GetComponent<Inventory>(entity);
-            if (!inv.items.empty()) {
-                EquipEvent equip;
-                equip.player = entity;
-                equip.itemId = inv.items[0];
-                eventBus.publish(equip);
+            
+            // Raylib keys 1 through 9 map to integer values 49 through 57
+            for (int i = 0; i < 9; i++) {
+                if (IsKeyPressed(KEY_ONE + i)) {
+                    // Make sure we actually have an item in that slot before firing the event
+                    if (i < inv.items.size()) {
+                        EquipEvent equip;
+                        equip.player = entity;
+                        equip.itemId = inv.items[i];
+                        eventBus.publish(equip);
+                    }
+                }
             }
         }
     }
