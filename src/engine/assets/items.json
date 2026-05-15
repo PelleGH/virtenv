@@ -14,7 +14,7 @@
       "slot": "Armor",
       "damageBonus": 0,
       "healthBonus": 50,
-      "defenseBonus": 50
+      "defenseBonus": 10
     },
     {
       "id": "prime_armor",

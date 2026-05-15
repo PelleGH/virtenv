@@ -57,15 +57,45 @@ void InventorySystem::onEquip(const EquipEvent& event) {
         oldItem = loadout.weaponId;
         loadout.weaponId = event.itemId;
 
-        // Apply stats! Base damage + weapon damage
+        // Apply Base damage + weapon damage
         if (components.HasComponent<Attack>(event.player)) {
             components.GetComponent<Attack>(event.player).damage = 10 + itemData.damageBonus; 
         }
         std::cout << "Equipped Weapon: " << itemData.name << "\n";
     } 
-    else if (itemData.slot == EquipSlot::Armor) {
+    else if (itemData.slot == EquipSlot::Armor) 
+    {
         oldItem = loadout.armorId;
         loadout.armorId = event.itemId;
+
+        if (components.HasComponent<Health>(event.player)) 
+        {
+            auto& health = components.GetComponent<Health>(event.player);
+            
+            int oldMax = health.max;
+            
+            // Set new Max HP (Base 100 + Armor Bonus)
+            health.max = 100 + itemData.healthBonus; 
+            
+            // Adjust current health based on the difference
+            health.current += (health.max - oldMax); 
+            
+            // Don't let them have more than max HP
+            if (health.current > health.max) 
+            {
+                health.current = health.max;
+            }
+            
+            // Don't let equipping a worse armor kill them! Cap at 1 HP.
+            if (health.current < 1) 
+            { 
+                health.current = 1;
+            }
+
+            // Apply the flat damage reduction defense stat
+            health.defense = itemData.defenseBonus; 
+        }
+        
         std::cout << "Equipped Armor: " << itemData.name << "\n";
     }
 

@@ -70,6 +70,7 @@ struct ConditionalBlocker
 struct Health {
     int current = 100;
     int max = 100;
+    int defense = 0;
 };
 
 struct Attack {

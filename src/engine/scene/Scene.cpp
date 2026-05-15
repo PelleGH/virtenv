@@ -250,7 +250,9 @@ void Scene::resetPlayerAt(const std::string& spawnId)
     if (componentStorage.HasComponent<Health>(player))
     {
         auto& h = componentStorage.GetComponent<Health>(player);
-        h.current = h.max;
+        h.max = 100;      //Reset back to base Max HP
+        h.current = 100;  //Heal to full base HP
+        h.defense = 0;    //Strip all ghost defense
     }
 
     if (componentStorage.HasComponent<Velocity>(player))
@@ -260,7 +262,23 @@ void Scene::resetPlayerAt(const std::string& spawnId)
         v.z = 0.0f;
     }
 
-    // Later when inventory exists:
-    // if (componentStorage.HasComponent<Inventory>(player))
-    //     componentStorage.GetComponent<Inventory>(player).items.clear();
+    //RESET INVENTORY & LOADOUT ON DEATH
+    if (componentStorage.HasComponent<Inventory>(player))
+    {
+        componentStorage.GetComponent<Inventory>(player).items.clear();
+    }
+
+    if (componentStorage.HasComponent<Loadout>(player))
+    {
+        //Unequip all items
+        auto& loadout = componentStorage.GetComponent<Loadout>(player);
+        loadout.weaponId = "";
+        loadout.armorId = "";
+    }
+
+    if (componentStorage.HasComponent<Attack>(player))
+    {
+        auto& attack = componentStorage.GetComponent<Attack>(player);
+        attack.damage = 10; 
+    }
 }

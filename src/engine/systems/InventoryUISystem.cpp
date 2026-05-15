@@ -10,40 +10,46 @@ void InventoryUISystem::render(Scene& scene, ResourceManager& resManager) {
     // Find the player
     for (auto& [entity, input] : components.GetComponents<PlayerInput>()) {
         
-        // --- 1. DRAW INVENTORY ---
+        int startX = 20; 
+        int startY = 60;                     
+
+        int panelWidth = 270;
+
+        // draw inventory
         if (components.HasComponent<Inventory>(entity)) {
             auto& inv = components.GetComponent<Inventory>(entity);
             
-            // Draw a semi-transparent background panel
-            DrawRectangle(10, 10, 300, 300, Fade(BLACK, 0.7f));
-            DrawText("INVENTORY (Press 1-9 to Equip)", 20, 20, 16, WHITE);
-            DrawLine(20, 45, 290, 45, GRAY);
+            DrawRectangle(startX, startY, panelWidth, 300, Fade(BLACK, 0.7f));
+            DrawText("INVENTORY (Press 1-9 to Equip)", startX + 10, startY + 10, 16, WHITE);
+            DrawLine(startX + 10, startY + 35, startX + panelWidth - 10, startY + 35, GRAY);
 
-            int startY = 60;
+            int textY = startY + 50;
             for (size_t i = 0; i < inv.items.size(); i++) {
-                // Get the actual display name from the resource manager
                 ItemData item = resManager.getItem(inv.items[i]);
                 std::string displayText = std::to_string(i + 1) + ". " + item.name;
                 
-                DrawText(displayText.c_str(), 20, startY + (i * 30), 20, LIGHTGRAY);
+                DrawText(displayText.c_str(), startX + 10, textY + (i * 30), 20, LIGHTGRAY);
             }
         }
 
-        // --- 2. DRAW LOADOUT ---
+        // draw loadout
         if (components.HasComponent<Loadout>(entity)) {
             auto& loadout = components.GetComponent<Loadout>(entity);
             
-            DrawRectangle(10, 320, 300, 120, Fade(DARKBLUE, 0.7f));
-            DrawText("EQUIPPED", 20, 330, 16, WHITE);
-            DrawLine(20, 355, 290, 355, GRAY);
+            // Draw this panel directly below the inventory panel
+            int loadoutY = startY + 310; 
+
+            DrawRectangle(startX, loadoutY, panelWidth, 120, Fade(DARKBLUE, 0.7f));
+            DrawText("EQUIPPED", startX + 10, loadoutY + 10, 16, WHITE);
+            DrawLine(startX + 10, loadoutY + 35, startX + panelWidth - 10, loadoutY + 35, GRAY);
 
             // Weapon
             std::string weaponName = loadout.weaponId.empty() ? "None" : resManager.getItem(loadout.weaponId).name;
-            DrawText(("Weapon: " + weaponName).c_str(), 20, 370, 20, ORANGE);
+            DrawText(("Weapon: " + weaponName).c_str(), startX + 10, loadoutY + 50, 20, ORANGE);
 
             // Armor
             std::string armorName = loadout.armorId.empty() ? "None" : resManager.getItem(loadout.armorId).name;
-            DrawText(("Armor:  " + armorName).c_str(), 20, 400, 20, SKYBLUE);
+            DrawText(("Armor:  " + armorName).c_str(), startX + 10, loadoutY + 80, 20, SKYBLUE);
         }
     }
 }

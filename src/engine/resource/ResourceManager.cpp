@@ -114,6 +114,7 @@ bool ResourceManager::loadItems(const std::string& path) {
         
         item.damageBonus = itemJson.value("damageBonus", 0);
         item.healthBonus = itemJson.value("healthBonus", 0);
+        item.defenseBonus = itemJson.value("defenseBonus", 0);
 
         itemDatabase[item.id] = item;
     }
