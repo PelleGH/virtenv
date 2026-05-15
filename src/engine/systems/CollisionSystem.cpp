@@ -125,8 +125,7 @@ bool CollisionSystem::collidesWithSolidEntities(
             continue;
         if (otherEntity == self)
             continue;
-
-        if (otherCollider.isTrigger)
+        if (shouldIgnoreEntityCollision(components, self, otherEntity))
             continue;
 
         if (!components.HasComponent<TransformComponent>(otherEntity))
@@ -158,7 +157,7 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         if (!collider.enabled)
             continue;
 
-        if (!components.HasComponent<PlayerInput>(entity))
+        if (!components.HasComponent<Velocity>(entity))
             continue;
         if (collider.isTrigger)
             continue;
@@ -221,7 +220,7 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         bool zOnlyBlocked =
             collidesWithSolidGrid(
                 scene,
-                transform.x,
+                transform.previousX,
                 transform.previousY,
                 transform.z,
                 collider.width,
@@ -232,7 +231,7 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             collidesWithSolidEntities(
                 scene,
                 entity,
-                transform.x,
+                transform.previousX,
                 transform.previousY,
                 transform.z,
                 collider.width,
@@ -297,4 +296,65 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             }
         }
     }
+}
+bool CollisionSystem::isMoveBlocked(
+    Scene& scene,
+    Entity entity,
+    float directionX,
+    float directionZ,
+    float distance
+) {
+    auto& components = scene.getComponentStorage();
+
+    if (!components.HasComponent<TransformComponent>(entity)) return false;
+    if (!components.HasComponent<Collider>(entity)) return false;
+
+    auto& transform = components.GetComponent<TransformComponent>(entity);
+    auto& collider = components.GetComponent<Collider>(entity);
+
+    float testX = transform.x + directionX * distance;
+    float testZ = transform.z + directionZ * distance;
+
+    return collidesWithSolidGrid(
+        scene,
+        testX,
+        transform.y,
+        testZ,
+        collider.width,
+        collider.height,
+        collider.depth
+    )
+    ||
+    collidesWithSolidEntities(
+        scene,
+        entity,
+        testX,
+        transform.y,
+        testZ,
+        collider.width,
+        collider.height,
+        collider.depth
+    );
+}
+bool CollisionSystem::shouldIgnoreEntityCollision(
+    ComponentStorage& components,
+    Entity self,
+    Entity other
+)
+{
+    bool selfIsPlayer = components.HasComponent<PlayerInput>(self);
+    bool otherIsPlayer = components.HasComponent<PlayerInput>(other);
+
+    bool selfIsEnemy = components.HasComponent<AIController>(self);
+    bool otherIsEnemy = components.HasComponent<AIController>(other);
+
+    // Let player and enemies overlap physically.
+    // Combat still uses Attack range, so enemies can still damage the player.
+    if ((selfIsPlayer && otherIsEnemy) ||
+        (selfIsEnemy && otherIsPlayer))
+    {
+        return true;
+    }
+
+    return false;
 }

@@ -5,10 +5,10 @@
 #include "../ecs/EntityFactory.h"
 #include "raylib.h"
 
-void AISystem::update(Scene& scene, EventBus& eventBus)
+void AISystem::update(Scene& scene, EventBus& eventBus, float dt)
 {
+    
     ComponentStorage& components = scene.getComponentStorage();
-    float dt = GetFrameTime();
 
     // 1. Find the Player entity to know where to attack
     Entity playerEntity;
@@ -31,6 +31,102 @@ void AISystem::update(Scene& scene, EventBus& eventBus)
 
         auto& enemyTransform = components.GetComponent<TransformComponent>(entity);
 
+        // Movement Logic
+        if (components.HasComponent<AIController>(entity) &&
+            components.HasComponent<Velocity>(entity))
+        {
+            auto& ai = components.GetComponent<AIController>(entity);
+            auto& vel = components.GetComponent<Velocity>(entity);
+
+            float dx = playerTransform.x - enemyTransform.x;
+            float dz = playerTransform.z - enemyTransform.z;
+            float distSq2D = dx * dx + dz * dz;
+            float dist = std::sqrt(distSq2D);
+
+            vel.x = 0.0f;
+            vel.z = 0.0f;
+
+            if (dist <= ai.aggroRange && dist > 0.001f)
+            {
+                float dirX = dx / dist;
+                float dirZ = dz / dist;
+
+                // --- Separation from nearby enemies ---
+                float separationX = 0.0f;
+                float separationZ = 0.0f;
+
+                const float separationRadius = 1.3f;
+                const float separationWeight = 1.2f;
+
+                for (auto& [otherEntity, otherAttack] : components.GetComponents<Attack>())
+                {
+                    if (otherEntity == entity) continue;
+                    if (components.HasComponent<PlayerInput>(otherEntity)) continue;
+                    if (!components.HasComponent<TransformComponent>(otherEntity)) continue;
+
+                    auto& otherTransform =
+                        components.GetComponent<TransformComponent>(otherEntity);
+
+                    float awayX = enemyTransform.x - otherTransform.x;
+                    float awayZ = enemyTransform.z - otherTransform.z;
+
+                    float awayDistSq = awayX * awayX + awayZ * awayZ;
+
+                    if (awayDistSq > 0.001f &&
+                        awayDistSq < separationRadius * separationRadius)
+                    {
+                        float awayDist = std::sqrt(awayDistSq);
+
+                        separationX += awayX / awayDist;
+                        separationZ += awayZ / awayDist;
+                    }
+                }
+
+                if (!attackStats.isRanged)
+                {
+                    if (dist > attackStats.range)
+                    {
+                        float finalX = dirX + separationX * separationWeight;
+                        float finalZ = dirZ + separationZ * separationWeight;
+
+                        float finalLength = std::sqrt(finalX * finalX + finalZ * finalZ);
+
+                        if (finalLength > 0.001f)
+                        {
+                            vel.x = finalX / finalLength;
+                            vel.z = finalZ / finalLength;
+                        }
+                    }
+                }
+                else
+                {
+                    float moveX = 0.0f;
+                    float moveZ = 0.0f;
+
+                    if (dist > ai.preferredRange)
+                    {
+                        moveX = dirX;
+                        moveZ = dirZ;
+                    }
+                    else if (dist < ai.minimumRange)
+                    {
+                        moveX = -dirX;
+                        moveZ = -dirZ;
+                    }
+
+                    float finalX = moveX + separationX * separationWeight;
+                    float finalZ = moveZ + separationZ * separationWeight;
+
+                    float finalLength = std::sqrt(finalX * finalX + finalZ * finalZ);
+
+                    if (finalLength > 0.001f)
+                    {
+                        vel.x = finalX / finalLength;
+                        vel.z = finalZ / finalLength;
+                    }
+                }
+            }
+        }
         // Always tick the enemy's cooldown timer
         attackStats.timeSinceLastAttack += dt;
 
@@ -53,6 +149,11 @@ void AISystem::update(Scene& scene, EventBus& eventBus)
                 float dirX = dx / distance;
                 float dirZ = dz / distance;
 
+                float leftX = -dirZ;
+                float leftZ = dirX;
+
+                float rightX = dirZ;
+                float rightZ = -dirX;
                 // Spawn the physical projectile
                 EntityFactory factory(scene.getEntityManager(), components);
                 Entity proj = factory.createProjectile(
