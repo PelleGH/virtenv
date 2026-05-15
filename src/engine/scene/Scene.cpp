@@ -20,26 +20,7 @@ bool Scene::load(const std::string& scenePath)
     //std::cout << "Cubes: " << data.cubes.size() << '\n';
     
     // 2. Registrera alla komponenter du använder i scenen
-    componentStorage.RegisterComponent<TransformComponent>();
-    componentStorage.RegisterComponent<Renderer>();
-    componentStorage.RegisterComponent<PlayerInput>();
-    componentStorage.RegisterComponent<SpawnType>();
-
-    componentStorage.RegisterComponent<ConditionalBlocker>();
-    componentStorage.RegisterComponent<DialogueSource>();
-
-    componentStorage.RegisterComponent<Health>();
-    componentStorage.RegisterComponent<Attack>();
-    componentStorage.RegisterComponent<Collider>();
-    componentStorage.RegisterComponent<SceneTransition>();
-    componentStorage.RegisterComponent<Velocity>();
-    componentStorage.RegisterComponent<Projectile>();
-
-    componentStorage.RegisterComponent<Interactable>();
-    componentStorage.RegisterComponent<Inventory>();
-    componentStorage.RegisterComponent<Loadout>();
-    componentStorage.RegisterComponent<Pickup>();
-
+    registerComponents();
 
     EntityFactory factory(entityManager, componentStorage);
 
@@ -59,26 +40,30 @@ bool Scene::load(const std::string& scenePath)
 
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
-    EntityFactory factory(entityManager, componentStorage);
-
     PlayerSpawn spawn;
 
     auto it = data.playerSpawns.find(spawnId);
-
     if (it != data.playerSpawns.end())
-    {
         spawn = it->second;
-    }
-    else
-    {
-        auto defaultIt = data.playerSpawns.find("default");
+    else if (data.playerSpawns.find("default") != data.playerSpawns.end())
+        spawn = data.playerSpawns["default"];
 
-        if (defaultIt != data.playerSpawns.end())
+    for (Entity e : activeEntitiesList)
+    {
+        if (entityManager.isAlive(e) &&
+            componentStorage.HasComponent<PlayerInput>(e) &&
+            componentStorage.HasComponent<TransformComponent>(e))
         {
-            spawn = defaultIt->second;
+            auto& transform = componentStorage.GetComponent<TransformComponent>(e);
+            transform.x = spawn.x;
+            transform.y = spawn.y;
+            transform.z = spawn.z;
+
+            return e;
         }
     }
 
+    EntityFactory factory(entityManager, componentStorage);
     Entity player = factory.createPlayer(spawn.x, spawn.y, spawn.z, spawn.skinChoice);
     addEntityToScene(player);
 
@@ -103,10 +88,40 @@ void Scene::update(float dt)
 void Scene::unload()
 {
     data.cubes.clear();
-    activeEntitiesList.clear();
 
-    entityManager = EntityManager();
-    componentStorage = ComponentStorage();
+    std::vector<Entity> keptEntities;
+
+    for (Entity e : activeEntitiesList)
+    {
+        bool isPlayer =
+            entityManager.isAlive(e) &&
+            componentStorage.HasComponent<PlayerInput>(e);
+
+        if (isPlayer)
+        {
+            keptEntities.push_back(e);
+        }
+        else
+        {
+            entityManager.destroyEntityQueue(e);
+        }
+    }
+
+    entityManager.destroyEntity();
+
+    for (Entity e : activeEntitiesList)
+    {
+        bool isPlayer =
+            entityManager.isAlive(e) &&
+            componentStorage.HasComponent<PlayerInput>(e);
+
+        if (!isPlayer)
+        {
+            componentStorage.EntityDestroyed(e);
+        }
+    }
+
+    activeEntitiesList = keptEntities;
 }
 
 const SceneData& Scene::getData() const
@@ -167,4 +182,85 @@ void Scene::cleanupDestroyedEntities()
             }),
         activeEntitiesList.end()
     );
+}
+void Scene::registerComponents()
+{
+    if (componentsRegistered)
+        return;
+
+    componentStorage.RegisterComponent<TransformComponent>();
+    componentStorage.RegisterComponent<Renderer>();
+    componentStorage.RegisterComponent<PlayerInput>();
+    componentStorage.RegisterComponent<SpawnType>();
+    componentStorage.RegisterComponent<ConditionalBlocker>();
+    componentStorage.RegisterComponent<DialogueSource>();
+    componentStorage.RegisterComponent<Health>();
+    componentStorage.RegisterComponent<Attack>();
+    componentStorage.RegisterComponent<AIController>();
+    componentStorage.RegisterComponent<Collider>();
+    componentStorage.RegisterComponent<SceneTransition>();
+    componentStorage.RegisterComponent<Velocity>();
+    componentStorage.RegisterComponent<Projectile>();
+    componentStorage.RegisterComponent<Interactable>();
+    componentStorage.RegisterComponent<Inventory>();
+    componentStorage.RegisterComponent<Loadout>();
+
+    componentsRegistered = true;
+}
+Entity Scene::getPlayer()
+{
+    for (Entity e : activeEntitiesList)
+    {
+        if (entityManager.isAlive(e) &&
+            componentStorage.HasComponent<PlayerInput>(e))
+        {
+            return e;
+        }
+    }
+
+    return Entity{};
+}
+void Scene::resetPlayerAt(const std::string& spawnId)
+{
+    Entity player = getPlayer();
+
+    if (!entityManager.isAlive(player))
+        return;
+
+    PlayerSpawn spawn;
+
+    auto it = data.playerSpawns.find(spawnId);
+    if (it != data.playerSpawns.end())
+        spawn = it->second;
+    else if (data.playerSpawns.find("default") != data.playerSpawns.end())
+        spawn = data.playerSpawns["default"];
+
+    if (componentStorage.HasComponent<TransformComponent>(player))
+    {
+        auto& t = componentStorage.GetComponent<TransformComponent>(player);
+        t.x = spawn.x;
+        t.y = spawn.y;
+        t.z = spawn.z;
+
+        t.previousX = spawn.x;
+        t.previousY = spawn.y;
+        t.previousZ = spawn.z;
+    }
+
+    if (componentStorage.HasComponent<Health>(player))
+    {
+        auto& h = componentStorage.GetComponent<Health>(player);
+        h.current = h.max;
+    }
+
+    if (componentStorage.HasComponent<Velocity>(player))
+    {
+        auto& v = componentStorage.GetComponent<Velocity>(player);
+        v.x = 0.0f;
+        v.z = 0.0f;
+    }
+
+    // Later when inventory exists:
+    // if (componentStorage.HasComponent<Inventory>(player))
+    //     componentStorage.GetComponent<Inventory>(player).items.clear();
 }

@@ -12,6 +12,8 @@ void RenderSystem::render(Scene& scene, ResourceManager& resourceManager, const 
     renderEntities(scene, resourceManager);
 
     EndMode3D();
+    renderHealthBars(scene, camera);
+    renderPlayerHealthBar(scene);
 }
 
 void RenderSystem::renderEntities(Scene& scene, ResourceManager& resourceManager)
@@ -76,5 +78,84 @@ void RenderSystem::renderGrid(Scene& scene, ResourceManager& resourceManager)
             }
 
         } 
+    }
+}
+void RenderSystem::renderHealthBars(Scene& scene, const Camera3D& camera)
+{
+    const auto& activeEntities = scene.getActiveEntities();
+    ComponentStorage& components = scene.getComponentStorage();
+    EntityManager& entityManager = scene.getEntityManager();
+
+    for (Entity e : activeEntities)
+    {
+        if (!entityManager.isAlive(e)) continue;
+
+        // Only enemies for now:
+        if (!components.HasComponent<AIController>(e)) continue;
+
+        if (!components.HasComponent<TransformComponent>(e)) continue;
+        if (!components.HasComponent<Health>(e)) continue;
+
+        const auto& tf = components.GetComponent<TransformComponent>(e);
+        const auto& health = components.GetComponent<Health>(e);
+
+        if (health.current <= 0) continue;
+
+        float hpPercent = (float)health.current / (float)health.max;
+        if (hpPercent > 1.0f) hpPercent = 1.0f;
+        if (hpPercent < 0.0f) hpPercent = 0.0f;
+
+        Vector3 worldPos = {
+            tf.x,
+            tf.y + tf.height + 0.4f,
+            tf.z
+        };
+
+        Vector2 screenPos = GetWorldToScreen(worldPos, camera);
+
+        float width = 40.0f;
+        float height = 6.0f;
+
+        float x = screenPos.x - width / 2.0f;
+        float y = screenPos.y;
+
+        DrawRectangle((int)x, (int)y, (int)width, (int)height, DARKGRAY);
+        DrawRectangle((int)x, (int)y, (int)(width * hpPercent), (int)height, RED);
+        DrawRectangleLines((int)x, (int)y, (int)width, (int)height, BLACK);
+    }
+}
+void RenderSystem::renderPlayerHealthBar(Scene& scene)
+{
+    ComponentStorage& components = scene.getComponentStorage();
+
+    for (Entity e : scene.getActiveEntities())
+    {
+        if (!components.HasComponent<PlayerInput>(e)) continue;
+        if (!components.HasComponent<Health>(e)) continue;
+
+        const auto& health = components.GetComponent<Health>(e);
+
+        float hpPercent = (float)health.current / (float)health.max;
+        if (hpPercent < 0.0f) hpPercent = 0.0f;
+        if (hpPercent > 1.0f) hpPercent = 1.0f;
+
+        int x = 20;
+        int y = 20;
+        int width = 220;
+        int height = 22;
+
+        DrawRectangle(x, y, width, height, DARKGRAY);
+        DrawRectangle(x, y, (int)(width * hpPercent), height, RED);
+        DrawRectangleLines(x, y, width, height, BLACK);
+
+        DrawText(
+            TextFormat("HP: %d / %d", health.current, health.max),
+            x + 8,
+            y + 4,
+            14,
+            WHITE
+        );
+
+        break;
     }
 }

@@ -84,6 +84,24 @@ struct Attack {
     float projectileSpeed = 5.0f;
 };
 
+enum class AIType {
+    Melee,
+    Ranged
+};
+
+struct AIController {
+    AIType type = AIType::Melee;
+
+    float aggroRange = 6.0f;
+    float leashRange = 9.0f;
+
+    float preferredRange = 5.0f; // ranged only
+    float minimumRange = 2.0f;   // ranged only
+
+    float sidestepTimer = 0.0f;
+    int sidestepDirection = 0; // -1 = left, 1 = right, 0 = none
+};
+
 struct Velocity {
     float x = 0.0f;
     float z = 0.0f;

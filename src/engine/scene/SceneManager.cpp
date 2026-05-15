@@ -13,6 +13,12 @@ bool SceneManager::loadScene(const std::string& path, const std::string& spawnId
 
     currentScene.spawnPlayerAt(spawnId);
 
+    if (resetPlayerOnNextLoad)
+    {
+        currentScene.resetPlayerAt(spawnId);
+        resetPlayerOnNextLoad = false;
+    }
+
     return true;
 }
 
@@ -51,3 +57,8 @@ Scene& SceneManager::getCurrentScene()
     return currentScene;
 }
 
+void SceneManager::requestPlayerRespawn()
+{
+    resetPlayerOnNextLoad = true;
+    requestSceneChange("assets/scenes/room_01.json", "default");
+}

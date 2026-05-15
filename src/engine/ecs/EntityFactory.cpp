@@ -173,7 +173,13 @@ json EntityFactory::serialize(Entity entity){
         const auto& a = componentStorage.GetComponent<Attack>(entity);
         j["Attack"] = { {"range", a.range}, {"damage", a.damage}, {"cooldown", a.cooldown}, {"enemyType", a.enemyType} };
     }
-
+    // Serialize Velocity
+    if (componentStorage.HasComponent<Velocity>(entity)) {
+        const auto& v = componentStorage.GetComponent<Velocity>(entity);
+        j["Velocity"] = {
+            {"speed", v.speed}
+        };
+    }
     return j;
 }
 
@@ -250,7 +256,30 @@ Entity EntityFactory::deserialize(const json& j){
         a.isRanged = j["Attack"].value("isRanged", false);
         a.projectileSpeed = j["Attack"].value("projectileSpeed", 5.0f);
         componentStorage.AddComponent(entity, a);
+
+        if (!componentStorage.HasComponent<PlayerInput>(entity)) { // if not player add ai movement
+            AIController ai;
+
+            if (a.isRanged) {
+                ai.type = AIType::Ranged;
+                ai.aggroRange = 8.0f;
+                ai.preferredRange = a.range * 0.8f;
+                ai.minimumRange = 2.0f;
+            } else {
+                ai.type = AIType::Melee;
+                ai.aggroRange = 6.0f;
+            }
+
+            componentStorage.AddComponent(entity, ai);
+        }
     }
+    // Deserialize Velocity
+    if (componentStorage.HasComponent<AIController>(entity) &&
+        !componentStorage.HasComponent<Velocity>(entity))
+    {
+        componentStorage.AddComponent(entity, Velocity{0.0f, 0.0f, 1.5f});
+    }
+    
 
     // Deserialize Interaction
     if (j.contains("Interactable")) {

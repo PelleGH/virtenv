@@ -76,7 +76,35 @@ void SpawnSystem::Update(Scene* currentScene) {
                         // Remove from spawner so the spawner doesn't become a ghost attacker!
                         componentStorage.RemoveComponent<Attack>(entity); 
                     }
+                    // Give spawned enemy AI if the spawner had AI
+                    if (componentStorage.HasComponent<AIController>(entity)) {
+                        if (componentStorage.HasComponent<AIController>(newEntity)) {
+                            componentStorage.GetComponent<AIController>(newEntity) =
+                                componentStorage.GetComponent<AIController>(entity);
+                        } else {
+                            componentStorage.AddComponent(
+                                newEntity,
+                                componentStorage.GetComponent<AIController>(entity)
+                            );
+                        }
 
+                        componentStorage.RemoveComponent<AIController>(entity);
+                    }
+
+                    // Give spawned enemy Velocity if the spawner had Velocity
+                    if (componentStorage.HasComponent<Velocity>(entity)) {
+                        if (componentStorage.HasComponent<Velocity>(newEntity)) {
+                            componentStorage.GetComponent<Velocity>(newEntity) =
+                                componentStorage.GetComponent<Velocity>(entity);
+                        } else {
+                            componentStorage.AddComponent(
+                                newEntity,
+                                componentStorage.GetComponent<Velocity>(entity)
+                            );
+                        }
+
+                        componentStorage.RemoveComponent<Velocity>(entity);
+                    }
                     currentScene->addEntityToScene(newEntity);
                     spawnType.hasSpawned = true;
                 }else if (!successfullyCreatedEntity){

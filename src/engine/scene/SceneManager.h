@@ -23,7 +23,8 @@ public:
     Scene& getCurrentScene();
     void requestSceneChange(const std::string& path, const std::string& spawnId = "default");
     void applyPendingSceneChange();
-    
+
+    void requestPlayerRespawn(); 
 private:
     Scene currentScene;
     std::string pendingScenePath;
@@ -31,4 +32,7 @@ private:
     bool hasPendingSceneChange = false;
 
     ResourceManager* resourceManager = nullptr;
+    bool resetPlayerOnNextLoad = false;
+
+   
 };
