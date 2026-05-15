@@ -47,6 +47,10 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     // Input
     componentStorage.AddComponent(player, PlayerInput{});
 
+    //inventory
+    componentStorage.AddComponent(player, Inventory{});
+    componentStorage.AddComponent(player, Loadout{});
+
     // Stats
     componentStorage.AddComponent(player, Health{100, 100});
     componentStorage.AddComponent(player, Attack{2.0f, 30, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack

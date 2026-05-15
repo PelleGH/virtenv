@@ -96,9 +96,14 @@ struct Projectile {
     Entity owner; //to prevent hitting themselves
 };
 
-struct Loadout {
-    std::string weaponId = ""; 
-    std::string armorId = "";
+
+// INVENTORY & BUFFS (Pure Data)
+
+enum class BuffType {
+    None,
+    Heal,
+    SpeedBoost,
+    DamageUp
 };
 
 enum class EquipSlot {
@@ -118,26 +123,18 @@ struct ItemData {
     int defenseBonus = 0;
 };
 
-
-// INVENTORY & BUFFS (Pure Data)
-
-enum class BuffType {
-    None,
-    Heal,
-    SpeedBoost,
-    DamageUp
-};
-
-struct ItemData {
-    std::string name;       // e.g., "Minor Health Potion"
-    BuffType type = BuffType::None;          
-    float amount = 0.0f;    
-    float duration = 0.0f;  // 0.0 for instant use, > 0.0 for timed buffs
-};
-
 struct Inventory {
-    std::vector<ItemData> items;
+    std::vector<std::string> items; // Holds string IDs like "iron_sword"
     int maxSlots = 10;
+};
+
+struct Loadout {
+    std::string weaponId = ""; 
+    std::string armorId = "";
+};
+
+struct Pickup {
+    // Empty tag! We don't need data here because the InteractionSystem handles it
 };
 
 struct ActiveBuff {
@@ -152,11 +149,6 @@ struct BuffContainer {
 
 
 // INTERACTABLES (Split by behavior)
-
-// Attached to an entity on the ground.  Holds the pure data that will be moved into the Inventory.
-struct Pickup {
-    ItemData item; 
-};
 
 struct SceneTransition {
     std::string targetScene; // e.g., "tavern_interior"

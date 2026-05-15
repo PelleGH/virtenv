@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <string>
+#include "../ecs/Components.h"
 
 class ResourceManager {
     public: 

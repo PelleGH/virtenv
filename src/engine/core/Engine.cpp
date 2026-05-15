@@ -80,6 +80,9 @@ bool Engine::init()
 
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
 
+    resourceManager.loadItems("assets/items.json"); 
+    inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);
+
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
     projectileSystem.initialize(sceneManager.getCurrentScene(), eventBus);
 
@@ -224,6 +227,9 @@ void Engine::debugNPCInteraction()
 }
 
 void Engine::onActionEvent(const ActionEvent& actionEvent){
+
+    //IGNORE PICKUPS
+    if (actionEvent.actionType == "PickupItem") return;
 
     //Find the action
     auto it = actionHandlers.find(actionEvent.actionType);

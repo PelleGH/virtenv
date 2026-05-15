@@ -66,5 +66,16 @@ void InputSystem::update(Scene& scene, EventBus& eventBus)
                 eventBus.publish(attackEvent);
             }
         }
+
+        // INVENTORY EQUIP
+        if (IsKeyPressed(KEY_ONE) && components.HasComponent<Inventory>(entity)) {
+            auto& inv = components.GetComponent<Inventory>(entity);
+            if (!inv.items.empty()) {
+                EquipEvent equip;
+                equip.player = entity;
+                equip.itemId = inv.items[0];
+                eventBus.publish(equip);
+            }
+        }
     }
 }

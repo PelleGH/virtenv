@@ -15,6 +15,6 @@ private:
     EventBus* m_eventBus = nullptr;
     ResourceManager* m_resManager = nullptr;
 
-    void onPickup(const PickupEvent& event);
+    void onAction(const ActionEvent& event);
     void onEquip(const EquipEvent& event);
 };

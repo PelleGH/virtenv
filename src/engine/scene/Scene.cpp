@@ -36,6 +36,9 @@ bool Scene::load(const std::string& scenePath)
     componentStorage.RegisterComponent<Projectile>();
 
     componentStorage.RegisterComponent<Interactable>();
+    componentStorage.RegisterComponent<Inventory>();
+    componentStorage.RegisterComponent<Loadout>();
+    componentStorage.RegisterComponent<Pickup>();
 
 
     EntityFactory factory(entityManager, componentStorage);
