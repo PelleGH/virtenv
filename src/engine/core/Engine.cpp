@@ -41,10 +41,7 @@ bool Engine::init()
             std::string sceneName = currentScene.getData().name;
             
             // Queue a reload of the current scene, spawning at the default location
-            sceneManager.requestSceneChange(
-                "assets/scenes/" + sceneName + ".json", 
-                "default"
-            );
+            sceneManager.requestPlayerRespawn();    
         }
         else
         {

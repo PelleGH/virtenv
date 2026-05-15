@@ -26,6 +26,9 @@ public:
 
     EntityManager& getEntityManager();
     ComponentStorage& getComponentStorage();
+    
+    Entity getPlayer();
+    void resetPlayerAt(const std::string& spawnId);
 private:
     std::string name;
 
@@ -35,4 +38,10 @@ private:
     ComponentStorage componentStorage;
     //std::vector <Renderer> renders;
     std::vector <Entity> activeEntitiesList;
+
+    bool componentsRegistered = false;
+
+    void registerComponents();
+
+
 };

@@ -125,8 +125,7 @@ bool CollisionSystem::collidesWithSolidEntities(
             continue;
         if (otherEntity == self)
             continue;
-
-        if (otherCollider.isTrigger)
+        if (shouldIgnoreEntityCollision(components, self, otherEntity))
             continue;
 
         if (!components.HasComponent<TransformComponent>(otherEntity))
@@ -336,4 +335,26 @@ bool CollisionSystem::isMoveBlocked(
         collider.height,
         collider.depth
     );
+}
+bool CollisionSystem::shouldIgnoreEntityCollision(
+    ComponentStorage& components,
+    Entity self,
+    Entity other
+)
+{
+    bool selfIsPlayer = components.HasComponent<PlayerInput>(self);
+    bool otherIsPlayer = components.HasComponent<PlayerInput>(other);
+
+    bool selfIsEnemy = components.HasComponent<AIController>(self);
+    bool otherIsEnemy = components.HasComponent<AIController>(other);
+
+    // Let player and enemies overlap physically.
+    // Combat still uses Attack range, so enemies can still damage the player.
+    if ((selfIsPlayer && otherIsEnemy) ||
+        (selfIsEnemy && otherIsPlayer))
+    {
+        return true;
+    }
+
+    return false;
 }

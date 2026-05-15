@@ -2,6 +2,8 @@
 #include "../ecs/Entity.h"
 #include "../messaging/EventBus.h"
 #include "../messaging/Event.h"
+#include "../ecs/ComponentStorage.h"
+
 class Scene;
 
 class CollisionSystem {
@@ -37,5 +39,10 @@ private:
         float aw, float ah, float ad,
         float bx, float by, float bz,
         float bw, float bh, float bd
+    );
+    static bool shouldIgnoreEntityCollision(
+        ComponentStorage& components,
+        Entity self,
+        Entity other
     );
 };
