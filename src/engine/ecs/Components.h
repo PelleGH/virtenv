@@ -76,6 +76,7 @@ struct Health {
 struct Attack {
     float range = 10.0f;
     int damage = 10;
+    int baseDamage = 10;   // The natural strength before weapons are applied
     float cooldown = 1.0f;
     float timeSinceLastAttack = 0.0f; 
 

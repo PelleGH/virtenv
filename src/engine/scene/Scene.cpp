@@ -279,7 +279,9 @@ void Scene::resetPlayerAt(const std::string& spawnId)
     if (componentStorage.HasComponent<Attack>(player))
     {
         auto& attack = componentStorage.GetComponent<Attack>(player);
-        attack.damage = 10; 
+        
+        // Reset their current damage back to their natural strength
+        attack.damage = attack.baseDamage; 
     }
 }
 

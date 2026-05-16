@@ -28,7 +28,7 @@
       "id": "wooden_stick",
       "name": "Wooden Stick",
       "slot": "Weapon",
-      "damageBonus": 2.5,
+      "damageBonus": 5,
       "healthBonus": 0,
       "defenseBonus": 0
     },

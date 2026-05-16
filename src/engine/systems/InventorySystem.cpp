@@ -54,16 +54,21 @@ void InventorySystem::onEquip(const EquipEvent& event) {
     ItemData itemData = m_resManager->getItem(event.itemId);
     std::string oldItem = "";
 
-    if (itemData.slot == EquipSlot::Weapon) {
+    if (itemData.slot == EquipSlot::Weapon) 
+    {
         oldItem = loadout.weaponId;
         loadout.weaponId = event.itemId;
 
         // Apply Base damage + weapon damage
-        if (components.HasComponent<Attack>(event.player)) {
-            components.GetComponent<Attack>(event.player).damage = 10 + itemData.damageBonus; 
+        if (components.HasComponent<Attack>(event.player)) 
+        {
+            auto& attack = components.GetComponent<Attack>(event.player);
+        
+            attack.damage = attack.baseDamage + itemData.damageBonus;
         }
+        
         std::cout << "Equipped Weapon: " << itemData.name << "\n";
-    } 
+    }
     else if (itemData.slot == EquipSlot::Armor) 
     {
         oldItem = loadout.armorId;

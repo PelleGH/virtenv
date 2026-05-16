@@ -53,7 +53,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
 
     // Stats
     componentStorage.AddComponent(player, Health{100, 100});
-    componentStorage.AddComponent(player, Attack{2.0f, 30, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
+    componentStorage.AddComponent(player, Attack{2.0f, 30, 10, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
     Collider collider;
     collider.width = size;
     collider.height = size;
@@ -79,7 +79,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     transform.depth = size;
     componentStorage.AddComponent(entity, transform);
     componentStorage.AddComponent(entity, Health{30, 30});
-    componentStorage.AddComponent(entity, Attack{2.0f, 5, 2.0f, 2.0f});
+    componentStorage.AddComponent(entity, Attack{2.0f, 5, 20, 2.0f, 2.0f});
 
     Renderer r;
     r.color = WHITE; // Default test cube color
