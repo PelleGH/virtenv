@@ -1207,6 +1207,9 @@
                 "height": 1.0,
                 "depth": 1.0
             },
+            "Renderer":{
+                "modelID": "npc_character_o"
+            },
             "Health": {
                 "current": 150,
                 "max": 150
@@ -1233,6 +1236,9 @@
             "DialogueSource": {
                 "dialogueSetId": "old_man"
             },
+            "Renderer":{
+                "modelID": "old_man_character_a"
+            },
             "Interactable":{
                 "actions":[
                     {
@@ -1254,6 +1260,9 @@
             },
             "DialogueSource": {
                 "dialogueSetId": "test_npc"
+            },
+            "Renderer":{
+                "modelID": "old_man_character_a"
             },
             "Interactable":{
                 "actions":[
@@ -1277,6 +1286,9 @@
                 "width": 1.0,
                 "height": 1.0,
                 "depth": 1.0
+            },
+            "Renderer":{
+                "modelID": "npc_character_o"
             },
             "Health": {
                 "current": 150,

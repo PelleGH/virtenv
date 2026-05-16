@@ -85,8 +85,20 @@ void ResourceManager::LoadFromManifest(const std::string& path){
         }
 
         AddModel(modelID, model);
-        
     }
+
+    // Load 3D-Models
+    if (data.contains("3Dmodels") && data["3Dmodels"].is_array()) {
+        
+        for (auto& m : data["3Dmodels"]) {
+            std::string modelID = m.value("id", "");
+            std::string filepath = m.value("path", "");
+
+            if (!modelID.empty() && !filepath.empty()) {
+                LoadModel3D(modelID, filepath);
+            } 
+        }  
+    } 
 }
 
 void ResourceManager::clear() {

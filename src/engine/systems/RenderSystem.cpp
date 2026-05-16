@@ -36,9 +36,11 @@ void RenderSystem::renderEntities(Scene& scene, ResourceManager& resourceManager
 
             if (renderer.modelID != "" && resourceManager.hasModel(renderer.modelID)) 
             {
+                // Draw the 3Dmodel or the cube with skin
                 DrawModel(resourceManager.GetModel(renderer.modelID), pos, renderer.width, WHITE);
             }else {
 
+                // If no modelID is written in JSON, draw a colored cube
                 DrawCube(pos, renderer.width, renderer.height, renderer.depth, renderer.color);
                 DrawCubeWires(pos, renderer.width, renderer.height, renderer.depth, MAROON);
             }
