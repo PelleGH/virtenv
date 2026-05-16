@@ -17,4 +17,5 @@ private:
 
     void onAction(const ActionEvent& event);
     void onEquip(const EquipEvent& event);
+    void onDropItem(const DropItemEvent& event);
 };

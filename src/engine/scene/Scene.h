@@ -20,6 +20,7 @@ public:
     Entity spawnPlayerAt(const std::string& spawnId);
     void queueEntityDestruction(Entity entity);
     void cleanupDestroyedEntities();
+    void spawnItemDrop(float x, float y, float z, const std::string& itemId);
 
     const SceneData& getData() const;
     const std::vector<Entity>& getActiveEntities() const;

@@ -14,6 +14,7 @@ void InventorySystem::initialize(Scene& scene, EventBus& eventBus, ResourceManag
     // Listen for world interactions AND equipment hotkeys
     eventBus.subscribe<ActionEvent>([this](const ActionEvent& e) { this->onAction(e); });
     eventBus.subscribe<EquipEvent>([this](const EquipEvent& e) { this->onEquip(e); });
+    eventBus.subscribe<DropItemEvent>([this](const DropItemEvent& e) { this->onDropItem(e); });
 }
 
 void InventorySystem::onAction(const ActionEvent& event) {
@@ -98,8 +99,61 @@ void InventorySystem::onEquip(const EquipEvent& event) {
         
         std::cout << "Equipped Armor: " << itemData.name << "\n";
     }
+    else if (itemData.slot == EquipSlot::Consumable) 
+    {
+        if (components.HasComponent<Health>(event.player)) 
+        {
+            auto& health = components.GetComponent<Health>(event.player);
+            
+            // Check if player is already at max health
+            if (health.current >= health.max) {
+                std::cout << "Health is already full!\n";
+                return; // Cancel the consumption
+            }
+
+            // Heal the player
+            health.current += itemData.healthBonus;
+            if (health.current > health.max) {
+                health.current = health.max;
+            }
+            
+            std::cout << "Drank " << itemData.name << "! Healed for " << itemData.healthBonus << " HP.\n";
+            std::cout << "Current HP: " << health.current << "/" << health.max << "\n";
+        }
+        
+        // Remove the potion from the inventory completely (no old item to swap back in!)
+        inv.items.erase(it);
+        return; // Return immediately so it doesn't run the swap logic at the bottom of the function
+    }
 
     // Remove new item from inventory, put old item back in (if it existed)
     inv.items.erase(it);
     if (!oldItem.empty()) inv.items.push_back(oldItem);
+}
+
+void InventorySystem::onDropItem(const DropItemEvent& event) {
+    ComponentStorage& components = m_scene->getComponentStorage();
+    
+    if (components.HasComponent<Inventory>(event.player) && components.HasComponent<TransformComponent>(event.player)) {
+        auto& inv = components.GetComponent<Inventory>(event.player);
+        auto& playerTransform = components.GetComponent<TransformComponent>(event.player);
+
+        if (event.inventoryIndex >= 0 && event.inventoryIndex < inv.items.size()) {
+            std::string itemToDrop = inv.items[event.inventoryIndex];
+            
+            // 1. Remove it from the UI/Bag
+            inv.items.erase(inv.items.begin() + event.inventoryIndex);
+            
+            // 2. Fire an event to request the drop!
+            SpawnItemDropEvent spawnRequest;
+            spawnRequest.x = playerTransform.x;
+            spawnRequest.y = playerTransform.y;
+            spawnRequest.z = playerTransform.z - 1.0f;
+            spawnRequest.itemId = itemToDrop;
+            
+            m_eventBus->publish(spawnRequest);
+            
+            std::cout << "Dropped " << itemToDrop << " on the floor!\n";
+        }
+    }
 }

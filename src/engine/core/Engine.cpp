@@ -72,6 +72,11 @@ bool Engine::init()
     eventBus.subscribe<ActionEvent>([this](const ActionEvent& actionEvent) {
         this->onActionEvent(actionEvent);
     });
+
+    eventBus.subscribe<SpawnItemDropEvent>([this](const SpawnItemDropEvent& event)
+    {
+        sceneManager.getCurrentScene().spawnItemDrop(event.x, event.y, event.z, event.itemId);
+    });
     
     running = true;
 

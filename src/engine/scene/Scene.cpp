@@ -282,3 +282,11 @@ void Scene::resetPlayerAt(const std::string& spawnId)
         attack.damage = 10; 
     }
 }
+
+void Scene::spawnItemDrop(float x, float y, float z, const std::string& itemId)
+{
+    EntityFactory factory(entityManager, componentStorage);
+    Entity newDrop = factory.createItemDrop(x, y, z, itemId);
+    
+    addEntityToScene(newDrop);
+}

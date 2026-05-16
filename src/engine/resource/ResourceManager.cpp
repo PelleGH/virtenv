@@ -111,6 +111,7 @@ bool ResourceManager::loadItems(const std::string& path) {
         std::string slotStr = itemJson.value("slot", "None");
         if (slotStr == "Weapon") item.slot = EquipSlot::Weapon;
         else if (slotStr == "Armor") item.slot = EquipSlot::Armor;
+        else if (slotStr == "Consumable") item.slot = EquipSlot::Consumable;
         
         item.damageBonus = itemJson.value("damageBonus", 0);
         item.healthBonus = itemJson.value("healthBonus", 0);

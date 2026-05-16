@@ -31,6 +31,14 @@
       "damageBonus": 2.5,
       "healthBonus": 0,
       "defenseBonus": 0
+    },
+    {
+      "id": "health_potion",
+      "name": "Health Potion",
+      "slot": "Consumable",
+      "damageBonus": 0,
+      "healthBonus": 50,
+      "defenseBonus": 0
     }
   ]
 }

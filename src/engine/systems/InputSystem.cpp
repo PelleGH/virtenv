@@ -72,15 +72,24 @@ void InputSystem::update(Scene& scene, EventBus& eventBus)
         if (components.HasComponent<Inventory>(entity)) {
             auto& inv = components.GetComponent<Inventory>(entity);
             
-            // Raylib keys 1 through 9 map to integer values 49 through 57
             for (int i = 0; i < 9; i++) {
                 if (IsKeyPressed(KEY_ONE + i)) {
-                    // Make sure we actually have an item in that slot before firing the event
                     if (i < inv.items.size()) {
-                        EquipEvent equip;
-                        equip.player = entity;
-                        equip.itemId = inv.items[i];
-                        eventBus.publish(equip);
+                        
+                        // Check if the player is holding SHIFT
+                        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
+                            // FIRE DROP EVENT
+                            DropItemEvent drop;
+                            drop.player = entity;
+                            drop.inventoryIndex = i;
+                            eventBus.publish(drop);
+                        } else {
+                            // FIRE EQUIP EVENT
+                            EquipEvent equip;
+                            equip.player = entity;
+                            equip.itemId = inv.items[i];
+                            eventBus.publish(equip);
+                        }
                     }
                 }
             }

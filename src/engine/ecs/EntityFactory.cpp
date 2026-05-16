@@ -118,6 +118,35 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     return entity;
 }
 
+Entity EntityFactory::createItemDrop(float x, float y, float z, const std::string& itemId) {
+    Entity drop = entityManager.createEntity();
+
+    // Make a small cube
+    float size = 0.4f;
+    TransformComponent t;
+    t.x = x; t.y = y; t.z = z;
+    t.width = size; t.height = size; t.depth = size;
+    componentStorage.AddComponent(drop, t);
+
+    Renderer r;
+    r.width = size; r.height = size; r.depth = size;
+    r.color = GOLD;
+    componentStorage.AddComponent(drop, r);
+
+    Interactable interactable;
+    interactable.interactionRadius = 3.0f;
+    
+    // Wire up the interaction so picking it up gives the exact item back
+    ActionDefinition action;
+    action.type = "PickupItem";
+    action.target = itemId;
+    interactable.actions.push_back(action);
+    
+    componentStorage.AddComponent(drop, interactable);
+
+    return drop;
+}
+
 // ------------------------------------------------------------------
 // JSON SERIALIZATION / DESERIALIZATION
 // ------------------------------------------------------------------

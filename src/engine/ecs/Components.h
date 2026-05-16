@@ -128,7 +128,8 @@ enum class BuffType {
 enum class EquipSlot {
     None,
     Weapon,
-    Armor
+    Armor,
+    Consumable
 };
 
 struct ItemData {
