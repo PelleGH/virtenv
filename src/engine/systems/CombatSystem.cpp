@@ -61,12 +61,19 @@ void CombatSystem::onAttack(const AttackEvent& event)
             }
         }
 
-        // APPLY DAMAGE
         if (hitConfirmed && health.current > 0)
         {
-            health.current -= event.damage; 
-            std::cout << "Entity " << entity.id << " took " << event.damage 
-                      << " damage! HP remaining: " << health.current << '\n';
+            //Calculate actual damage (Incoming Damage minus Your Defense)
+            int actualDamage = event.damage - health.defense;
+            
+            //Minimum damage is 1 (So 200 defense doesn't cause enemies to heal you!)
+            if (actualDamage < 1) actualDamage = 1;
+
+            //Deal the final mitigated damage
+            health.current -= actualDamage; 
+            
+            std::cout << "Entity " << entity.id << " took " << actualDamage 
+                      << " damage! (Blocked " << health.defense << ") HP remaining: " << health.current << '\n';
 
             if (health.current <= 0)
             {

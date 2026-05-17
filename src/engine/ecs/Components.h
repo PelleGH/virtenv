@@ -70,11 +70,13 @@ struct ConditionalBlocker
 struct Health {
     int current = 100;
     int max = 100;
+    int defense = 0;
 };
 
 struct Attack {
     float range = 10.0f;
     int damage = 10;
+    int baseDamage = 10;   // The natural strength before weapons are applied
     float cooldown = 1.0f;
     float timeSinceLastAttack = 0.0f; 
 
@@ -114,11 +116,6 @@ struct Projectile {
     Entity owner; //to prevent hitting themselves
 };
 
-struct Loadout {
-    Entity weaponSlot{}; // ID of the equipped weapon entity
-    Entity armorSlot{};  // ID of the equipped armor entity
-};
-
 
 // INVENTORY & BUFFS (Pure Data)
 
@@ -129,16 +126,36 @@ enum class BuffType {
     DamageUp
 };
 
+enum class EquipSlot {
+    None,
+    Weapon,
+    Armor,
+    Consumable
+};
+
 struct ItemData {
-    std::string name;       // e.g., "Minor Health Potion"
-    BuffType type = BuffType::None;          
-    float amount = 0.0f;    
-    float duration = 0.0f;  // 0.0 for instant use, > 0.0 for timed buffs
+    std::string id;         
+    std::string name;       
+    EquipSlot slot = EquipSlot::None;
+    
+    //Stats it gives when equipped
+    int damageBonus = 0;
+    int healthBonus = 0;
+    int defenseBonus = 0;
 };
 
 struct Inventory {
-    std::vector<ItemData> items;
+    std::vector<std::string> items; // Holds string IDs like "iron_sword"
     int maxSlots = 10;
+};
+
+struct Loadout {
+    std::string weaponId = ""; 
+    std::string armorId = "";
+};
+
+struct Pickup {
+    // Empty tag! We don't need data here because the InteractionSystem handles it
 };
 
 struct ActiveBuff {
@@ -153,11 +170,6 @@ struct BuffContainer {
 
 
 // INTERACTABLES (Split by behavior)
-
-// Attached to an entity on the ground.  Holds the pure data that will be moved into the Inventory.
-struct Pickup {
-    ItemData item; 
-};
 
 struct SceneTransition {
     std::string targetScene; // e.g., "tavern_interior"

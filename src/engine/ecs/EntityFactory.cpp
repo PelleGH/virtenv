@@ -47,9 +47,13 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     // Input
     componentStorage.AddComponent(player, PlayerInput{});
 
+    //inventory
+    componentStorage.AddComponent(player, Inventory{});
+    componentStorage.AddComponent(player, Loadout{});
+
     // Stats
     componentStorage.AddComponent(player, Health{100, 100});
-    componentStorage.AddComponent(player, Attack{2.0f, 30, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
+    componentStorage.AddComponent(player, Attack{2.0f, 30, 10, 0.5f, 0.5f}); //range, damage, cooldown, timesincelastattack
     Collider collider;
     collider.width = size;
     collider.height = size;
@@ -75,7 +79,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     transform.depth = size;
     componentStorage.AddComponent(entity, transform);
     componentStorage.AddComponent(entity, Health{30, 30});
-    componentStorage.AddComponent(entity, Attack{2.0f, 5, 2.0f, 2.0f});
+    componentStorage.AddComponent(entity, Attack{2.0f, 5, 20, 2.0f, 2.0f});
 
     Renderer r;
     r.color = WHITE; // Default test cube color
@@ -112,6 +116,35 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     componentStorage.AddComponent(entity, blocker);
 
     return entity;
+}
+
+Entity EntityFactory::createItemDrop(float x, float y, float z, const std::string& itemId) {
+    Entity drop = entityManager.createEntity();
+
+    // Make a small cube
+    float size = 0.4f;
+    TransformComponent t;
+    t.x = x; t.y = y; t.z = z;
+    t.width = size; t.height = size; t.depth = size;
+    componentStorage.AddComponent(drop, t);
+
+    Renderer r;
+    r.width = size; r.height = size; r.depth = size;
+    r.color = GOLD;
+    componentStorage.AddComponent(drop, r);
+
+    Interactable interactable;
+    interactable.interactionRadius = 3.0f;
+    
+    // Wire up the interaction so picking it up gives the exact item back
+    ActionDefinition action;
+    action.type = "PickupItem";
+    action.target = itemId;
+    interactable.actions.push_back(action);
+    
+    componentStorage.AddComponent(drop, interactable);
+
+    return drop;
 }
 
 // ------------------------------------------------------------------

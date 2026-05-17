@@ -18,6 +18,7 @@ public:
     Entity createTestCube(float x, float y, float z, int skinChoice = 1);
     Entity createNPC(float x, float y, float z, const std::string& dialogueSetId);
     Entity createProjectile(float x, float y, float z, float dirX, float dirZ, float speed, int damage, Entity owner);
+    Entity createItemDrop(float x, float y, float z, const std::string& itemId);
     //Entity createPlayer(float x, float y, float z);
     //Entity createTestCube(float x, float y, float z);
 

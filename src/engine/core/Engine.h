@@ -19,6 +19,8 @@
 #include "../systems/ProjectileSystem.h"
 #include "../systems/InteractionSystem.h"
 #include "../resource/ResourceManager.h"
+#include "../systems/InventorySystem.h"
+#include "../systems/InventoryUISystem.h"
 
 #include <unordered_map>
 #include <functional>
@@ -51,6 +53,8 @@ private:
     ResourceManager resourceManager;
     ProjectileSystem projectileSystem;
     InteractionSystem interactionSystem;
+    InventorySystem inventorySystem;
+    InventoryUISystem inventoryUISystem;
 
     void debugNPCInteraction();
 

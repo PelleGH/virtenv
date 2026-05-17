@@ -66,5 +66,33 @@ void InputSystem::update(Scene& scene, EventBus& eventBus)
                 eventBus.publish(attackEvent);
             }
         }
+
+        //INVENTORY EQUIP
+        //(Press 1-9 to equip item in that slot)
+        if (components.HasComponent<Inventory>(entity)) {
+            auto& inv = components.GetComponent<Inventory>(entity);
+            
+            for (int i = 0; i < 9; i++) {
+                if (IsKeyPressed(KEY_ONE + i)) {
+                    if (i < inv.items.size()) {
+                        
+                        // Check if the player is holding SHIFT
+                        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
+                            // FIRE DROP EVENT
+                            DropItemEvent drop;
+                            drop.player = entity;
+                            drop.inventoryIndex = i;
+                            eventBus.publish(drop);
+                        } else {
+                            // FIRE EQUIP EVENT
+                            EquipEvent equip;
+                            equip.player = entity;
+                            equip.itemId = inv.items[i];
+                            eventBus.publish(equip);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

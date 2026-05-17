@@ -72,10 +72,18 @@ bool Engine::init()
     eventBus.subscribe<ActionEvent>([this](const ActionEvent& actionEvent) {
         this->onActionEvent(actionEvent);
     });
+
+    eventBus.subscribe<SpawnItemDropEvent>([this](const SpawnItemDropEvent& event)
+    {
+        sceneManager.getCurrentScene().spawnItemDrop(event.x, event.y, event.z, event.itemId);
+    });
     
     running = true;
 
     bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
+
+    resourceManager.loadItems("src/engine/assets/items.json"); 
+    inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);
 
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
     projectileSystem.initialize(sceneManager.getCurrentScene(), eventBus);
@@ -160,6 +168,7 @@ void Engine::render()
     BeginDrawing();
     ClearBackground(RAYWHITE);
     renderSystem.render(sceneManager.getCurrentScene(), resourceManager, camera);
+    inventoryUISystem.render(sceneManager.getCurrentScene(), resourceManager);
     dialogueManager.render();
     EndDrawing();
 }
@@ -221,6 +230,9 @@ void Engine::debugNPCInteraction()
 }
 
 void Engine::onActionEvent(const ActionEvent& actionEvent){
+
+    //IGNORE PICKUPS
+    if (actionEvent.actionType == "PickupItem") return;
 
     //Find the action
     auto it = actionHandlers.find(actionEvent.actionType);

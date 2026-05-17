@@ -47,3 +47,18 @@ struct ActionEvent{
     std::string actionType;     //What to do e.g. "StartDialogue"
     std::string targetData;     //Goal e.g. "old_man"
 };
+
+struct EquipEvent {
+    Entity player;
+    std::string itemId;  
+};
+
+struct DropItemEvent {
+    Entity player;
+    int inventoryIndex;
+};
+
+struct SpawnItemDropEvent {
+    float x, y, z;
+    std::string itemId;
+};

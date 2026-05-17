@@ -202,6 +202,8 @@ void Scene::registerComponents()
     componentStorage.RegisterComponent<Velocity>();
     componentStorage.RegisterComponent<Projectile>();
     componentStorage.RegisterComponent<Interactable>();
+    componentStorage.RegisterComponent<Inventory>();
+    componentStorage.RegisterComponent<Loadout>();
 
     componentsRegistered = true;
 }
@@ -248,7 +250,9 @@ void Scene::resetPlayerAt(const std::string& spawnId)
     if (componentStorage.HasComponent<Health>(player))
     {
         auto& h = componentStorage.GetComponent<Health>(player);
-        h.current = h.max;
+        h.max = 100;      //Reset back to base Max HP
+        h.current = 100;  //Heal to full base HP
+        h.defense = 0;    //Strip all ghost defense
     }
 
     if (componentStorage.HasComponent<Velocity>(player))
@@ -258,7 +262,33 @@ void Scene::resetPlayerAt(const std::string& spawnId)
         v.z = 0.0f;
     }
 
-    // Later when inventory exists:
-    // if (componentStorage.HasComponent<Inventory>(player))
-    //     componentStorage.GetComponent<Inventory>(player).items.clear();
+    //RESET INVENTORY & LOADOUT ON DEATH
+    if (componentStorage.HasComponent<Inventory>(player))
+    {
+        componentStorage.GetComponent<Inventory>(player).items.clear();
+    }
+
+    if (componentStorage.HasComponent<Loadout>(player))
+    {
+        //Unequip all items
+        auto& loadout = componentStorage.GetComponent<Loadout>(player);
+        loadout.weaponId = "";
+        loadout.armorId = "";
+    }
+
+    if (componentStorage.HasComponent<Attack>(player))
+    {
+        auto& attack = componentStorage.GetComponent<Attack>(player);
+        
+        // Reset their current damage back to their natural strength
+        attack.damage = attack.baseDamage; 
+    }
+}
+
+void Scene::spawnItemDrop(float x, float y, float z, const std::string& itemId)
+{
+    EntityFactory factory(entityManager, componentStorage);
+    Entity newDrop = factory.createItemDrop(x, y, z, itemId);
+    
+    addEntityToScene(newDrop);
 }

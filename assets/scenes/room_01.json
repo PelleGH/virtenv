@@ -1291,6 +1291,71 @@
                 "projectileSpeed": 4.0
 
             }
+        },
+        {
+            "TransformComponent": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": -2.0,
+                "width": 0.1,
+                "height": 0.1,
+                "depth": 0.1
+            },
+            "Renderer": {
+                "color": [0, 0, 255, 255]
+            },
+            "Interactable": {
+                "interactionRadius": 0.75,
+                "actions": [
+                    {
+                        "type": "PickupItem",
+                        "target": "iron_sword"
+                    }
+                ]
+            }
+        },
+        {
+            "TransformComponent": {
+                "x": 2.0,
+                "y": 1.0,
+                "z": -2.5,
+                "width": 0.1,
+                "height": 0.1,
+                "depth": 0.1
+            },
+            "Renderer": {
+                "color": [0, 0, 0, 255]
+            },
+            "Interactable": {
+                "interactionRadius": 0.75,
+                "actions": [
+                    {
+                        "type": "PickupItem",
+                        "target": "steel_armor"
+                    }
+                ]
+            }
+        },{
+            "TransformComponent": {
+                "x": -3.0,
+                "y": 1.0,
+                "z": 3.0,
+                "width": 0.3,
+                "height": 0.4,
+                "depth": 0.3
+            },
+            "Renderer": {
+                "color": [220, 20, 60, 255]
+            },
+            "Interactable": {
+                "interactionRadius": 1.0,
+                "actions": [
+                    {
+                        "type": "PickupItem",
+                        "target": "health_potion"
+                    }
+                ]
+            }
         }
     ]
 }
