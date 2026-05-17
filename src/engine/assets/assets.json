@@ -17,5 +17,9 @@
         { "id": "test_cube_skin2", "textureId": "enemy_tex2", "size": 1.0 },
         { "id": "test_cube_skin3", "textureId": "enemy_tex3", "size": 1.0 },
         { "id": "npc_skin", "textureId": "npc_tex", "size": 1.0 }
+    ],
+    "3Dmodels": [
+        { "id": "old_man_character_a", "path": "src/engine/assets/models/character-a.obj" },
+        { "id": "npc_character_o", "path": "src/engine/assets/models/character-o.obj" }
     ]
 }

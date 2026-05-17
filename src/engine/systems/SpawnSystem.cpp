@@ -55,6 +55,18 @@ void SpawnSystem::Update(Scene* currentScene) {
 
                 if (successfullyCreatedEntity && currentScene != nullptr) {
 
+                    // If the JSON have a specific renderer e.g. 3Dmodels, write over the fallback graphics
+                    if (componentStorage.HasComponent<Renderer>(entity)) {
+                        if (componentStorage.HasComponent<Renderer>(newEntity)) {
+                            componentStorage.GetComponent<Renderer>(newEntity) = componentStorage.GetComponent<Renderer>(entity);
+                        }else{
+                            componentStorage.AddComponent(newEntity, componentStorage.GetComponent<Renderer>(entity));
+                        }
+                        
+                        // Remove from spawner to prevent ghosting/double entities
+                        componentStorage.RemoveComponent<Renderer>(entity);
+                    }
+                    
                     // If the JSON gave the spawner custom Health, pass it to the real enemy
                     if (componentStorage.HasComponent<Health>(entity)) {
                         if (componentStorage.HasComponent<Health>(newEntity)) {
