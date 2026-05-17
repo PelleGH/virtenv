@@ -211,19 +211,9 @@ Entity EntityFactory::deserialize(const json& j){
             r.color.a = j["Renderer"]["color"][3];
         }
 
-        if (r.modelID != "") {
-
-            // For the 3Dmodel in JSON 
-            r.width = j["Renderer"].value("width", 0.5f);
-            r.height = 0.0f;
-            r.depth = 0.0f;
-        }else{
-            // Fallback cube
-            r.width = j["Renderer"].value("width", 0.5f);
-            r.height = j["Renderer"].value("height", 0.5f);
-            r.depth = j["Renderer"].value("depth", 0.5f);
-        }
-    
+        r.width = j["Renderer"].value("width", 0.5f);
+        r.height = j["Renderer"].value("height", 0.5f);
+        r.depth = j["Renderer"].value("depth", 0.5f);
         r.zIndex = j["Renderer"].value("zIndex", 0);
         
         componentStorage.AddComponent(entity, r);
