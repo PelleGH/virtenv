@@ -1,4 +1,6 @@
 #pragma once
 
+#include "editor/EditorContext.h"
+
 void SetupEditorStyle();
-void DrawEditorUI();
+void DrawEditorUI(EditorContext& context);
