@@ -1,7 +1,6 @@
-#pragma once
+#include "editor/EditorContext.h"
 
 struct GLFWwindow;
-
 class EditorApp
 {
 public:
@@ -12,6 +11,8 @@ public:
 private:
     GLFWwindow* window = nullptr;
     const char* glsl_version = "#version 130";
+
+    EditorContext context;
 
     void beginFrame();
     void endFrame();

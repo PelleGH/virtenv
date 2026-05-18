@@ -6,12 +6,12 @@ int main()
     Engine engine;
     EditorApp editor;
 
-    if (!engine.init())
+    if (!editor.init())
         return 1;
 
-    engine.run();
+    editor.run();
 
-    engine.shutdown();
+    editor.shutdown();
     
     
 
