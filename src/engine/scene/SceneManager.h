@@ -26,8 +26,6 @@ public:
 
     void requestPlayerRespawn(); 
 
-    void setProjectPath(const std::string& path) { projectBasePath = path; }
-    std::string getProjectPath() const { return projectBasePath; }
 private:
     Scene currentScene;
     std::string pendingScenePath;
@@ -36,8 +34,6 @@ private:
 
     ResourceManager* resourceManager = nullptr;
     bool resetPlayerOnNextLoad = false;
-
-    std::string projectBasePath = "";
 
    
 };
