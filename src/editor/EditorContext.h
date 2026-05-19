@@ -1,11 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
 #include "engine/scene/SceneData.h"
 #include "engine/scene/Scene.h"
 #include "raylib.h"
 #include "engine/systems/RenderSystem.h"
 #include "engine/resource/ResourceManager.h"
+
 enum class SelectionType
 {
     None,
@@ -30,6 +33,11 @@ struct EditorContext
     ResourceManager resourceManager;
     RenderSystem renderSystem;
 
+
+    std::string projectPath = ""; 
+    std::string projectName = "No Project Loaded";
+    std::vector<std::string> availableProjects;
+ 
     std::string currentScenePath = "assets/scenes/room_01.json";
     std::vector<std::string> scenePaths;
     int currentSceneIndex = 0;

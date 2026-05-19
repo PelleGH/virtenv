@@ -15,12 +15,14 @@ int main()
     
     
 
-    //if (!editor.init())
-    //    return 1;
+    /*
+    if (!engine.init())
+        return 1;
 
-    //editor.run();
+        engine.run();
 
-    //editor.shutdown();
+    engine.shutdown();
+    */
 
     return 0;
 }

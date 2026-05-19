@@ -16,8 +16,9 @@ add_executable(VirtenEditor
     src/editor/gui/pages/EditorHierarchy.cpp
     src/editor/gui/pages/EditorInspector.cpp
     src/editor/gui/pages/EditorViewport.cpp
+    src/editor/gui/pages/ProjectLauncherPanel.cpp
+    src/editor/project/ProjectManager.cpp
     
-
     src/engine/core/Engine.cpp
     src/engine/scene/Scene.cpp
     src/engine/scene/SceneLoader.cpp
@@ -41,6 +42,7 @@ add_executable(VirtenEditor
     src/engine/systems/InteractionSystem.cpp
     src/engine/systems/InventorySystem.cpp
     src/engine/systems/InventoryUISystem.cpp
+
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

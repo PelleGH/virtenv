@@ -1,11 +1,19 @@
 #include "EditorUI.h"
+
+#include "EditorPanels.h"
+#include "editor/project/ProjectManager.h"
+#include "engine/scene/SceneLoader.h"
+#include "ProjectLauncherPanel.h"
+
 #include "imgui.h"
 #include "raylib.h"
 #include "rlImGui.h"
-#include <cstring>
-#include "../../engine/scene/SceneLoader.h"
 #include <raymath.h>
-#include "EditorPanels.h"
+
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 
 static void DrawDockspace(EditorContext& context)
 {
@@ -39,21 +47,42 @@ static void DrawDockspace(EditorContext& context)
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Save Scene"))
+            ImGui::TextDisabled("Use Project Launcher to Load");
+
+            if (ImGui::MenuItem("Save Project", "Ctrl+Shift+S"))
             {
-                // call save here later
+                SaveProject(context);
             }
 
-            if (ImGui::MenuItem("Load Scene"))
+            ImGui::Separator();
+
+            //SAVE BUTTON
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
             {
-                // call load here later
+                if (SceneLoader::saveToFile(context.currentScenePath, context.scene)) {
+                    std::cout << "[Editor] Successfully saved to " << context.currentScenePath << std::endl;
+                    context.dirty = false;
+                } else {
+                    std::cout << "[Editor] ERROR: Failed to save scene!"<< std::endl;
+                }
+            }
+
+            //LOAD BUTTON
+            if (ImGui::MenuItem("Load Scene", "Ctrl+O"))
+            {
+                if (SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
+                    std::cout << "[Editor] Successfully loaded " << context.currentScenePath << std::endl;
+                    context.sceneLoaded = true;
+                } else {
+                    std::cout << "[Editor] ERROR: Failed to load scene!"<< std::endl;
+                }
             }
 
             ImGui::Separator();
 
             if (ImGui::MenuItem("Exit"))
             {
-                // handle exit later
+                exit(0);
             }
 
             ImGui::EndMenu();
@@ -126,6 +155,9 @@ static void DrawDockspace(EditorContext& context)
 
     ImGui::End();
 }
+
+
+
 void DrawEditorUI(EditorContext& context)
 {
     DrawDockspace(context);
@@ -134,4 +166,5 @@ void DrawEditorUI(EditorContext& context)
     DrawViewport(context);
     DrawHierarchy(context);
     DrawInspector(context);
+    DrawProjectLauncher(context);
 }

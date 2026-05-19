@@ -25,6 +25,7 @@ public:
     void applyPendingSceneChange();
 
     void requestPlayerRespawn(); 
+
 private:
     Scene currentScene;
     std::string pendingScenePath;

@@ -21,10 +21,11 @@ bool Engine::init()
 
     eventBus.subscribe<SceneTransitionEvent>([this](const SceneTransitionEvent& event)
     {
+        
         sceneManager.requestSceneChange(
-            "assets/scenes/" + event.targetScene + ".json",
-            event.targetSpawn
-        );
+        "assets/scenes/" + event.targetScene + ".json",
+        event.targetSpawn
+    );
     });
 
     eventBus.subscribe<DeathEvent>([this](const DeathEvent& event)
