@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "editor/gui/EditorUI.h"
 #include "engine/scene/SceneLoader.h"
+#include "editor/project/ProjectManager.h"
 #include <filesystem>
 
 bool EditorApp::init()
@@ -29,8 +30,15 @@ bool EditorApp::init()
     context.viewportReady   = (context.viewportTexture.texture.id != 0);
     
     context.resourceManager.LoadFromManifest("src/engine/assets/assets.json");
-    context.previewScene.load(context.currentScenePath);
-    context.scene = context.previewScene.getData();
+    
+    LoadLastProject(context);
+
+    if (!context.sceneLoaded)
+    {
+        context.sceneLoaded = SceneLoader::loadFromFile(context.currentScenePath, context.scene);
+        context.previewScene.load(context.currentScenePath);
+        context.scene = context.previewScene.getData();
+    }
 
     namespace fs = std::filesystem;
 
@@ -63,6 +71,10 @@ void EditorApp::run()
 {
     while (!WindowShouldClose())
     {
+        if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_S))
+        {
+            SaveProject(context);
+        }
         BeginDrawing();
         ClearBackground(DARKGRAY);
 

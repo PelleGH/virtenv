@@ -3,7 +3,7 @@
 #include "EditorPanels.h"
 #include "editor/project/ProjectManager.h"
 #include "engine/scene/SceneLoader.h"
-#include "ProjectLauncherPanel.h"
+#include "pages/ProjectLauncherPanel.h"
 
 #include "imgui.h"
 #include "raylib.h"
@@ -49,33 +49,9 @@ static void DrawDockspace(EditorContext& context)
         {
             ImGui::TextDisabled("Use Project Launcher to Load");
 
-            if (ImGui::MenuItem("Save Project", "Ctrl+Shift+S"))
+            if (ImGui::MenuItem("Save Project", "Ctrl+S"))
             {
                 SaveProject(context);
-            }
-
-            ImGui::Separator();
-
-            //SAVE BUTTON
-            if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-            {
-                if (SceneLoader::saveToFile(context.currentScenePath, context.scene)) {
-                    std::cout << "[Editor] Successfully saved to " << context.currentScenePath << std::endl;
-                    context.dirty = false;
-                } else {
-                    std::cout << "[Editor] ERROR: Failed to save scene!"<< std::endl;
-                }
-            }
-
-            //LOAD BUTTON
-            if (ImGui::MenuItem("Load Scene", "Ctrl+O"))
-            {
-                if (SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
-                    std::cout << "[Editor] Successfully loaded " << context.currentScenePath << std::endl;
-                    context.sceneLoaded = true;
-                } else {
-                    std::cout << "[Editor] ERROR: Failed to load scene!"<< std::endl;
-                }
             }
 
             ImGui::Separator();

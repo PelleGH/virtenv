@@ -3,6 +3,11 @@
 
 void DrawHierarchy(EditorContext& context)
 {
+    if (context.scenePaths.empty()) {
+        ImGui::Text("No scenes available.");
+        ImGui::End();
+        return;
+    }
     ImGui::Begin("Hierarchy");
 
     if (!context.sceneLoaded)

@@ -1,5 +1,12 @@
 #include "ProjectLauncherPanel.h"
 
+#include "editor/project/ProjectManager.h"
+
+#include "imgui.h"
+
+#include <cstring>
+#include <cstdio>
+
 void DrawProjectLauncher(EditorContext& context) {
     if (context.availableProjects.empty()) {
         RefreshProjectList(context);
@@ -22,7 +29,7 @@ void DrawProjectLauncher(EditorContext& context) {
     ImGui::InputText("Folder Name (e.g. MyRPG)", folderNameBuf, IM_ARRAYSIZE(folderNameBuf));
     ImGui::InputText("Display Game Name", projNameBuf, IM_ARRAYSIZE(projNameBuf));
 
-    if (ImGui::Button("Generate Project Templates")) {
+    if (ImGui::Button("Create New Project")) {
         // Run our automated file generation routine!
         CreateNewProject(context, folderNameBuf, projNameBuf);
         
