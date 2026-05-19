@@ -2,6 +2,7 @@
 
 #include <string>
 #include "engine/scene/SceneData.h"
+#include <vector>
 
 enum class SelectionType
 {
