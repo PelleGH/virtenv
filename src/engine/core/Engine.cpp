@@ -21,8 +21,11 @@ bool Engine::init()
 
     eventBus.subscribe<SceneTransitionEvent>([this](const SceneTransitionEvent& event)
     {
+    // Grab the active project path
+       std::string basePath = sceneManager.getProjectPath();
+        
         sceneManager.requestSceneChange(
-            "assets/scenes/" + event.targetScene + ".json",
+            basePath + "assets/scenes/" + event.targetScene + ".json",
             event.targetSpawn
         );
     });

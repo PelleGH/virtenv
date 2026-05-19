@@ -6,21 +6,21 @@ int main()
     Engine engine;
     EditorApp editor;
 
-    if (!engine.init())
-        return 1;
-
-    engine.run();
-
-    engine.shutdown();
-    
-    
-
-    //if (!editor.init())
+    //if (!engine.init())
     //    return 1;
 
-    //editor.run();
+    //engine.run();
 
-    //editor.shutdown();
+    //engine.shutdown();
+    
+    
+
+    if (!editor.init())
+       return 1;
+
+    editor.run(engine.getSceneManager());
+
+    editor.shutdown();
 
     return 0;
 }

@@ -36,13 +36,13 @@ bool EditorApp::init()
     return true;
 }
 
-void EditorApp::run()
+void EditorApp::run(SceneManager& sceneManager)
 {
     while (!glfwWindowShouldClose(window))
     {
         beginFrame();
 
-        DrawEditorUI();
+        DrawEditorUI(sceneManager);
 
         endFrame();
     }

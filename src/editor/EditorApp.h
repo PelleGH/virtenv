@@ -1,12 +1,12 @@
 #pragma once
 
 struct GLFWwindow;
-
+class SceneManager;
 class EditorApp
 {
 public:
     bool init();
-    void run();
+    void run(SceneManager& sceneManager);
     void shutdown();
 
 private:

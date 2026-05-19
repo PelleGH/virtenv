@@ -32,6 +32,7 @@ public:
     bool init();
     void run();
     void shutdown();
+    SceneManager& getSceneManager() { return sceneManager; }
 
 private:
     bool running = false;

@@ -1,4 +1,6 @@
 #pragma once
 
+class SceneManager;
+
 void SetupEditorStyle();
-void DrawEditorUI();
+void DrawEditorUI(SceneManager& sceneManager);
