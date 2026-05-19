@@ -11,6 +11,13 @@ add_executable(VirtenEditor
     src/main.cpp
     src/editor/EditorApp.cpp
     src/editor/gui/EditorUI.cpp
+    src/editor/gui/EditorHelpers.cpp
+    src/editor/gui/pages/EditorAssets.cpp
+    src/editor/gui/pages/EditorHierarchy.cpp
+    src/editor/gui/pages/EditorInspector.cpp
+    src/editor/gui/pages/EditorViewport.cpp
+    
+
     src/engine/core/Engine.cpp
     src/engine/scene/Scene.cpp
     src/engine/scene/SceneLoader.cpp

@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "editor/gui/EditorUI.h"
 #include "engine/scene/SceneLoader.h"
+#include <filesystem>
 
 bool EditorApp::init()
 {
@@ -26,6 +27,35 @@ bool EditorApp::init()
 
     context.viewportTexture = LoadRenderTexture(1280, 720);
     context.viewportReady   = (context.viewportTexture.texture.id != 0);
+    
+    context.resourceManager.LoadFromManifest("src/engine/assets/assets.json");
+    context.previewScene.load(context.currentScenePath);
+    context.scene = context.previewScene.getData();
+
+    namespace fs = std::filesystem;
+
+    context.scenePaths.clear();
+
+    for (const auto& entry : fs::directory_iterator("assets/scenes"))
+    {
+        if (!entry.is_regular_file())
+            continue;
+
+        std::string path = entry.path().string();
+
+        if (entry.path().extension() == ".json")
+        {
+            context.scenePaths.push_back(path);
+        }
+    }
+    for (int i = 0; i < (int)context.scenePaths.size(); i++)
+    {
+        if (context.scenePaths[i] == context.currentScenePath)
+        {
+            context.currentSceneIndex = i;
+            break;
+        }
+    }
     return context.viewportReady;
 }
 

@@ -2,13 +2,16 @@
 
 #include <string>
 #include "engine/scene/SceneData.h"
+#include "engine/scene/Scene.h"
 #include "raylib.h"
-
+#include "engine/systems/RenderSystem.h"
+#include "engine/resource/ResourceManager.h"
 enum class SelectionType
 {
     None,
     GridCube,
-    Entity
+    Entity,
+    SpawnPoint
 };
 
 struct EditorSelection
@@ -19,9 +22,18 @@ struct EditorSelection
 
 struct EditorContext
 {
-    SceneData scene;
-    std::string currentScenePath = "assets/scenes/room_01.json";
+    bool viewportHovered = false;
+    bool previewDirty = false;
 
+    SceneData scene;
+    Scene previewScene;
+    ResourceManager resourceManager;
+    RenderSystem renderSystem;
+
+    std::string currentScenePath = "assets/scenes/room_01.json";
+    std::vector<std::string> scenePaths;
+    int currentSceneIndex = 0;
+    
     EditorSelection selection;
 
     Camera3D editorCamera{};
