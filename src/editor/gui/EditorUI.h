@@ -1,6 +1,6 @@
 #pragma once
 
-class SceneManager;
+#include "editor/EditorContext.h"
 
 void SetupEditorStyle();
-void DrawEditorUI(SceneManager& sceneManager);
+void DrawEditorUI(EditorContext& context);

@@ -100,3 +100,71 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
 
     return true;
 }
+bool SceneLoader::saveToFile(const std::string& path, const SceneData& data)
+{
+    nlohmann::json j;
+
+    j["name"] = data.name;
+
+    j["camera"] = {
+        {"mode", data.camera.mode},
+        {"position", {
+            data.camera.positionX,
+            data.camera.positionY,
+            data.camera.positionZ
+        }},
+        {"target", {
+            data.camera.targetX,
+            data.camera.targetY,
+            data.camera.targetZ
+        }}
+    };
+
+    j["playerSpawns"] = nlohmann::json::array();
+
+    for (const auto& [id, spawn] : data.playerSpawns)
+    {
+        j["playerSpawns"].push_back({
+            {"id", id},
+            {"position", { spawn.x, spawn.y, spawn.z }},
+            {"skinChoice", spawn.skinChoice}
+        });
+    }
+
+    j["cubes"] = nlohmann::json::array();
+
+    for (const auto& cube : data.cubes)
+    {
+        nlohmann::json cubeJson;
+
+        cubeJson["position"] = {
+            cube.position.x,
+            cube.position.y,
+            cube.position.z
+        };
+
+        cubeJson["type"] = cube.type;
+        cubeJson["solid"] = cube.solid;
+        cubeJson["trigger"] = cube.trigger;
+
+        if (!cube.targetScene.empty())
+            cubeJson["targetScene"] = cube.targetScene;
+
+        if (!cube.targetSpawn.empty())
+            cubeJson["targetSpawn"] = cube.targetSpawn;
+
+        if (!cube.modelID.empty())
+            cubeJson["modelID"] = cube.modelID;
+
+        j["cubes"].push_back(cubeJson);
+    }
+
+    j["entities"] = data.entities;
+
+    std::ofstream file(path);
+    if (!file.is_open())
+        return false;
+
+    file << j.dump(4);
+    return true;
+}

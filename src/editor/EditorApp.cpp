@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include "editor/gui/EditorUI.h"
+#include "engine/scene/SceneLoader.h"
 
 bool EditorApp::init()
 {
@@ -26,6 +27,9 @@ bool EditorApp::init()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -33,6 +37,7 @@ bool EditorApp::init()
 
     SetupEditorStyle();
 
+    context.sceneLoaded = SceneLoader::loadFromFile(context.currentScenePath, context.scene);
     return true;
 }
 
@@ -42,7 +47,7 @@ void EditorApp::run(SceneManager& sceneManager)
     {
         beginFrame();
 
-        DrawEditorUI(sceneManager);
+        DrawEditorUI(context);
 
         endFrame();
     }
