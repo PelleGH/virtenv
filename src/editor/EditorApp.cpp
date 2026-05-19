@@ -41,7 +41,7 @@ bool EditorApp::init()
     return true;
 }
 
-void EditorApp::run(SceneManager& sceneManager)
+void EditorApp::run()
 {
     while (!glfwWindowShouldClose(window))
     {

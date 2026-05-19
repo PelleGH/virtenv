@@ -7,103 +7,141 @@
 #include "../src/engine/ecs/EntityFactory.h"
 #include <cstring>
 #include "../../engine/scene/SceneLoader.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 using json = nlohmann::json;
 
-void SaveCurrentScene(SceneManager& sceneManager) {
-    // Make sure a project is actually loaded first!
-    if (sceneManager.getProjectPath().empty()) {
-        std::cout << "[Editor] ERROR: No project loaded! Cannot save.\n";
-        return;
-    }
-
-    Scene& currentScene = sceneManager.getCurrentScene();
-    std::string sceneName = currentScene.getData().name; // Gets "room_01"
+void LoadProject(EditorContext& context, const std::string& chosenProjectFolder) {
+    std::cout << "[Editor] Loading Project..." << std::endl;
     
-    // Build the save path: "Projects/TestGame/assets/scenes/room_01.json"
-    std::string savePath = sceneManager.getProjectPath() + "assets/scenes/" + sceneName + ".json";
-    
-    std::cout << "[Editor] Saving scene to " << savePath << "...\n";
-
-    // --- REBUILT JSON SERIALIZATION LOGIC ---
-    json sceneJson;
-    sceneJson["name"] = sceneName; 
-    
-    ComponentStorage& components = currentScene.getComponentStorage();
-    EntityFactory factory(currentScene.getEntityManager(), components);
-
-    // 1. Serialize all active entities (skipping the player)
-    json entitiesArray = json::array();
-    for (Entity e : currentScene.getActiveEntities()) {
-        if (!components.HasComponent<PlayerInput>(e)) {
-            json entityData = factory.serialize(e);
-            if (!entityData.empty()) {
-                entitiesArray.push_back(entityData);
-            }
-        }
-    }
-    sceneJson["entities"] = entitiesArray;
-
-    // 2. Serialize static cubes/walls
-    json cubesArray = json::array();
-    for (const auto& cube : currentScene.getData().cubes) {
-        json cubeJson;
-        cubeJson["position"] = { cube.position.x, cube.position.y, cube.position.z };
-        cubeJson["type"] = cube.type;
-        cubeJson["solid"] = cube.solid;
-        cubeJson["trigger"] = cube.trigger;
-
-        if (cube.type == "door") {
-            cubeJson["targetScene"] = cube.targetScene;
-            cubeJson["targetSpawn"] = cube.targetSpawn;
-        }
-        cubesArray.push_back(cubeJson);
-    }
-    sceneJson["cubes"] = cubesArray;
-    // ----------------------------------------
-    
-    // Write the file to the new dynamic path!
-    std::ofstream outFile(savePath);
-    if (outFile.is_open()) {
-        outFile << sceneJson.dump(4); 
-        outFile.close();
-        std::cout << "[Editor] Save successful!\n";
-    } else {
-        std::cout << "[Editor] ERROR: Could not open file for writing!\n";
-    }
-}
-
-void LoadProject(SceneManager& sceneManager) {
-    std::cout << "[Editor] Loading Project...\n";
-    
-    // 1. The path to the project file (Later, a file browser will provide this)
-    std::string projectFolder = "Projects/TestGame/";
+    // Dynamically build paths based on what the user clicked!
+    std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     std::string settingsPath = projectFolder + "project.json";
 
-    // 2. Open and read the project.json file
     std::ifstream file(settingsPath);
     if (file.is_open()) {
         json projectData;
         file >> projectData;
         file.close();
 
-        // 3. Lock the SceneManager into this folder!
-        sceneManager.setProjectPath(projectFolder);
+        context.projectPath = projectFolder;
+        if (projectData.contains("projectName")) {
+            context.projectName = projectData["projectName"];
+        }
 
-        // 4. Find the starting scene and load it
         std::string startScene = projectData["startingScene"];
-        std::string fullScenePath = projectFolder + "assets/scenes/" + startScene + ".json";
+        context.currentScenePath = projectFolder + "assets/scenes/" + startScene + ".json";
         
-        if (sceneManager.loadScene(fullScenePath)) {
-            std::cout << "[Editor] Successfully loaded project: " << projectData["projectName"] << "!\n";
+        if (SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
+            std::cout << "[Editor] Successfully loaded project: " << context.projectName << "!" << std::endl;
+            context.sceneLoaded = true;
+            context.dirty = false;
         } else {
-            std::cout << "[Editor] ERROR: Could not load starting scene!\n";
+            std::cout << "[Editor] ERROR: Could not load starting scene!" << std::endl;
         }
     } else {
-        std::cout << "[Editor] ERROR: Could not find project.json!\n";
+        std::cout << "[Editor] ERROR: Could not find project.json inside " << projectFolder << "!" << std::endl;
     }
 }
 
+void RefreshProjectList(EditorContext& context) {
+    context.availableProjects.clear();
+    
+    std::string projectsRoot = "Projects/";
+    if (!fs::exists(projectsRoot)) {
+        fs::create_directory(projectsRoot);
+    }
+
+    // Loop through every folder inside "Projects/"
+    for (const auto& entry : fs::directory_iterator(projectsRoot)) {
+        if (entry.is_directory()) {
+            // This grabs just the name of the folder (e.g., "TestGame2")
+            context.availableProjects.push_back(entry.path().filename().string());
+        }
+    }
+}
+
+void SaveProject(EditorContext& context) {
+    if (context.projectPath.empty()) {
+        std::cout << "[Editor] ERROR: No project loaded! Cannot save project configuration." << std::endl; // Changed \n
+        return;
+    }
+
+    std::string settingsPath = context.projectPath + "project.json";
+    std::cout << "[Editor] Saving project configuration to " << settingsPath << "..." << std::endl; // Changed \n
+
+    json projectData;
+    projectData["projectName"] = context.projectName;
+    projectData["startingScene"] = context.scene.name; 
+
+    std::ofstream file(settingsPath);
+    if (file.is_open()) {
+        file << projectData.dump(4);
+        file.close();
+        std::cout << "[Editor] Project configuration saved successfully!" << std::endl; // Changed \n
+    } else {
+        std::cout << "[Editor] ERROR: Could not open project.json for writing!" << std::endl; // Changed \n
+    }
+}
+
+void CreateNewProject(EditorContext& context, const std::string& folderName, const std::string& userProjectName) {
+    // 1. Sanity check: Ensure the user didn't leave the name blank
+    if (folderName.empty() || userProjectName.empty()) {
+        std::cout << "[Editor] ERROR: Folder name or Project name cannot be empty!" << std::endl;
+        return;
+    }
+
+    // 2. Define our paths
+    std::string newProjectRoot = "Projects/" + folderName + "/";
+    std::string scenesFolder = newProjectRoot + "assets/scenes/";
+
+    // 3. Check if the project folder already exists so we don't accidentally wipe a game!
+    if (fs::exists(newProjectRoot)) {
+        std::cout << "[Editor] ERROR: A project folder named '" << folderName << "' already exists!" << std::endl;
+        return;
+    }
+
+    // 4. Create the nested folders automatically (mkdir -p equivalent)
+    fs::create_directories(scenesFolder);
+
+    // 5. Generate the default project.json file contents
+    json projectJson;
+    projectJson["projectName"] = userProjectName;
+    projectJson["startingScene"] = "room_01";
+
+    std::ofstream projFile(newProjectRoot + "project.json");
+    if (projFile.is_open()) {
+        projFile << projectJson.dump(4);
+        projFile.close();
+    }
+
+    // 6. Generate a baseline template room_01.json so the loader doesn't crash on an empty file
+    json defaultSceneJson;
+    defaultSceneJson["name"] = "room_01";
+    defaultSceneJson["camera"] = {
+        {"mode", "fixed"},
+        {"position", {0, 10, 10}},
+        {"target", {0, 0, 0}}
+    };
+    defaultSceneJson["playerSpawns"] = json::array({
+        {{"id", "default"}, {"position", {0, 1, 0}}, {"skinChoice", 1}}
+    });
+    defaultSceneJson["cubes"] = json::array();
+    defaultSceneJson["entities"] = json::array();
+
+    std::ofstream sceneFile(scenesFolder + "room_01.json");
+    if (sceneFile.is_open()) {
+        sceneFile << defaultSceneJson.dump(4);
+        sceneFile.close();
+    }
+
+    std::cout << "[Editor] Successfully created new project workspace: " << userProjectName << std::endl;
+    
+    // 7. Force the launcher window to scan the directory and reveal the new project instantly!
+    RefreshProjectList(context);
+}
 
 void SetupEditorStyle()
 {
@@ -319,7 +357,7 @@ static void DrawInspector(EditorContext& context)
 
     ImGui::End();
 }
-static void DrawDockspace()
+static void DrawDockspace(EditorContext& context)
 {
     static bool dockspaceOpen = true;
 
@@ -351,21 +389,42 @@ static void DrawDockspace()
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Save Scene"))
+            ImGui::TextDisabled("Use Project Launcher to Load");
+
+            if (ImGui::MenuItem("Save Project", "Ctrl+Shift+S"))
             {
-                // call save here later
+                SaveProject(context);
             }
 
-            if (ImGui::MenuItem("Load Scene"))
+            ImGui::Separator();
+
+            //SAVE BUTTON
+            if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
             {
-                // call load here later
+                if (SceneLoader::saveToFile(context.currentScenePath, context.scene)) {
+                    std::cout << "[Editor] Successfully saved to " << context.currentScenePath << std::endl;
+                    context.dirty = false;
+                } else {
+                    std::cout << "[Editor] ERROR: Failed to save scene!"<< std::endl;
+                }
+            }
+
+            //LOAD BUTTON
+            if (ImGui::MenuItem("Load Scene", "Ctrl+O"))
+            {
+                if (SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
+                    std::cout << "[Editor] Successfully loaded " << context.currentScenePath << std::endl;
+                    context.sceneLoaded = true;
+                } else {
+                    std::cout << "[Editor] ERROR: Failed to load scene!"<< std::endl;
+                }
             }
 
             ImGui::Separator();
 
             if (ImGui::MenuItem("Exit"))
             {
-                // handle exit later
+                exit(0);
             }
 
             ImGui::EndMenu();
@@ -395,9 +454,60 @@ static void DrawDockspace()
 
     ImGui::End();
 }
+
+void DrawProjectLauncher(EditorContext& context) {
+    if (context.availableProjects.empty()) {
+        RefreshProjectList(context);
+    }
+
+    ImGui::Begin("Project Launcher");
+    
+    ImGui::Text("Active Project: %s", context.projectName.c_str());
+    if (ImGui::Button("Refresh Directory List")) {
+        RefreshProjectList(context);
+    }
+    
+    ImGui::Separator();
+    
+    ImGui::TextColored(ImVec4(0.3f, 0.8f, 1.0f, 1.0f), "Create New Game Project:");
+    
+    static char folderNameBuf[64] = "";
+    static char projNameBuf[128] = "";
+
+    ImGui::InputText("Folder Name (e.g. MyRPG)", folderNameBuf, IM_ARRAYSIZE(folderNameBuf));
+    ImGui::InputText("Display Game Name", projNameBuf, IM_ARRAYSIZE(projNameBuf));
+
+    if (ImGui::Button("Generate Project Templates")) {
+        // Run our automated file generation routine!
+        CreateNewProject(context, folderNameBuf, projNameBuf);
+        
+        // Clear out the text inputs so they are ready for next time
+        std::memset(folderNameBuf, 0, sizeof(folderNameBuf));
+        std::memset(projNameBuf, 0, sizeof(projNameBuf));
+    }
+    // --------------------------------------------------
+
+    ImGui::Separator();
+    ImGui::Text("Available Game Projects:");
+
+    for (const auto& projName : context.availableProjects) {
+        ImGui::BulletText("%s", projName.c_str());
+        ImGui::SameLine(ImGui::GetWindowWidth() - 80);
+        
+        char buttonLabel[64];
+        snprintf(buttonLabel, sizeof(buttonLabel), "Open##%s", projName.c_str());
+        
+        if (ImGui::Button(buttonLabel)) {
+            LoadProject(context, projName); 
+        }
+    }
+
+    ImGui::End();
+}
+
 void DrawEditorUI(EditorContext& context)
 {
-    DrawDockspace();
+    DrawDockspace(context);
     ImGui::Begin("Assets");
     if (ImGui::Button("Add Floor Cube"))
         {
@@ -442,4 +552,5 @@ void DrawEditorUI(EditorContext& context)
 
     DrawHierarchy(context);
     DrawInspector(context);
+    DrawProjectLauncher(context);
 }

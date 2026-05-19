@@ -15,21 +15,14 @@ int main()
     
     
 
-    //if (!editor.init())
-    //    return 1;
+    /*
+    if (!engine.init())
+        return 1;
 
-    //engine.run();
+        engine.run();
 
-    //engine.shutdown();
-    
-    
-
-    if (!editor.init())
-       return 1;
-
-    editor.run(engine.getSceneManager());
-
-    editor.shutdown();
+    engine.shutdown();
+    */
 
     return 0;
 }

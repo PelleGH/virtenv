@@ -1,12 +1,11 @@
 #include "editor/EditorContext.h"
 
 struct GLFWwindow;
-class SceneManager;
 class EditorApp
 {
 public:
     bool init();
-    void run(SceneManager& sceneManager);
+    void run();
     void shutdown();
 
 private:
