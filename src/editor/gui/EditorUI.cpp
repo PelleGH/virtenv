@@ -1,7 +1,53 @@
 #include "EditorUI.h"
 #include "imgui.h"
+#include "raylib.h"
+#include "rlImGui.h"
 #include <cstring>
 #include "../../engine/scene/SceneLoader.h"
+
+static void RenderSceneViewport(EditorContext& context)
+{
+    if (!context.viewportReady)
+        return;
+
+    // Validate texture is actually loaded
+    if (context.viewportTexture.texture.id == 0)
+    {
+        context.viewportReady = false;
+        return;
+    }
+    BeginTextureMode(context.viewportTexture);
+    ClearBackground(SKYBLUE);
+
+    BeginMode3D(context.editorCamera);
+
+    DrawGrid(20, 1.0f);
+
+    for (const auto& cube : context.scene.cubes)
+    {
+        Vector3 pos = {
+            (float)cube.position.x,
+            (float)cube.position.y,
+            (float)cube.position.z
+        };
+
+        Color color = LIGHTGRAY;
+
+        if (cube.type == "wall")
+            color = DARKGRAY;
+        else if (cube.type == "door")
+            color = BROWN;
+        else if (cube.trigger)
+            color = GREEN;
+
+        DrawCube(pos, 1.0f, 1.0f, 1.0f, color);
+        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, BLACK);
+    }
+
+    EndMode3D();
+
+    EndTextureMode();
+}
 
 void SetupEditorStyle()
 {
@@ -333,9 +379,25 @@ void DrawEditorUI(EditorContext& context)
     ImGui::End();
 
     ImGui::Begin("Viewport");
-    ImGui::Text("Scene view later.");
-    ImGui::Text("Cubes loaded: %d", (int)context.scene.cubes.size());
-    ImGui::Text("Entities loaded: %d", (int)context.scene.entities.size());
+
+    ImVec2 size = ImGui::GetContentRegionAvail();
+
+    // Resize render texture if panel size changed
+    if ((int)size.x != context.viewportTexture.texture.width ||
+        (int)size.y != context.viewportTexture.texture.height)
+    {
+        UnloadRenderTexture(context.viewportTexture);
+        context.viewportTexture = LoadRenderTexture((int)size.x, (int)size.y);
+        context.viewportReady   = (context.viewportTexture.texture.id != 0);
+    }
+
+    RenderSceneViewport(context);
+
+    if (context.viewportReady)
+    {
+        rlImGuiImageRenderTextureFit(&context.viewportTexture, false);
+    }
+
     ImGui::End();
 
     DrawHierarchy(context);
