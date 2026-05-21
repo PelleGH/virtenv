@@ -26,6 +26,7 @@ compile_commands.json
 
 # ImGui runtime config
 imgui.ini
+EditorSettings.json
 
 # OS junk
 .DS_Store

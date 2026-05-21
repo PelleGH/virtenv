@@ -1,88 +1,99 @@
 #include "EditorApp.h"
-
+#include "raylib.h"
+#include "rlImGui.h"
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
-#include <GLFW/glfw3.h>
-
 #include "editor/gui/EditorUI.h"
 #include "engine/scene/SceneLoader.h"
+#include "editor/project/ProjectManager.h"
+#include <filesystem>
 
 bool EditorApp::init()
 {
-    if (!glfwInit())
-        return false;
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(1280, 720, "Virten Editor");
+    SetTargetFPS(60);
 
-    window = glfwCreateWindow(1280, 720, "Virten Editor", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return false;
-    }
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    rlImGuiSetup(true);
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    
-    ImGui::StyleColorsDark();
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    SetupEditorStyle();
 
     context.sceneLoaded = SceneLoader::loadFromFile(context.currentScenePath, context.scene);
-    return true;
+
+    context.editorCamera.position   = { 6.0f, 8.0f, 6.0f };
+    context.editorCamera.target     = { 0.0f, 0.0f, 0.0f };
+    context.editorCamera.up         = { 0.0f, 1.0f, 0.0f };
+    context.editorCamera.fovy       = 45.0f;
+    context.editorCamera.projection = CAMERA_PERSPECTIVE;
+
+    context.viewportTexture = LoadRenderTexture(1280, 720);
+    context.viewportReady   = (context.viewportTexture.texture.id != 0);
+    
+    context.resourceManager.LoadFromManifest("src/engine/assets/assets.json");
+    
+    LoadLastProject(context);
+
+    if (!context.sceneLoaded)
+    {
+        context.sceneLoaded = SceneLoader::loadFromFile(context.currentScenePath, context.scene);
+        context.previewScene.load(context.currentScenePath);
+        context.scene = context.previewScene.getData();
+    }
+
+    namespace fs = std::filesystem;
+
+    context.scenePaths.clear();
+
+    for (const auto& entry : fs::directory_iterator("assets/scenes"))
+    {
+        if (!entry.is_regular_file())
+            continue;
+
+        std::string path = entry.path().string();
+
+        if (entry.path().extension() == ".json")
+        {
+            context.scenePaths.push_back(path);
+        }
+    }
+    for (int i = 0; i < (int)context.scenePaths.size(); i++)
+    {
+        if (context.scenePaths[i] == context.currentScenePath)
+        {
+            context.currentSceneIndex = i;
+            break;
+        }
+    }
+    return context.viewportReady;
 }
 
 void EditorApp::run()
 {
-    while (!glfwWindowShouldClose(window))
+    while (!WindowShouldClose())
     {
-        beginFrame();
+        if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_S))
+        {
+            SaveProject(context);
+        }
+        BeginDrawing();
+        ClearBackground(DARKGRAY);
 
+        rlImGuiBegin();
         DrawEditorUI(context);
+        rlImGuiEnd();
 
-        endFrame();
+        EndDrawing();
     }
-}
-
-void EditorApp::beginFrame()
-{
-    glfwPollEvents();
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void EditorApp::endFrame()
-{
-    ImGui::Render();
-
-    int display_w, display_h;
-    glfwGetFramebufferSize(window, &display_w, &display_h);
-
-    glViewport(0, 0, display_w, display_h);
-    glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    glfwSwapBuffers(window);
 }
 
 void EditorApp::shutdown()
 {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    if (context.viewportReady)
+    {
+        UnloadRenderTexture(context.viewportTexture);
+        context.viewportReady = false;
+    }
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    rlImGuiShutdown();
+    CloseWindow();
 }

@@ -12,20 +12,23 @@ using json = nlohmann::json;
 
 bool Scene::load(const std::string& scenePath)
 {
-    // 1. Ladda in den statiska kartan (väggar, golv, dörrar)
-    if (!SceneLoader::loadFromFile(scenePath, data))
+    SceneData loadedData;
+
+    if (!SceneLoader::loadFromFile(scenePath, loadedData))
         return false;
 
-    //std::cout << "Loaded scene: " << data.name << '\n';
-    //std::cout << "Cubes: " << data.cubes.size() << '\n';
-    
-    // 2. Registrera alla komponenter du använder i scenen
+    return loadFromData(loadedData);
+}
+bool Scene::loadFromData(const SceneData& sceneData)
+{
+    unload();
+
+    data = sceneData;
+
     registerComponents();
 
     EntityFactory factory(entityManager, componentStorage);
 
-    // 4. Ladda in dina spawners från JSON-filen
-    
     for (const auto& entityData : data.entities)
     {
         Entity loadedEntity = factory.deserialize(entityData);
@@ -37,7 +40,6 @@ bool Scene::load(const std::string& scenePath)
 
     return true;
 }
-
 Entity Scene::spawnPlayerAt(const std::string& spawnId)
 {
     PlayerSpawn spawn;

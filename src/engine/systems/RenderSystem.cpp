@@ -6,14 +6,24 @@
 
 void RenderSystem::render(Scene& scene, ResourceManager& resourceManager, const Camera3D& camera)
 {
+    RenderOptions options;
+    render(scene, resourceManager, camera, options);
+}
+
+void RenderSystem::render(Scene& scene, ResourceManager& resourceManager, const Camera3D& camera, const RenderOptions& options)
+{
     BeginMode3D(camera);
 
     renderGrid(scene, resourceManager);
     renderEntities(scene, resourceManager);
 
     EndMode3D();
-    renderHealthBars(scene, camera);
-    renderPlayerHealthBar(scene);
+
+    if (options.drawHealthBars)
+        renderHealthBars(scene, camera);
+
+    if (options.drawPlayerUI)
+        renderPlayerHealthBar(scene);
 }
 
 void RenderSystem::renderEntities(Scene& scene, ResourceManager& resourceManager)

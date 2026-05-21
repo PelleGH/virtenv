@@ -12,61 +12,131 @@ using json = nlohmann::json;
 
 void LoadProject(EditorContext& context, const std::string& chosenProjectFolder) {
     std::cout << "[Editor] Loading Project..." << std::endl;
-    
-    // Dynamically build paths based on what the user clicked!
+
     std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     std::string settingsPath = projectFolder + "project.json";
 
     std::ifstream file(settingsPath);
-    if (file.is_open()) {
-        json projectData;
-        file >> projectData;
-        file.close();
-
-        context.projectPath = projectFolder;
-        if (projectData.contains("projectName")) {
-            context.projectName = projectData["projectName"];
-        }
-
-        std::string startScene = projectData["startingScene"];
-        context.currentScenePath = projectFolder + "assets/scenes/" + startScene + ".json";
-        
-        if (SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
-            std::cout << "[Editor] Successfully loaded project: " << context.projectName << "!" << std::endl;
-            context.selection = {};
-            context.sceneLoaded = true;
-            context.dirty = false;
-        } else {
-            std::cout << "[Editor] ERROR: Could not load starting scene!" << std::endl;
-        }
-    } else {
+    if (!file.is_open()) {
         std::cout << "[Editor] ERROR: Could not find project.json inside " << projectFolder << "!" << std::endl;
+        return;
     }
+
+    json projectData;
+    file >> projectData;
+
+    context.projectPath = projectFolder;
+    context.projectName = projectData.value("projectName", chosenProjectFolder);
+
+    context.scenePaths.clear();
+
+    if (projectData.contains("scenes")) {
+        for (const auto& scene : projectData["scenes"]) {
+            context.scenePaths.push_back(projectFolder + scene.get<std::string>());
+        }
+    }
+
+    if (context.scenePaths.empty()) {
+        std::string scenesRoot = projectFolder + "assets/scenes/";
+        if (fs::exists(scenesRoot)) {
+            for (const auto& entry : fs::directory_iterator(scenesRoot)) {
+                if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                    context.scenePaths.push_back(entry.path().string());
+                }
+            }
+        }
+    }
+
+    std::string startScene = projectData.value("startingScene", "room_01");
+    context.currentScenePath = projectFolder + "assets/scenes/" + startScene + ".json";
+
+    if (!SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
+        std::cout << "[Editor] ERROR: Could not load starting scene: " << context.currentScenePath << std::endl;
+        return;
+    }
+
+    // IMPORTANT: sync viewport scene
+    context.previewScene.loadFromData(context.scene);
+    context.previewDirty = false;
+
+    // IMPORTANT: rebuild project-local scene list
+    context.scenePaths.clear();
+
+    std::string scenesRoot = projectFolder + "assets/scenes/";
+    if (fs::exists(scenesRoot)) {
+        for (const auto& entry : fs::directory_iterator(scenesRoot)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                context.scenePaths.push_back(entry.path().string());
+            }
+        }
+    }
+
+    context.currentSceneIndex = 0;
+    for (int i = 0; i < (int)context.scenePaths.size(); i++) {
+        if (context.scenePaths[i] == context.currentScenePath) {
+            context.currentSceneIndex = i;
+            break;
+        }
+    }
+
+    context.selection = {};
+    context.sceneLoaded = true;
+    context.dirty = false;
+
+    std::cout << "[Editor] Successfully loaded project: " << context.projectName << std::endl;
+    json settings;
+    settings["lastProject"] = chosenProjectFolder;
+
+    std::ofstream settingsFile("EditorSettings.json");
+    settingsFile << settings.dump(4);
 }
 
 void SaveProject(EditorContext& context) {
     if (context.projectPath.empty()) {
-        std::cout << "[Editor] ERROR: No project loaded! Cannot save project configuration." << std::endl; // Changed \n
+        std::cout << "[Editor] ERROR: No project loaded. Create or load a project first." << std::endl;
         return;
     }
 
-    std::string settingsPath = context.projectPath + "project.json";
-    std::cout << "[Editor] Saving project configuration to " << settingsPath << "..." << std::endl; // Changed \n
+    if (!context.currentScenePath.empty()) {
+        if (!SceneLoader::saveToFile(context.currentScenePath, context.scene)) {
+            std::cout << "[Editor] ERROR: Failed to save current scene: " << context.currentScenePath << std::endl;
+            return;
+        }
+    }
+
+    context.scenePaths.clear();
+
+    std::string scenesFolder = context.projectPath + "assets/scenes/";
+    if (fs::exists(scenesFolder)) {
+        for (const auto& entry : fs::directory_iterator(scenesFolder)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".json") {
+                context.scenePaths.push_back(entry.path().string());
+            }
+        }
+    }
 
     json projectData;
     projectData["projectName"] = context.projectName;
-    projectData["startingScene"] = context.scene.name; 
+    projectData["startingScene"] = fs::path(context.currentScenePath).stem().string();
+    projectData["scenes"] = json::array();
 
-    std::ofstream file(settingsPath);
-    if (file.is_open()) {
-        file << projectData.dump(4);
-        file.close();
-        SceneLoader::saveToFile(context.currentScenePath, context.scene);
-        context.dirty = false;
-        std::cout << "[Editor] Project configuration saved successfully!" << std::endl; // Changed \n
-    } else {
-        std::cout << "[Editor] ERROR: Could not open project.json for writing!" << std::endl; // Changed \n
+    for (const auto& scenePath : context.scenePaths) {
+        projectData["scenes"].push_back(fs::relative(scenePath, context.projectPath).generic_string());
     }
+
+    std::ofstream file(context.projectPath + "project.json");
+    if (!file.is_open()) {
+        std::cout << "[Editor] ERROR: Could not write project.json." << std::endl;
+        return;
+    }
+
+    file << projectData.dump(4);
+
+    context.previewScene.loadFromData(context.scene);
+    context.dirty = false;
+    context.previewDirty = false;
+
+    std::cout << "[Editor] Saved project: " << context.projectName << std::endl;
 }
 void RefreshProjectList(EditorContext& context) {
     context.availableProjects.clear();
@@ -86,59 +156,65 @@ void RefreshProjectList(EditorContext& context) {
 }
 
 
-void CreateNewProject(EditorContext& context, const std::string& folderName, const std::string& userProjectName) {
-    // 1. Sanity check: Ensure the user didn't leave the name blank
-    if (folderName.empty() || userProjectName.empty()) {
-        std::cout << "[Editor] ERROR: Folder name or Project name cannot be empty!" << std::endl;
+void CreateNewProject(EditorContext& context, const std::string& folderName, const std::string& userProjectName)
+{
+    if (folderName.empty()) {
+        std::cout << "[Editor] ERROR: Folder name is empty." << std::endl;
         return;
     }
 
-    // 2. Define our paths
-    std::string newProjectRoot = "Projects/" + folderName + "/";
-    std::string scenesFolder = newProjectRoot + "assets/scenes/";
+    std::string projectFolder = "Projects/" + folderName + "/";
 
-    // 3. Check if the project folder already exists so we don't accidentally wipe a game!
-    if (fs::exists(newProjectRoot)) {
-        std::cout << "[Editor] ERROR: A project folder named '" << folderName << "' already exists!" << std::endl;
+    if (fs::exists(projectFolder)) {
+        std::cout << "[Editor] ERROR: Project already exists: " << projectFolder << std::endl;
         return;
     }
 
-    // 4. Create the nested folders automatically (mkdir -p equivalent)
-    fs::create_directories(scenesFolder);
+    fs::create_directories(projectFolder + "assets/scenes");
 
-    // 5. Generate the default project.json file contents
+    context.projectPath = projectFolder;
+    context.projectName = userProjectName.empty() ? folderName : userProjectName;
+    context.currentScenePath = projectFolder + "assets/scenes/room_01.json";
+
+    // create empty/default scene
+    context.scene = SceneData{};
+    context.scene.name = "room_01";
+
+    SceneLoader::saveToFile(context.currentScenePath, context.scene);
+
     json projectJson;
-    projectJson["projectName"] = userProjectName;
+    projectJson["projectName"] = context.projectName;
     projectJson["startingScene"] = "room_01";
+    projectJson["scenes"] = json::array({ "assets/scenes/room_01.json" });
 
-    std::ofstream projFile(newProjectRoot + "project.json");
-    if (projFile.is_open()) {
-        projFile << projectJson.dump(4);
-        projFile.close();
-    }
+    std::ofstream file(projectFolder + "project.json");
+    file << projectJson.dump(4);
 
-    // 6. Generate a baseline template room_01.json so the loader doesn't crash on an empty file
-    json defaultSceneJson;
-    defaultSceneJson["name"] = "room_01";
-    defaultSceneJson["camera"] = {
-        {"mode", "fixed"},
-        {"position", {0, 10, 10}},
-        {"target", {0, 0, 0}}
-    };
-    defaultSceneJson["playerSpawns"] = json::array({
-        {{"id", "default"}, {"position", {0, 1, 0}}, {"skinChoice", 1}}
-    });
-    defaultSceneJson["cubes"] = json::array();
-    defaultSceneJson["entities"] = json::array();
+    context.previewScene.loadFromData(context.scene);
+    context.scenePaths.clear();
+    context.scenePaths.push_back(context.currentScenePath);
+    context.currentSceneIndex = 0;
+    context.sceneLoaded = true;
+    context.dirty = false;
+    context.previewDirty = false;
 
-    std::ofstream sceneFile(scenesFolder + "room_01.json");
-    if (sceneFile.is_open()) {
-        sceneFile << defaultSceneJson.dump(4);
-        sceneFile.close();
-    }
-
-    std::cout << "[Editor] Successfully created new project workspace: " << userProjectName << std::endl;
-    
-    // 7. Force the launcher window to scan the directory and reveal the new project instantly!
     RefreshProjectList(context);
+
+    std::cout << "[Editor] Created new empty project: " << context.projectName << std::endl;
+}
+
+void LoadLastProject(EditorContext& context)
+{
+    std::ifstream file("EditorSettings.json");
+    if (!file.is_open())
+        return;
+
+    json settings;
+    file >> settings;
+
+    std::string lastProject = settings.value("lastProject", "");
+    if (lastProject.empty())
+        return;
+
+    LoadProject(context, lastProject);
 }

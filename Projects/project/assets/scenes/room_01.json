@@ -1,0 +1,29 @@
+{
+    "camera": {
+        "mode": "fixed",
+        "position": [
+            0,
+            10,
+            10
+        ],
+        "target": [
+            0,
+            0,
+            0
+        ]
+    },
+    "cubes": [],
+    "entities": [],
+    "name": "room_01",
+    "playerSpawns": [
+        {
+            "id": "default",
+            "position": [
+                0,
+                1,
+                0
+            ],
+            "skinChoice": 1
+        }
+    ]
+}

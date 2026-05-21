@@ -13,6 +13,8 @@ class Scene
 {
 public:
     bool load(const std::string& scenePath);
+    bool loadFromData(const SceneData& sceneData);
+    
     void update(float dt);
     void unload();
     void saveState();
