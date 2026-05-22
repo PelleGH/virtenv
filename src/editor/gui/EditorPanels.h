@@ -7,6 +7,7 @@ void DrawAssets(EditorContext& context);
 void DrawViewport(EditorContext& context);
 void DrawHierarchy(EditorContext& context);
 void DrawInspector(EditorContext& context);
+void LoadComponentSchemas(EditorContext& context);
 
 void LoadEditorScene(EditorContext& context, int index);
 void MarkSceneChanged(EditorContext& context);

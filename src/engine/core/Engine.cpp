@@ -4,10 +4,40 @@
 #include <chrono>
 #include <iostream>
 
+#include <fstream>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+
+namespace fs = std::filesystem;
+using json = nlohmann::json;
+
+static std::string getActiveProjectPath()
+{
+    std::ifstream file("EditorSettings.json");
+    if (!file.is_open())
+        return "";
+
+    json settings;
+    file >> settings;
+
+    std::string lastProject = settings.value("lastProject", "");
+    if (lastProject.empty())
+        return "";
+
+    std::string projectPath = "Projects/" + lastProject + "/";
+    if (!fs::exists(projectPath + "project.json"))
+        return "";
+
+    return projectPath;
+}
+
 bool Engine::init()
 {
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
+
+    std::string activeProjectPath = getActiveProjectPath();
+    assetRoot = activeProjectPath.empty() ? "" : activeProjectPath;
 
     //Reads and creates the models and texture for the world
     resourceManager.LoadFromManifest("src/engine/assets/assets.json");
@@ -16,16 +46,15 @@ bool Engine::init()
     cameraSystem.init(camera);
 
     questManager.setConditionManager(&conditionManager);
-    questManager.loadQuests("assets/quests.json");
+    questManager.loadQuests(assetRoot + "assets/quests.json");
     dialogueManager.setQuestManager(&questManager);
 
     eventBus.subscribe<SceneTransitionEvent>([this](const SceneTransitionEvent& event)
     {
-        
         sceneManager.requestSceneChange(
-        "assets/scenes/" + event.targetScene + ".json",
-        event.targetSpawn
-    );
+            assetRoot + "assets/scenes/" + event.targetScene + ".json",
+            event.targetSpawn
+        );
     });
 
     eventBus.subscribe<DeathEvent>([this](const DeathEvent& event)
@@ -81,7 +110,20 @@ bool Engine::init()
     
     running = true;
 
-    bool sceneLoaded = sceneManager.loadScene("assets/scenes/room_01.json");
+    std::string startScene = "room_01";
+
+    if (!activeProjectPath.empty())
+    {
+        std::ifstream projectFile(activeProjectPath + "project.json");
+        if (projectFile.is_open())
+        {
+            json projectData;
+            projectFile >> projectData;
+            startScene = projectData.value("startingScene", "room_01");
+        }
+    }
+
+    bool sceneLoaded = sceneManager.loadScene(assetRoot + "assets/scenes/" + startScene + ".json");
 
     resourceManager.loadItems("src/engine/assets/items.json"); 
     inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);

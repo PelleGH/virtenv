@@ -1,0 +1,116 @@
+{
+  "TransformComponent": {
+    "order": 10,
+    "fieldOrder": ["x", "y", "z"],
+    "default": {
+      "x": 0.0,
+      "y": 1.0,
+      "z": 0.0
+    },
+    "fieldTypes": {
+      "x": "float",
+      "y": "float",
+      "z": "float"
+    },
+    "hiddenFields": ["previousX", "previousY", "previousZ", "width", "height", "depth"]
+  },
+
+  "Renderer": {
+    "order": 20,
+    "fieldOrder": ["modelID", "textureID", "scale", "width", "height", "depth", "color", "zIndex"],
+    "default": {
+      "modelID": "",
+      "textureID": "",
+      "scale": 0.5,
+      "width": 1.0,
+      "height": 1.0,
+      "depth": 1.0,
+      "color": [255, 255, 255, 255],
+      "zIndex": 0
+    },
+    "fieldTypes": {
+      "scale": "float",
+      "width": "float",
+      "height": "float",
+      "depth": "float"
+    }
+  },
+
+  "Health": {
+    "order": 30,
+    "fieldOrder": ["current", "max", "defense"],
+    "default": {
+      "current": 100,
+      "max": 100,
+      "defense": 0
+    }
+  },
+
+  "Attack": {
+    "order": 40,
+    "fieldOrder": ["damage", "baseDamage", "cooldown", "range", "isRanged", "projectileSpeed", "enemyType"],
+    "default": {
+      "damage": 10,
+      "baseDamage": 10,
+      "cooldown": 1.0,
+      "range": 2.0,
+      "isRanged": false,
+      "projectileSpeed": 5.0,
+      "enemyType": "enemy"
+    },
+    "fieldTypes": {
+      "cooldown": "float",
+      "range": "float",
+      "projectileSpeed": "float"
+    },
+    "hiddenFields": ["timeSinceLastAttack"]
+  },
+
+  "Collider": {
+    "order": 50,
+    "fieldOrder": ["width", "height", "depth", "isTrigger", "enabled"],
+    "default": {
+      "width": 1.0,
+      "height": 1.0,
+      "depth": 1.0,
+      "isTrigger": false,
+      "enabled": true
+    },
+    "fieldTypes": {
+      "width": "float",
+      "height": "float",
+      "depth": "float"
+    }
+  },
+
+  "Interactable": {
+    "order": 60,
+    "fieldOrder": ["interactionRadius", "actions"],
+    "default": {
+      "interactionRadius": 1.0,
+      "actions": []
+    },
+    "fieldTypes": {
+      "interactionRadius": "float"
+    }
+  },
+
+  "DialogueSource": {
+    "order": 70,
+    "fieldOrder": ["dialogueSetId"],
+    "default": {
+      "dialogueSetId": ""
+    }
+  },
+
+  "SpawnType": {
+    "order": 80,
+    "fieldOrder": ["entityToSpawn", "skinChoice", "hasSpawned"],
+    "default": {
+      "entityToSpawn": "",
+      "skinChoice": 0,
+      "hasSpawned": false
+    },
+    "hiddenFields": ["hasSpawned"]
+  }
+}

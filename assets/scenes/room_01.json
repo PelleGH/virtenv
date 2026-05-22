@@ -1276,20 +1276,26 @@
                 "max": 150
             },
             "Renderer": {
-                "modelID": "npc_character_o"
-            },
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false,
-                "skinChoice": 1
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
             },
             "TransformComponent": {
-                "depth": 1.0,
-                "height": 1.0,
-                "width": 1.0,
                 "x": -2.0,
                 "y": 1.0,
-                "z": -2.0
+                "z": -2.0,
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "name": "Goblin",
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
@@ -1302,19 +1308,30 @@
                         "target": "old_man",
                         "type": "StartDialogue"
                     }
-                ]
+                ],
+                "interactionRadius": 1.0
             },
             "Renderer": {
-                "modelID": "old_man_character_a"
-            },
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
+                "modelID": "old_man_character_a",
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
             },
             "TransformComponent": {
-                "x": 1,
-                "y": 1,
-                "z": 1
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "name": "Old Man",
+            "Collider": {
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
@@ -1327,19 +1344,30 @@
                         "target": "test_npc",
                         "type": "StartDialogue"
                     }
-                ]
+                ],
+                "interactionRadius": 1.0
             },
             "Renderer": {
-                "modelID": "old_man_character_a"
-            },
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
+                "modelID": "old_man_character_a",
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
             },
             "TransformComponent": {
-                "x": -1,
-                "y": 1,
-                "z": 1
+                "x": -1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "name": "Test Npc",
+            "Collider": {
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
@@ -1356,22 +1384,27 @@
                 "max": 150
             },
             "Renderer": {
-                "modelID": "npc_character_o"
-            },
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false,
-                "skinChoice": 1
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
             },
             "TransformComponent": {
-                "depth": 1.0,
-                "height": 1.0,
-                "width": 1.0,
                 "x": 2.0,
                 "y": 1.0,
-                "z": 2.0
+                "z": 2.0,
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
             },
-            "name": "Slime"
+            "name": "Slime",
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
+            }
         },
         {
             "Interactable": {

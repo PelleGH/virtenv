@@ -32,6 +32,7 @@ Entity EntityFactory::createPlayer(float x, float y, float z, int skinChoice){
     r.width = size;
     r.height = size;
     r.depth = size;
+    r.scale = size;
     r.color = WHITE; // Player is white
 
     // Checks for which skin to use
@@ -96,6 +97,7 @@ Entity EntityFactory::createTestCube(float x, float y, float z, int skinChoice){
     r.width = size;
     r.height = size;
     r.depth = size;
+    r.scale = size;
     r.color = WHITE;
     componentStorage.AddComponent(entity, r);
 
@@ -173,7 +175,16 @@ json EntityFactory::serialize(Entity entity){
             {"width", t.width}, {"height", t.height}, {"depth", t.depth}
         };
     }
-
+    if (componentStorage.HasComponent<Collider>(entity)) {
+        const auto& c = componentStorage.GetComponent<Collider>(entity);
+        j["Collider"] = {
+            {"width", c.width},
+            {"height", c.height},
+            {"depth", c.depth},
+            {"isTrigger", c.isTrigger},
+            {"enabled", c.enabled}
+        };
+    }
     // 2. Serialize Renderer
     if (componentStorage.HasComponent<Renderer>(entity)) {
         const auto& r = componentStorage.GetComponent<Renderer>(entity);
@@ -182,7 +193,7 @@ json EntityFactory::serialize(Entity entity){
             {"modelID", r.modelID},
             {"color", {r.color.r, r.color.g, r.color.b, r.color.a}}, // Raylib Color to array
             {"width", r.width}, {"height", r.height}, {"depth", r.depth},
-            {"zIndex", r.zIndex}
+            {"scale", r.scale}, {"zIndex", r.zIndex}
         };
     }
 
@@ -221,10 +232,24 @@ Entity EntityFactory::deserialize(const json& j){
         t.x = j["TransformComponent"].value("x", 0.0f);
         t.y = j["TransformComponent"].value("y", 0.0f);
         t.z = j["TransformComponent"].value("z", 0.0f);
-        t.width = j["TransformComponent"].value("width", 32.0f);
-        t.height = j["TransformComponent"].value("height", 32.0f);
-        t.depth = j["TransformComponent"].value("depth", 32.0f);
+        t.width = j["TransformComponent"].value("width", 1.0f);
+        t.height = j["TransformComponent"].value("height", 1.0f);
+        t.depth = j["TransformComponent"].value("depth", 1.0f);
+
+        t.previousX = t.x;
+        t.previousY = t.y;
+        t.previousZ = t.z;
         componentStorage.AddComponent(entity, t);
+    }
+    if (j.contains("Collider")) {
+        Collider c;
+        c.width = j["Collider"].value("width", 1.0f);
+        c.height = j["Collider"].value("height", 1.0f);
+        c.depth = j["Collider"].value("depth", 1.0f);
+        c.isTrigger = j["Collider"].value("isTrigger", false);
+        c.enabled = j["Collider"].value("enabled", true);
+
+        componentStorage.AddComponent(entity, c);
     }
     if (j.find("DialogueSource") != j.end()) {
         DialogueSource dialogue;
@@ -244,9 +269,11 @@ Entity EntityFactory::deserialize(const json& j){
             r.color.a = j["Renderer"]["color"][3];
         }
 
-        r.width = j["Renderer"].value("width", 0.5f);
-        r.height = j["Renderer"].value("height", 0.5f);
-        r.depth = j["Renderer"].value("depth", 0.5f);
+        r.scale = j["Renderer"].value("scale", j["Renderer"].value("width", 0.5f));
+
+        r.width = j["Renderer"].value("width", 1.0f);
+        r.height = j["Renderer"].value("height", 1.0f);
+        r.depth = j["Renderer"].value("depth", 1.0f);
         r.zIndex = j["Renderer"].value("zIndex", 0);
         
         componentStorage.AddComponent(entity, r);

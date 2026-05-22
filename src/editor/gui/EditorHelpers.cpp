@@ -1,4 +1,7 @@
 #include "EditorPanels.h"
+#include <fstream>
+#include <filesystem>
+#include <vector>
 
 void MarkSceneChanged(EditorContext& context)
 {
@@ -49,9 +52,40 @@ void AddSpawnPoint(EditorContext& context)
 
     MarkSceneChanged(context);
 }
+void LoadComponentSchemas(EditorContext& context)
+{
+    std::vector<std::filesystem::path> possiblePaths = {
+        "src/editor/config/component_schemas.json",
+        "../src/editor/config/component_schemas.json",
+        "../../src/editor/config/component_schemas.json",
+        "../../../src/editor/config/component_schemas.json"
+    };
 
+    context.componentSchemas = nlohmann::json::object();
+
+    for (const auto& schemaPath : possiblePaths)
+    {
+        std::ifstream file(schemaPath);
+
+        if (!file.is_open())
+            continue;
+
+        try
+        {
+            file >> context.componentSchemas;
+            return;
+        }
+        catch (...)
+        {
+            context.componentSchemas = nlohmann::json::object();
+            return;
+        }
+    }
+}
 void LoadEditorScene(EditorContext& context, int index)
 {
+    LoadComponentSchemas(context);
+
     if (index < 0 || index >= (int)context.scenePaths.size())
         return;
 
@@ -66,3 +100,4 @@ void LoadEditorScene(EditorContext& context, int index)
     context.dirty = false;
     context.previewDirty = false;
 }
+
