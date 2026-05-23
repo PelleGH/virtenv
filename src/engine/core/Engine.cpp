@@ -40,7 +40,7 @@ bool Engine::init()
     assetRoot = activeProjectPath.empty() ? "" : activeProjectPath;
 
     //Reads and creates the models and texture for the world
-    resourceManager.LoadFromManifest("src/engine/assets/assets.json");
+    resourceManager.LoadFromManifest("assets/assets.json");
     sceneManager.init(resourceManager);
 
     cameraSystem.init(camera);
@@ -125,7 +125,7 @@ bool Engine::init()
 
     bool sceneLoaded = sceneManager.loadScene(assetRoot + "assets/scenes/" + startScene + ".json");
 
-    resourceManager.loadItems("src/engine/assets/items.json"); 
+    resourceManager.loadItems("assets/items.json"); 
     inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);
 
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);
