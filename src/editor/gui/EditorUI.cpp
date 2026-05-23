@@ -15,6 +15,13 @@
 #include <cstdlib>
 #include <iostream>
 
+// Keeps track of open windows
+static bool showHierarchy = true;
+static bool showInspector = true;
+static bool showAssets = true;
+static bool showViewport = true;
+static bool showProjectLauncher = true;
+
 static void DrawDockspace(EditorContext& context)
 {
     static bool dockspaceOpen = true;
@@ -116,10 +123,11 @@ static void DrawDockspace(EditorContext& context)
         }
         if (ImGui::BeginMenu("View"))
         {
-            ImGui::MenuItem("Hierarchy");
-            ImGui::MenuItem("Inspector");
-            ImGui::MenuItem("Assets");
-            ImGui::MenuItem("Viewport");
+            // Gives the button check-marks
+            ImGui::MenuItem("Hierarchy", NULL, &showHierarchy);
+            ImGui::MenuItem("Inspector", NULL, &showInspector);
+            ImGui::MenuItem("Assets", NULL, &showAssets);
+            ImGui::MenuItem("Viewport", NULL, &showViewport);
             ImGui::EndMenu();
         }
 
@@ -138,9 +146,24 @@ void DrawEditorUI(EditorContext& context)
 {
     DrawDockspace(context);
 
-    DrawAssets(context);
-    DrawViewport(context);
-    DrawHierarchy(context);
-    DrawInspector(context);
-    DrawProjectLauncher(context);
+    // If check-marks in meny, draw
+    if (showAssets){
+        DrawAssets(context);
+    }
+
+    if (showViewport){
+        DrawViewport(context);
+    }
+
+    if (showHierarchy){
+        DrawHierarchy(context);
+    }
+
+    if (showInspector){
+        DrawInspector(context);
+    }
+
+    if (showProjectLauncher){
+        DrawProjectLauncher(context);
+    }
 }
