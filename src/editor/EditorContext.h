@@ -27,7 +27,9 @@ struct EditorContext
 {
     bool viewportHovered = false;
     bool previewDirty = false;
-
+    
+    nlohmann::json componentSchemas;
+    
     SceneData scene;
     Scene previewScene;
     ResourceManager resourceManager;

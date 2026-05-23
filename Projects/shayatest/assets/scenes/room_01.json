@@ -1271,17 +1271,22 @@
                 "projectileSpeed": 4.0,
                 "range": 8.0
             },
+            "Collider": {
+                "depth": 1.0,
+                "enabled": true,
+                "height": 1.0,
+                "isTrigger": false,
+                "width": 1.0
+            },
             "Health": {
                 "current": 150,
                 "max": 150
             },
             "Renderer": {
-                "modelID": "npc_character_o"
-            },
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false,
-                "skinChoice": 1
+                "depth": 1.0,
+                "height": 1.0,
+                "modelID": "npc_character_o",
+                "width": 0.49999991059303284
             },
             "TransformComponent": {
                 "depth": 1.0,
@@ -1294,6 +1299,13 @@
             "name": "Test Rename Entity"
         },
         {
+            "Collider": {
+                "depth": 0.7,
+                "enabled": true,
+                "height": 0.7,
+                "isTrigger": false,
+                "width": 0.7
+            },
             "DialogueSource": {
                 "dialogueSetId": "old_man"
             },
@@ -1303,22 +1315,33 @@
                         "target": "old_man",
                         "type": "StartDialogue"
                     }
-                ]
+                ],
+                "interactionRadius": 1.0
             },
             "Renderer": {
-                "modelID": "old_man_character_a"
-            },
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
+                "depth": 0.7,
+                "height": 0.7,
+                "modelID": "old_man_character_a",
+                "width": 0.4999999701976776
             },
             "TransformComponent": {
-                "x": 1,
-                "y": 1,
-                "z": 1
-            }
+                "depth": 0.7,
+                "height": 0.7,
+                "width": 0.7,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "name": "Old Man"
         },
         {
+            "Collider": {
+                "depth": 0.7,
+                "enabled": true,
+                "height": 0.7,
+                "isTrigger": false,
+                "width": 0.7
+            },
             "DialogueSource": {
                 "dialogueSetId": "test_npc"
             },
@@ -1328,20 +1351,24 @@
                         "target": "test_npc",
                         "type": "StartDialogue"
                     }
-                ]
+                ],
+                "interactionRadius": 1.0
             },
             "Renderer": {
-                "modelID": "old_man_character_a"
-            },
-            "SpawnType": {
-                "entityToSpawn": "npc",
-                "hasSpawned": false
+                "depth": 0.7,
+                "height": 0.7,
+                "modelID": "old_man_character_a",
+                "width": 0.4999999701976776
             },
             "TransformComponent": {
-                "x": -1,
-                "y": 1,
-                "z": 1
-            }
+                "depth": 0.7,
+                "height": 0.7,
+                "width": 0.7,
+                "x": -1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "name": "Test Npc"
         },
         {
             "Attack": {
@@ -1352,22 +1379,27 @@
                 "projectileSpeed": 4.0,
                 "range": 1.0
             },
+            "Collider": {
+                "depth": 1.0,
+                "enabled": true,
+                "height": 1.0,
+                "isTrigger": false,
+                "width": 1.0
+            },
             "Health": {
                 "current": 150,
                 "max": 150
             },
             "Renderer": {
-                "modelID": "npc_character_o"
-            },
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false,
-                "skinChoice": 1
+                "depth": 1.0,
+                "height": 1.0,
+                "modelID": "npc_character_o",
+                "width": 0.5999999642372131
             },
             "TransformComponent": {
                 "depth": 1.0,
-                "height": 1.0,
-                "width": 1.0,
+                "height": 0.49999991059303284,
+                "width": 0.49999991059303284,
                 "x": 2.0,
                 "y": 1.0,
                 "z": 2.0

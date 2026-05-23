@@ -8,12 +8,13 @@ void DrawHierarchy(EditorContext& context)
     static int renamingEntityIndex = -1;            // Indicates that there is no changes
     static char renameEntityBuffer[128] = "";       // Buffer meanwhile the user is writing
 
+    ImGui::Begin("Hierarchy");
     if (context.scenePaths.empty()) {
         ImGui::Text("No scenes available.");
         ImGui::End();
         return;
     }
-    ImGui::Begin("Hierarchy");
+    
 
     if (!context.sceneLoaded)
     {

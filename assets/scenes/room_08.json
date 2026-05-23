@@ -1195,10 +1195,6 @@
     ],
     "entities": [
         {
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false
-            },
             "TransformComponent": {
                 "x": 0.0,
                 "y": 1.0,
@@ -1214,14 +1210,27 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "isRanged": false,
+                "projectileSpeed": 4.0,
+                "enemyType": "slime"
+            },
+            "name": "Slime",
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false
-            },
             "TransformComponent": {
                 "x": -2.0,
                 "y": 1.0,
@@ -1237,14 +1246,27 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "isRanged": false,
+                "projectileSpeed": 4.0,
+                "enemyType": "slime"
+            },
+            "name": "Slime",
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false
-            },
             "TransformComponent": {
                 "x": 2.0,
                 "y": 1.0,
@@ -1260,7 +1282,24 @@
             "Attack": {
                 "damage": 20,
                 "range": 1.0,
-                "cooldown": 1.5
+                "cooldown": 1.5,
+                "isRanged": false,
+                "projectileSpeed": 4.0,
+                "enemyType": "slime"
+            },
+            "name": "Slime",
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         }
     ]

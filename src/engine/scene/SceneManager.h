@@ -30,6 +30,8 @@ private:
     Scene currentScene;
     std::string pendingScenePath;
     std::string pendingSpawnId = "default";
+    std::string currentScenePath;
+    
     bool hasPendingSceneChange = false;
 
     ResourceManager* resourceManager = nullptr;

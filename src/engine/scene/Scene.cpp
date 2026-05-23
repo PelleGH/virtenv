@@ -35,8 +35,8 @@ bool Scene::loadFromData(const SceneData& sceneData)
         addEntityToScene(loadedEntity);
     }
 
-    SpawnSystem spawnSystem(componentStorage, factory);
-    spawnSystem.Update(this);
+/*     SpawnSystem spawnSystem(componentStorage, factory);
+    spawnSystem.Update(this); */
 
     return true;
 }

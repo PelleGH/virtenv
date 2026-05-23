@@ -35,6 +35,8 @@ public:
 
 private:
     bool running = false;
+
+    std::string assetRoot;
     InputSystem inputSystem;
     SceneManager sceneManager;
     RenderSystem renderSystem;

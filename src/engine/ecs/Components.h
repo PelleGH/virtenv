@@ -21,14 +21,18 @@ struct TransformComponent {
 };
 
 struct Renderer {
-    std::string textureID;  // Used for texture, e.g. "player_tex1"
-    std::string modelID;    // Used for models, e.g. "player_skin1"
+    std::string textureID;
+    std::string modelID;
 
+    // Used by 3D models as uniform scale
+    float scale = 0.5f;
+
+    // Used by cube rendering / fallback rendering
     float width = 1.0f;
     float height = 1.0f;
     float depth = 1.0f;
-    Color color = RED;
 
+    Color color = RED;
     int zIndex = 0;
 };
 
@@ -36,6 +40,11 @@ struct Collider {
     float width = 1.0f;
     float height = 1.0f;
     float depth = 1.0f;
+
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+    float offsetZ = 0.0f;
+    
     bool isTrigger = false;
     bool enabled = true;
 };

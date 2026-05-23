@@ -6,8 +6,10 @@ void SceneManager::init(ResourceManager& rm){
 
 bool SceneManager::loadScene(const std::string& path, const std::string& spawnId)
 {
-    currentScene.unload();
+    currentScenePath = path;
 
+    currentScene.unload();
+    
     if (!currentScene.load(path))
         return false;
 
@@ -60,5 +62,5 @@ Scene& SceneManager::getCurrentScene()
 void SceneManager::requestPlayerRespawn()
 {
     resetPlayerOnNextLoad = true;
-    requestSceneChange("assets/scenes/room_01.json", "default");
+    requestSceneChange(currentScenePath, "default");
 }

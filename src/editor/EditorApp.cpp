@@ -6,6 +6,7 @@
 #include "engine/scene/SceneLoader.h"
 #include "editor/project/ProjectManager.h"
 #include <filesystem>
+#include "EditorPanels.h"
 
 bool EditorApp::init()
 {
@@ -17,6 +18,8 @@ bool EditorApp::init()
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    LoadComponentSchemas(context);
 
     context.sceneLoaded = SceneLoader::loadFromFile(context.currentScenePath, context.scene);
 
