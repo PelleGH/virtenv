@@ -1,8 +1,13 @@
 #include "EditorPanels.h"
 #include "imgui.h"
+#include <string>
 
 void DrawHierarchy(EditorContext& context)
 {
+    // To remember the state for text box per frame
+    static int renamingEntityIndex = -1;            // Indicates that there is no changes
+    static char renameEntityBuffer[128] = "";       // Buffer meanwhile the user is writing
+
     if (context.scenePaths.empty()) {
         ImGui::Text("No scenes available.");
         ImGui::End();
@@ -40,75 +45,93 @@ void DrawHierarchy(EditorContext& context)
         ImGui::EndCombo();
     }
 
-    if (ImGui::TreeNode("Static Grid Cubes"))
-    {
-        for (int i = 0; i < (int)context.scene.cubes.size(); i++)
+    ImGui::Separator();
+
+    // Begins the TabBar system
+    if (ImGui::BeginTabBar("HierarchyTabs")) {
+
+        if (ImGui::BeginTabItem("Static Grid Cubes"))
         {
-            const auto& cube = context.scene.cubes[i];
-
-            char label[128];
-            snprintf(label, sizeof(label), "%s (%d, %d, %d)##cube_%d",
-                cube.type.c_str(),
-                cube.position.x,
-                cube.position.y,
-                cube.position.z,
-                i
-            );
-
-            bool selected =
-                context.selection.type == SelectionType::GridCube &&
-                context.selection.index == i;
-
-            if (ImGui::Selectable(label, selected))
+            for (int i = 0; i < (int)context.scene.cubes.size(); i++)
             {
-                context.selection.type = SelectionType::GridCube;
-                context.selection.index = i;
+                const auto& cube = context.scene.cubes[i];
+
+                char label[128];
+                snprintf(label, sizeof(label), "%s (%d, %d, %d)##cube_%d",
+                    cube.type.c_str(),
+                    cube.position.x,
+                    cube.position.y,
+                    cube.position.z,
+                    i
+                );
+
+                bool selected =
+                    context.selection.type == SelectionType::GridCube &&
+                    context.selection.index == i;
+
+                if (ImGui::Selectable(label, selected))
+                {
+                    context.selection.type = SelectionType::GridCube;
+                    context.selection.index = i;
+                }
             }
+            ImGui::EndTabItem();
         }
 
-        ImGui::TreePop();
-    }
-
-    if (ImGui::TreeNode("Entities"))
-    {
-        for (int i = 0; i < (int)context.scene.entities.size(); i++)
+        if (ImGui::BeginTabItem("Entities"))
         {
-            auto& entity = context.scene.entities[i];
-
-            std::string displayName;
-
-            if (entity.contains("name") && entity["name"].is_string())
+            for (int i = 0; i < (int)context.scene.entities.size(); i++)
             {
-                displayName = entity["name"];
+                auto& entity = context.scene.entities[i];
+
+                // Reads name from JSON, if empty show "Unamed Entity"
+                std::string displayName = (entity.contains("name") && entity["name"].is_string()) ? entity["name"] : "Unamed Entity";
+
+                // Gives each row a ID to seperate the textboxes
+                ImGui::PushID(i + 2000);
+
+                // Renaming mode (double click)
+                if (renamingEntityIndex == i) {
+                    
+                    ImGui::SetKeyboardFocusHere();
+
+                    // Renders the input and condition is done when pressing "Enter" or click outside the textbox
+                    if (ImGui::InputText("##renameEntity", renameEntityBuffer, sizeof(renameEntityBuffer), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll) || (ImGui::IsItemDeactivated() && ImGui::IsWindowFocused())) {
+                        
+                        // Save buffer to JSON data
+                        entity["name"] = std::string(renameEntityBuffer);
+                        renamingEntityIndex = -1;
+                    }
+
+                }else{
+                    // View mode (single click)
+
+                    char label[128];
+                    snprintf(label, sizeof(label), "%s##entity_%d", displayName.c_str(), i);
+
+                    bool selected = context.selection.type == SelectionType::Entity && context.selection.index == i;
+
+                    // Renders the row and mark it as selected
+                    if (ImGui::Selectable(label, selected)) {
+                        context.selection.type = SelectionType::Entity;
+                        context.selection.index = i;
+                    }
+
+                    // Listener for double click, 
+                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                        renamingEntityIndex = i;
+
+                        // Prefill the texbox with current name when exit
+                        strncpy(renameEntityBuffer, displayName.c_str(), sizeof(renameEntityBuffer));
+                    }
+                }
+                // Close the ID
+                ImGui::PopID();
             }
-            else
-            {
-                displayName = "Unnamed Entity";
-            }
-
-            char label[128];
-
-            snprintf(label,
-                sizeof(label),
-                "%s##entity_%d",
-                displayName.c_str(),
-                i
-            );
-
-            bool selected =
-                context.selection.type == SelectionType::Entity &&
-                context.selection.index == i;
-
-            if (ImGui::Selectable(label, selected))
-            {
-                context.selection.type = SelectionType::Entity;
-                context.selection.index = i;
-            }
+            ImGui::EndTabItem();
         }
 
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Spawn Points"))
+        if (ImGui::BeginTabItem("Spawn Points"))
         {
             int i = 0;
 
@@ -129,9 +152,11 @@ void DrawHierarchy(EditorContext& context)
 
                 i++;
             }
-
-            ImGui::TreePop();
+            ImGui::EndTabItem();
         }
-
+        ImGui::EndTabBar();
+    }
     ImGui::End();
 }
+    
+

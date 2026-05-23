@@ -1,6 +1,20 @@
 {
+    "camera": {
+        "mode": "fixed",
+        "position": [
+            0.0,
+            10.0,
+            10.0
+        ],
+        "target": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
     "cubes": [
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -11,6 +25,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -21,6 +36,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -31,6 +47,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -41,6 +58,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -51,6 +69,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -61,6 +80,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -71,6 +91,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -81,6 +102,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 0,
@@ -91,6 +113,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -101,6 +124,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -111,6 +135,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -121,6 +146,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -131,6 +157,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -141,6 +168,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -151,6 +179,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -161,6 +190,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -171,6 +201,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 0,
@@ -181,6 +212,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -191,6 +223,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -201,6 +234,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -211,6 +245,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -221,6 +256,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -231,6 +267,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -241,6 +278,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -251,6 +289,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -261,6 +300,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 0,
@@ -271,6 +311,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -281,6 +322,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -291,6 +333,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -301,6 +344,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -311,6 +355,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -321,6 +366,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -331,6 +377,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -341,6 +388,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -351,6 +399,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 0,
@@ -361,6 +410,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -371,6 +421,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -381,6 +432,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -391,6 +443,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -401,6 +454,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -411,6 +465,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -421,6 +476,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -431,6 +487,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -441,6 +498,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 0,
@@ -451,6 +509,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -461,6 +520,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -471,6 +531,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -481,6 +542,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -491,6 +553,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -501,6 +564,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -511,6 +575,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -521,6 +586,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -531,6 +597,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 0,
@@ -541,6 +608,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -551,6 +619,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -561,6 +630,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -571,6 +641,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -581,6 +652,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -591,6 +663,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -601,6 +674,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -611,6 +685,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -621,6 +696,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 0,
@@ -631,6 +707,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -641,6 +718,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -651,6 +729,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -661,6 +740,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -671,6 +751,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -681,6 +762,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -691,6 +773,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -701,6 +784,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -711,6 +795,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 0,
@@ -721,6 +806,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -731,6 +817,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -741,6 +828,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -751,6 +839,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -761,6 +850,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -771,6 +861,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -781,6 +872,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -791,6 +883,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -801,6 +894,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 0,
@@ -811,6 +905,7 @@
             "type": "floor"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -821,6 +916,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -831,6 +927,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 1,
@@ -841,6 +938,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -3,
                 1,
@@ -851,6 +949,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 1,
@@ -861,6 +960,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -2,
                 1,
@@ -871,6 +971,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 1,
@@ -881,6 +982,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -1,
                 1,
@@ -891,6 +993,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 1,
@@ -901,6 +1004,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 1,
@@ -911,6 +1015,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 1,
                 1,
@@ -921,6 +1026,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 1,
@@ -931,6 +1037,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 2,
                 1,
@@ -941,6 +1048,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 1,
@@ -951,6 +1059,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 3,
                 1,
@@ -961,6 +1070,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -971,6 +1081,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -981,6 +1092,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -991,6 +1103,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1001,6 +1114,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1011,6 +1125,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1021,6 +1136,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1031,6 +1147,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1041,6 +1158,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1051,6 +1169,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1061,6 +1180,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1071,6 +1191,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1081,6 +1202,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1091,6 +1213,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 -4,
                 1,
@@ -1101,6 +1224,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1111,6 +1235,7 @@
             "type": "wall"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 0,
                 1,
@@ -1123,6 +1248,7 @@
             "type": "door"
         },
         {
+            "modelID": "wall_model",
             "position": [
                 4,
                 1,
@@ -1149,7 +1275,8 @@
                 "y": 1.0,
                 "z": -2.0
             },
-            "id": 1048576
+            "id": 1048576,
+            "name": "Rename Test"
         },
         {
             "SpawnType": {
@@ -1398,5 +1525,6 @@
             "id": 1048586
         }
     ],
-    "name": "room_01"
+    "name": "room_01",
+    "playerSpawns": []
 }
