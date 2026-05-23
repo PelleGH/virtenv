@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <algorithm>
+
 static std::string HiddenId(const std::string& label);
 static void DrawFieldLabel(const std::string& label);
 std::vector<std::string> GetSpawnIdsForScene(const std::string& scenePath)
@@ -559,8 +561,18 @@ static void DrawJsonComponent(
     if (!componentData.is_object())
         return;
 
-    if (!ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+    ImGui::PushID(componentName.c_str());
+
+    bool open = ImGui::CollapsingHeader(
+        componentName.c_str(),
+        ImGuiTreeNodeFlags_DefaultOpen
+    );
+
+    if (!open)
+    {
+        ImGui::PopID();
         return;
+    }
 
     bool changed = false;
 
@@ -624,6 +636,8 @@ static void DrawJsonComponent(
         componentData = nullptr;
         MarkSceneChanged(context);
     }
+
+    ImGui::PopID();
 }
 
 static void DrawAddComponentDropdown(EditorContext& context, nlohmann::json& entity)

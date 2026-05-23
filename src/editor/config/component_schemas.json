@@ -68,18 +68,24 @@
 
   "Collider": {
     "order": 50,
-    "fieldOrder": ["width", "height", "depth", "isTrigger", "enabled"],
+    "fieldOrder": ["width", "height", "depth", "offsetX", "offsetY", "offsetZ", "isTrigger", "enabled"],
     "default": {
       "width": 1.0,
       "height": 1.0,
       "depth": 1.0,
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "offsetZ": 0.0,
       "isTrigger": false,
       "enabled": true
     },
     "fieldTypes": {
       "width": "float",
       "height": "float",
-      "depth": "float"
+      "depth": "float",
+      "offsetX": "float",
+      "offsetY": "float",
+      "offsetZ": "float"
     }
   },
 

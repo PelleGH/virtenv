@@ -9,6 +9,11 @@
 static void RenderSceneViewport(EditorContext& context);
 static void DrawEditorSelectionOverlay(EditorContext& context);
 
+static EditorSelection PickViewportSelection(EditorContext& context, Ray ray);
+static bool GetEntityPosition(const nlohmann::json& entity, Vector3& outPos);
+static BoundingBox GetEntityBounds(const nlohmann::json& entity);
+static void DrawEntityEditorOverlays(EditorContext& context);
+
 void DrawViewport(EditorContext& context)
 {
     ImGui::Begin("Viewport");
@@ -62,74 +67,7 @@ void DrawViewport(EditorContext& context)
                     context.viewportTexture.texture.height
                 );
 
-                float closestDist = FLT_MAX;
-                EditorSelection newSelection = { SelectionType::None, -1 };
-
-                for (int i = 0; i < (int)context.scene.cubes.size(); i++)
-                {
-                    auto& cube = context.scene.cubes[i];
-
-                    Vector3 pos = {
-                        (float)cube.position.x,
-                        (float)cube.position.y,
-                        (float)cube.position.z
-                    };
-
-                    BoundingBox box = {
-                        Vector3SubtractValue(pos, 0.5f),
-                        Vector3AddValue(pos, 0.5f)
-                    };
-
-                    RayCollision hit = GetRayCollisionBox(ray, box);
-
-                    if (hit.hit && hit.distance < closestDist)
-                    {
-                        closestDist = hit.distance;
-                        newSelection = { SelectionType::GridCube, i };
-                    }
-                }
-
-                for (int i = 0; i < (int)context.scene.entities.size(); i++)
-                {
-                    auto& entity = context.scene.entities[i];
-                    if (!entity.contains("TransformComponent"))
-                        continue;
-
-                    auto& t = entity["TransformComponent"];
-
-                    Vector3 pos = {
-                        t.value("x", 0.0f),
-                        t.value("y", 0.0f),
-                        t.value("z", 0.0f)
-                    };
-
-                    float width = t.value("width", 1.0f);
-                    float height = t.value("height", 1.0f);
-                    float depth = t.value("depth", 1.0f);
-
-                    BoundingBox box = {
-                        {
-                            pos.x - width / 2.0f,
-                            pos.y - height / 2.0f,
-                            pos.z - depth / 2.0f
-                        },
-                        {
-                            pos.x + width / 2.0f,
-                            pos.y + height / 2.0f,
-                            pos.z + depth / 2.0f
-                        }
-                    };
-
-                    RayCollision hit = GetRayCollisionBox(ray, box);
-
-                    if (hit.hit && hit.distance < closestDist)
-                    {
-                        closestDist = hit.distance;
-                        newSelection = { SelectionType::Entity, i };
-                    }
-                }
-
-                context.selection = newSelection;
+                context.selection = PickViewportSelection(context, ray);
             }
         }
     }
@@ -196,6 +134,8 @@ static void RenderSceneViewport(EditorContext& context)
     );
 
     BeginMode3D(context.editorCamera);
+
+    DrawEntityEditorOverlays(context);
     DrawEditorSelectionOverlay(context);
 
     int i = 0;
@@ -236,6 +176,7 @@ static void DrawEditorSelectionOverlay(EditorContext& context)
     if (context.selection.type == SelectionType::GridCube)
     {
         int i = context.selection.index;
+
         if (i >= 0 && i < (int)context.scene.cubes.size())
         {
             auto& cube = context.scene.cubes[i];
@@ -247,6 +188,244 @@ static void DrawEditorSelectionOverlay(EditorContext& context)
             };
 
             DrawCubeWires(pos, 1.08f, 1.08f, 1.08f, YELLOW);
+        }
+    }
+
+/*     if (context.selection.type == SelectionType::Entity)
+    {
+        int i = context.selection.index;
+
+        if (i >= 0 && i < (int)context.scene.entities.size())
+        {
+            const auto& entity = context.scene.entities[i];
+
+            BoundingBox box = GetEntityBounds(entity);
+
+            Vector3 size = {
+                box.max.x - box.min.x,
+                box.max.y - box.min.y,
+                box.max.z - box.min.z
+            };
+
+            Vector3 center = {
+                (box.min.x + box.max.x) / 2.0f,
+                (box.min.y + box.max.y) / 2.0f,
+                (box.min.z + box.max.z) / 2.0f
+            };
+
+            DrawCubeWires(
+                center,
+                size.x + 0.08f,
+                size.y + 0.08f,
+                size.z + 0.08f,
+                YELLOW
+            );
+        }
+    } */
+}
+static bool GetEntityPosition(const nlohmann::json& entity, Vector3& outPos)
+{
+    if (!entity.contains("TransformComponent") || !entity["TransformComponent"].is_object())
+        return false;
+
+    const auto& t = entity["TransformComponent"];
+
+    outPos = {
+        t.value("x", 0.0f),
+        t.value("y", 0.0f),
+        t.value("z", 0.0f)
+    };
+
+    return true;
+}
+
+static BoundingBox GetEntityBounds(const nlohmann::json& entity)
+{
+    Vector3 pos = { 0.0f, 0.0f, 0.0f };
+    GetEntityPosition(entity, pos);
+
+    float width = 1.0f;
+    float height = 1.0f;
+    float depth = 1.0f;
+
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+    float offsetZ = 0.0f;
+
+    // Prefer Collider because it represents the actual physical/editor interaction size.
+    if (entity.contains("Collider") && entity["Collider"].is_object())
+    {
+        const auto& c = entity["Collider"];
+
+        if (c.value("enabled", true))
+        {
+            width = c.value("width", 1.0f);
+            height = c.value("height", 1.0f);
+            depth = c.value("depth", 1.0f);
+
+            offsetX = c.value("offsetX", 0.0f);
+            offsetY = c.value("offsetY", 0.0f);
+            offsetZ = c.value("offsetZ", 0.0f);
+        }
+    }
+    // If there is no Collider, use Renderer as a visual fallback.
+    else if (entity.contains("Renderer") && entity["Renderer"].is_object())
+    {
+        const auto& r = entity["Renderer"];
+
+        std::string modelID = r.value("modelID", "");
+
+        if (!modelID.empty())
+        {
+            float scale = r.value("scale", 1.0f);
+
+            width = scale;
+            height = scale * 2.0f;
+            depth = scale;
+        }
+        else
+        {
+            width = r.value("width", 1.0f);
+            height = r.value("height", 1.0f);
+            depth = r.value("depth", 1.0f);
+        }
+    }
+
+    // Minimum pick size so small entities are not annoying to click.
+    width = std::max(width, 0.8f);
+    height = std::max(height, 1.0f);
+    depth = std::max(depth, 0.8f);
+
+    Vector3 center = {
+        pos.x + offsetX,
+        pos.y + offsetY,
+        pos.z + offsetZ
+    };
+
+    return {
+        { center.x - width / 2.0f, center.y - height / 2.0f, center.z - depth / 2.0f },
+        { center.x + width / 2.0f, center.y + height / 2.0f, center.z + depth / 2.0f }
+    };
+}
+
+static EditorSelection PickViewportSelection(EditorContext& context, Ray ray)
+{
+    float closestEntityDist = FLT_MAX;
+    EditorSelection entitySelection = { SelectionType::None, -1 };
+
+    // Pick entities first so floor cubes do not steal clicks.
+    for (int i = 0; i < (int)context.scene.entities.size(); i++)
+    {
+        const auto& entity = context.scene.entities[i];
+
+        Vector3 pos;
+        if (!GetEntityPosition(entity, pos))
+            continue;
+
+        BoundingBox box = GetEntityBounds(entity);
+        RayCollision hit = GetRayCollisionBox(ray, box);
+
+        if (hit.hit && hit.distance < closestEntityDist)
+        {
+            closestEntityDist = hit.distance;
+            entitySelection = { SelectionType::Entity, i };
+        }
+    }
+
+    if (entitySelection.type != SelectionType::None)
+        return entitySelection;
+
+    float closestCubeDist = FLT_MAX;
+    EditorSelection cubeSelection = { SelectionType::None, -1 };
+
+    for (int i = 0; i < (int)context.scene.cubes.size(); i++)
+    {
+        const auto& cube = context.scene.cubes[i];
+
+        Vector3 pos = {
+            (float)cube.position.x,
+            (float)cube.position.y,
+            (float)cube.position.z
+        };
+
+        BoundingBox box = {
+            Vector3SubtractValue(pos, 0.5f),
+            Vector3AddValue(pos, 0.5f)
+        };
+
+        RayCollision hit = GetRayCollisionBox(ray, box);
+
+        if (hit.hit && hit.distance < closestCubeDist)
+        {
+            closestCubeDist = hit.distance;
+            cubeSelection = { SelectionType::GridCube, i };
+        }
+    }
+
+    return cubeSelection;
+}
+
+static void DrawEntityEditorOverlays(EditorContext& context)
+{
+    for (int i = 0; i < (int)context.scene.entities.size(); i++)
+    {
+        const auto& entity = context.scene.entities[i];
+
+        Vector3 pos;
+        if (!GetEntityPosition(entity, pos))
+            continue;
+
+        bool selected =
+            context.selection.type == SelectionType::Entity &&
+            context.selection.index == i;
+
+        // Collider box.
+        if (entity.contains("Collider") && entity["Collider"].is_object())
+        {
+            const auto& c = entity["Collider"];
+
+            if (c.value("enabled", true))
+            {
+                float width = c.value("width", 1.0f);
+                float height = c.value("height", 1.0f);
+                float depth = c.value("depth", 1.0f);
+
+                Vector3 colliderCenter = {
+                    pos.x + c.value("offsetX", 0.0f),
+                    pos.y + c.value("offsetY", 0.0f),
+                    pos.z + c.value("offsetZ", 0.0f)
+                };
+
+                Color colliderColor = c.value("isTrigger", false) ? SKYBLUE : GREEN;
+
+                if (selected)
+                    colliderColor = YELLOW;
+
+                DrawCubeWires(colliderCenter, width, height, depth, colliderColor);
+            }
+        }
+
+        // Interaction radius.
+        if (entity.contains("Interactable") && entity["Interactable"].is_object())
+        {
+            const auto& interactable = entity["Interactable"];
+            float radius = interactable.value("interactionRadius", 1.0f);
+
+            Vector3 circlePos = {
+                pos.x,
+                pos.y + 0.03f,
+                pos.z
+            };
+
+            Color radiusColor = selected ? ORANGE : Fade(ORANGE, 0.65f);
+
+            DrawCircle3D(
+                circlePos,
+                radius,
+                { 1.0f, 0.0f, 0.0f },
+                90.0f,
+                radiusColor
+            );
         }
     }
 }

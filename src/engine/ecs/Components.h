@@ -40,6 +40,11 @@ struct Collider {
     float width = 1.0f;
     float height = 1.0f;
     float depth = 1.0f;
+
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+    float offsetZ = 0.0f;
+    
     bool isTrigger = false;
     bool enabled = true;
 };

@@ -101,7 +101,20 @@ bool CollisionSystem::overlapsBox(
 
     return CheckCollisionBoxes(a, b);
 }
+static float colliderCenterX(const TransformComponent& t, const Collider& c)
+{
+    return t.x + c.offsetX;
+}
 
+static float colliderCenterY(const TransformComponent& t, const Collider& c)
+{
+    return t.y + c.offsetY;
+}
+
+static float colliderCenterZ(const TransformComponent& t, const Collider& c)
+{
+    return t.z + c.offsetZ;
+}
 bool CollisionSystem::collidesWithSolidEntities(
     Scene& scene,
     Entity self,
@@ -137,7 +150,9 @@ bool CollisionSystem::collidesWithSolidEntities(
         if (overlapsBox(
             x, y, z,
             width, height, depth,
-            otherTransform.x, otherTransform.y, otherTransform.z,
+            colliderCenterX(otherTransform, otherCollider),
+            colliderCenterY(otherTransform, otherCollider),
+            colliderCenterZ(otherTransform, otherCollider),
             otherCollider.width, otherCollider.height, otherCollider.depth
         ))
         {
@@ -170,9 +185,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         bool currentPositionBlocked =
             collidesWithSolidGrid(
                 scene,
-                transform.x,
-                transform.y,
-                transform.z,
+                transform.x + collider.offsetX,
+                transform.y + collider.offsetY,
+                transform.z + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -181,9 +196,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             collidesWithSolidEntities(
                 scene,
                 entity,
-                transform.x,
-                transform.y,
-                transform.z,
+                transform.x + collider.offsetX,
+                transform.y + collider.offsetY,
+                transform.z + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -195,9 +210,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         bool xOnlyBlocked =
             collidesWithSolidGrid(
                 scene,
-                transform.x,
-                transform.previousY,
-                transform.previousZ,
+                transform.x + collider.offsetX,
+                transform.previousY + collider.offsetY,
+                transform.previousZ + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -206,9 +221,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             collidesWithSolidEntities(
                 scene,
                 entity,
-                transform.x,
-                transform.previousY,
-                transform.previousZ,
+                transform.x + collider.offsetX,
+                transform.previousY + collider.offsetY,
+                transform.previousZ + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -220,9 +235,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         bool zOnlyBlocked =
             collidesWithSolidGrid(
                 scene,
-                transform.previousX,
-                transform.previousY,
-                transform.z,
+                transform.previousX + collider.offsetX,
+                transform.previousY + collider.offsetY,
+                transform.z + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -231,9 +246,9 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             collidesWithSolidEntities(
                 scene,
                 entity,
-                transform.previousX,
-                transform.previousY,
-                transform.z,
+                transform.previousX + collider.offsetX,
+                transform.previousY + collider.offsetY,
+                transform.z + collider.offsetZ,
                 collider.width,
                 collider.height,
                 collider.depth
@@ -255,10 +270,27 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
         //TRIGGER VS WALL or DOOR CHECK
         if (colA.isTrigger)
         {
-            bool hitSolid = collidesWithSolidGrid(scene, transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth);
-            bool hitDoor = collidesWithGridDoor(scene, transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth);
+            bool hitSolid = collidesWithSolidGrid(
+                scene,
+                colliderCenterX(transA, colA),
+                colliderCenterY(transA, colA),
+                colliderCenterZ(transA, colA),
+                colA.width,
+                colA.height,
+                colA.depth
+            );
 
-            // If it hits a solid wall OR a door, destroy it!
+            bool hitDoor = collidesWithGridDoor(
+                scene,
+                colliderCenterX(transA, colA),
+                colliderCenterY(transA, colA),
+                colliderCenterZ(transA, colA),
+                colA.width,
+                colA.height,
+                colA.depth
+            );
+
+            // If it hits a solid wall OR a door, destroy it
             if (hitSolid || hitDoor)
             {
                 OverlapEvent overlap;
@@ -268,7 +300,7 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             }
         }
 
-        // Start itB at the next item so we don't compare A vs B and B vs A!
+        // Start itB at the next item so we don't compare A vs B and B vs A
         auto itB = itA;
         ++itB;
         //TRIGGER VS ENTITY CHECK
@@ -284,10 +316,22 @@ void CollisionSystem::update(Scene& scene, EventBus& eventBus)
             if (colA.isTrigger || colB.isTrigger)
             {
                 if (overlapsBox(
-                    transA.x, transA.y, transA.z, colA.width, colA.height, colA.depth,
-                    transB.x, transB.y, transB.z, colB.width, colB.height, colB.depth))
+                    colliderCenterX(transA, colA),
+                    colliderCenterY(transA, colA),
+                    colliderCenterZ(transA, colA),
+                    colA.width,
+                    colA.height,
+                    colA.depth,
+
+                    colliderCenterX(transB, colB),
+                    colliderCenterY(transB, colB),
+                    colliderCenterZ(transB, colB),
+                    colB.width,
+                    colB.height,
+                    colB.depth
+                ))
                 {
-                    // They touched! Tell the EventBus!
+                    // tell the EventBus
                     OverlapEvent overlap;
                     overlap.entityA = entityA;
                     overlap.entityB = entityB;
@@ -317,9 +361,9 @@ bool CollisionSystem::isMoveBlocked(
 
     return collidesWithSolidGrid(
         scene,
-        testX,
-        transform.y,
-        testZ,
+        testX + collider.offsetX,
+        transform.y + collider.offsetY,
+        testZ + collider.offsetZ,
         collider.width,
         collider.height,
         collider.depth
@@ -328,9 +372,9 @@ bool CollisionSystem::isMoveBlocked(
     collidesWithSolidEntities(
         scene,
         entity,
-        testX,
-        transform.y,
-        testZ,
+        testX + collider.offsetX,
+        transform.y + collider.offsetY,
+        testZ + collider.offsetZ,
         collider.width,
         collider.height,
         collider.depth

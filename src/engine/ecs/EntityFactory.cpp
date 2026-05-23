@@ -181,8 +181,12 @@ json EntityFactory::serialize(Entity entity){
             {"width", c.width},
             {"height", c.height},
             {"depth", c.depth},
+            {"offsetX", c.offsetX},
+            {"offsetY", c.offsetY},
+            {"offsetZ", c.offsetZ},
             {"isTrigger", c.isTrigger},
-            {"enabled", c.enabled}
+            {"enabled", c.enabled},
+            
         };
     }
     // 2. Serialize Renderer
@@ -248,6 +252,9 @@ Entity EntityFactory::deserialize(const json& j){
         c.depth = j["Collider"].value("depth", 1.0f);
         c.isTrigger = j["Collider"].value("isTrigger", false);
         c.enabled = j["Collider"].value("enabled", true);
+        c.offsetX = j["Collider"].value("offsetX", 0.0f);
+        c.offsetY = j["Collider"].value("offsetY", 0.0f);
+        c.offsetZ = j["Collider"].value("offsetZ", 0.0f);
 
         componentStorage.AddComponent(entity, c);
     }
