@@ -1,4 +1,5 @@
 {
+    "buildOutdated": true,
     "projectName": "shayas test",
     "scenes": [
         "assets/scenes/room_01.json",

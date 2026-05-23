@@ -6,6 +6,7 @@
 #include <fstream>
 #include <filesystem>
 #include <nlohmann/json.hpp>
+#include <cstdlib>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -27,6 +28,7 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
 
     context.projectPath = projectFolder;
     context.projectName = projectData.value("projectName", chosenProjectFolder);
+    context.buildOutdated = projectData.value("buildOutdated", true);
 
     context.scenePaths.clear();
 
@@ -118,6 +120,7 @@ void SaveProject(EditorContext& context) {
     json projectData;
     projectData["projectName"] = context.projectName;
     projectData["startingScene"] = fs::path(context.currentScenePath).stem().string();
+    projectData["buildOutdated"] = context.buildOutdated;
     projectData["scenes"] = json::array();
 
     for (const auto& scenePath : context.scenePaths) {
@@ -137,6 +140,8 @@ void SaveProject(EditorContext& context) {
     context.previewDirty = false;
 
     std::cout << "[Editor] Saved project: " << context.projectName << std::endl;
+
+    context.dirty = false;
 }
 void RefreshProjectList(EditorContext& context) {
     context.availableProjects.clear();
@@ -227,7 +232,22 @@ void BuildProject(EditorContext& context, const std::string& outputDir)
     }
 
     try {
+        std::cout << "[Builder] Auto-saving project before build...\n";
+        SaveProject(context);
+
         fs::create_directories(outputDir);
+
+        std::cout << "[Builder] Compiling Runtime... This might take a moment.\n";
+        
+        // This command tells CMake to build just the "Runtime" target in Debug mode
+        int compileResult = std::system("cmake --build build --config Debug --target Runtime");
+        
+        if (compileResult != 0) {
+            std::cout << "[Builder] ERROR: CMake compilation failed! Check your terminal for errors.\n";
+            return; // Abort the export process if compilation fails
+        }
+        
+        std::cout << "[Builder] Compilation successful! Packaging files...\n";
 
         // Copy and rename Runtime.exe
         std::string runtimeSource = "build/Debug/Runtime.exe"; 
@@ -278,6 +298,9 @@ void BuildProject(EditorContext& context, const std::string& outputDir)
     }
 
         std::cout << "[Builder] Build successful! Game at: " << exeDestination << "\n";
+
+        context.buildOutdated = false;
+        SaveProject(context);
     }
     catch (const fs::filesystem_error& e) {
         std::cout << "[Builder] File system error: " << e.what() << '\n';

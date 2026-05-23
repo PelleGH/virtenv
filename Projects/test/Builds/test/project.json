@@ -1,6 +1,6 @@
 {
-    "buildOutdated": false,
-    "projectName": "shayatest",
+    "buildOutdated": true,
+    "projectName": "test",
     "scenes": [
         "assets/scenes/room_01.json"
     ],

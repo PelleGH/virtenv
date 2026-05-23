@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "iron_sword",
+      "name": "Iron Sword",
+      "slot": "Weapon",
+      "damageBonus": 50,
+      "healthBonus": 0,
+      "defenseBonus": 0
+    },
+    {
+      "id": "steel_armor",
+      "name": "Steel Armor",
+      "slot": "Armor",
+      "damageBonus": 0,
+      "healthBonus": 50,
+      "defenseBonus": 10
+    },
+    {
+      "id": "prime_armor",
+      "name": "Prime Armor",
+      "slot": "Armor",
+      "damageBonus": 0,
+      "healthBonus": 200,
+      "defenseBonus": 200
+    },
+    {
+      "id": "wooden_stick",
+      "name": "Wooden Stick",
+      "slot": "Weapon",
+      "damageBonus": 5,
+      "healthBonus": 0,
+      "defenseBonus": 0
+    },
+    {
+      "id": "health_potion",
+      "name": "Health Potion",
+      "slot": "Consumable",
+      "damageBonus": 0,
+      "healthBonus": 50,
+      "defenseBonus": 0
+    }
+  ]
+}
