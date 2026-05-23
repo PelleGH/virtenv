@@ -1,0 +1,15 @@
+{
+    "projectName": "shayas test",
+    "scenes": [
+        "assets/scenes/room_01.json",
+        "assets/scenes/room_02.json",
+        "assets/scenes/room_03.json",
+        "assets/scenes/room_04.json",
+        "assets/scenes/room_05.json",
+        "assets/scenes/room_06.json",
+        "assets/scenes/room_07.json",
+        "assets/scenes/room_08.json",
+        "assets/scenes/room_09.json"
+    ],
+    "startingScene": "room_01"
+}

@@ -63,6 +63,21 @@ static void DrawDockspace(EditorContext& context)
 
             ImGui::Separator();
 
+            if (ImGui::MenuItem("Build Game..."))
+            {
+                if (!context.projectPath.empty())
+                {
+                    std::string outDir = context.projectPath + "Builds/" + context.projectName;
+                    BuildProject(context, outDir);
+                }
+                else
+                {
+                    std::cout << "Cannot build: No project loaded.\n";
+                }
+            }
+
+            ImGui::Separator();
+
             if (ImGui::MenuItem("Exit"))
             {
                 exit(0);

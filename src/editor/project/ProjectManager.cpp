@@ -218,3 +218,68 @@ void LoadLastProject(EditorContext& context)
 
     LoadProject(context, lastProject);
 }
+
+void BuildProject(EditorContext& context, const std::string& outputDir)
+{
+    if (context.projectPath.empty()) {
+        std::cout << "[Builder] ERROR: No project loaded.\n";
+        return;
+    }
+
+    try {
+        fs::create_directories(outputDir);
+
+        // Copy and rename Runtime.exe
+        std::string runtimeSource = "build/Debug/Runtime.exe"; 
+        std::string exeDestination = outputDir + "/" + context.projectName + ".exe";
+        
+        if (fs::exists(runtimeSource)) {
+            fs::copy_file(runtimeSource, exeDestination, fs::copy_options::overwrite_existing);
+        } else {
+            std::cout << "[Builder] ERROR: Runtime.exe not found! Compile RuntimeMain.cpp first.\n";
+            return;
+        }
+
+        // Copy ALL .dll files from the build folder so the game doesn't crash on other PCs
+        std::string buildFolder = "build/Debug"; // Change this if your DLLs are in a different folder
+        if (fs::exists(buildFolder)) {
+            for (const auto& entry : fs::directory_iterator(buildFolder)) {
+                if (entry.is_regular_file() && entry.path().extension() == ".dll") {
+                    std::string dllDest = outputDir + "/" + entry.path().filename().string();
+                    fs::copy_file(entry.path(), dllDest, fs::copy_options::overwrite_existing);
+                }
+            }
+        }
+
+        // Copy project.json
+        if (fs::exists(context.projectPath + "project.json")) {
+            fs::copy_file(context.projectPath + "project.json", 
+                          outputDir + "/project.json", 
+                          fs::copy_options::overwrite_existing);
+        }
+
+        // Copy the project's assets folder
+        std::string assetsSrc = context.projectPath + "assets";
+        std::string assetsDest = outputDir + "/assets";
+        
+        if (fs::exists(assetsSrc)) {
+            fs::copy(assetsSrc, assetsDest, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+        }
+        
+        std::string engineAssetsSrc = "src/engine/assets";
+    std::string engineAssetsDest = outputDir + "/src/engine/assets";
+    
+    if (fs::exists(engineAssetsSrc)) {
+        fs::create_directories(outputDir + "/src/engine"); 
+        
+        fs::copy(engineAssetsSrc, engineAssetsDest, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+    } else {
+        std::cout << "[Builder] WARNING: Engine assets not found!\n";
+    }
+
+        std::cout << "[Builder] Build successful! Game at: " << exeDestination << "\n";
+    }
+    catch (const fs::filesystem_error& e) {
+        std::cout << "[Builder] File system error: " << e.what() << '\n';
+    }
+}

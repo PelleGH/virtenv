@@ -29,7 +29,7 @@
 class Engine
 {
 public:
-    bool init();
+    bool init(const std::string& overrideRoot = "");
     void run();
     void shutdown();
 
