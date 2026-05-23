@@ -1195,10 +1195,6 @@
     ],
     "entities": [
         {
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false
-            },
             "TransformComponent": {
                 "x": 0.0,
                 "y": 1.0,
@@ -1215,14 +1211,26 @@
                 "damage": 20,
                 "range": 5.0,
                 "cooldown": 1.5,
-                "isRanged": true
+                "isRanged": true,
+                "projectileSpeed": 4.0,
+                "enemyType": "goblin"
+            },
+            "name": "Goblin",
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
-            "SpawnType": {
-                "entityToSpawn": "test_cube",
-                "hasSpawned": false
-            },
             "TransformComponent": {
                 "x": 2.0,
                 "y": 1.0,
@@ -1239,7 +1247,23 @@
                 "damage": 20,
                 "range": 5.0,
                 "cooldown": 1.5,
-                "isRanged": true
+                "isRanged": true,
+                "projectileSpeed": 4.0,
+                "enemyType": "goblin"
+            },
+            "name": "Goblin",
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
             }
         },
         {
@@ -1252,7 +1276,12 @@
                 "depth": 0.1
             },
             "Renderer": {
-                "color": [0, 255, 10, 255]
+                "color": [
+                    0,
+                    255,
+                    10,
+                    255
+                ]
             },
             "Interactable": {
                 "interactionRadius": 0.75,
@@ -1274,7 +1303,12 @@
                 "depth": 0.1
             },
             "Renderer": {
-                "color": [139, 69, 19, 255]
+                "color": [
+                    139,
+                    69,
+                    19,
+                    255
+                ]
             },
             "Interactable": {
                 "interactionRadius": 0.75,

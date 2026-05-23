@@ -5,13 +5,24 @@ int main()
 {
     Engine engine;
     EditorApp editor;
+    int i = 1;
 
-    if (!editor.init())
-        return 1;
+    if (i == 1){
+        if (!editor.init())
+            return 1;
 
-    editor.run();
+        editor.run();
 
-    editor.shutdown();
+        editor.shutdown();
+    }
+    else {
+        if (!engine.init())
+            return 1;
+
+        engine.run();
+
+        engine.shutdown();
+    }
     
     
 
