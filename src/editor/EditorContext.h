@@ -14,13 +14,18 @@ enum class SelectionType
     None,
     GridCube,
     Entity,
-    SpawnPoint
+    SpawnPoint,
+    AssetTexture,
+    AssetModel,
+    AssetItem
 };
 
 struct EditorSelection
 {
     SelectionType type = SelectionType::None;
     int index = -1;
+
+    std::string assetId = "";
 };
 
 struct EditorContext

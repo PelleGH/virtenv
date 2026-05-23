@@ -26,6 +26,11 @@ class ResourceManager {
         ItemData getItem(const std::string& id);
         bool loadItems(const std::string& path);
 
+        // Getters for lists
+        const std::unordered_map<std::string, Texture2D>& GetAllTextures() const { return textures; }
+        const std::unordered_map<std::string, Model>& GetAllModels() const { return models; }
+        const std::unordered_map<std::string, ItemData>& GetAllItems() const { return itemDatabase; }
+
     private:
         std::unordered_map<std::string, Texture2D> textures;
         std::unordered_map<std::string, Model> models;

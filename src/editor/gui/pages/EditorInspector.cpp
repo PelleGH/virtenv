@@ -956,5 +956,40 @@ if (context.selection.type == SelectionType::Entity)
             i++;
         }
     }
+    if (context.selection.type == SelectionType::AssetTexture)
+    {
+        ImGui::Text("Asset: Texture2D");
+        ImGui::Separator();
+        
+        // Get texture from resource with saved id
+        std::string id = context.selection.assetId;
+        Texture2D tex = context.resourceManager.GetTexture(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+    }
+
+    if (context.selection.type == SelectionType::AssetModel)
+    {
+        ImGui::Text("Asset: 3D Model");
+        ImGui::Separator();
+        
+        // Get model from resource with saved id
+        std::string id = context.selection.assetId;
+        Model model = context.resourceManager.GetModel(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+    }
+
+    if (context.selection.type == SelectionType::AssetItem)
+    {
+        ImGui::Text("Asset: Item Data");
+        ImGui::Separator();
+        
+        // Get item from resource with saved id
+        std::string id = context.selection.assetId;
+        ItemData item = context.resourceManager.getItem(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+    }
     ImGui::End();
 }
