@@ -63,6 +63,10 @@ void RenderSystem::renderGrid(Scene& scene, ResourceManager& resourceManager)
 
     for (const auto& cube : data.cubes)
     {
+        if (!cube.visible)
+        {
+            continue;
+        }
         Vector3 pos = {
             (float)cube.position.x,
             (float)cube.position.y,

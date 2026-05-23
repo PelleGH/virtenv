@@ -18,6 +18,8 @@ struct GridCube
     std::string type;       // "floor", "wall", "door"
     bool solid = false;
     bool trigger = false;
+    bool visible = true;
+    
     std::string targetSpawn; // used for triggers to specify where the player should spawn in the next scene
     std::string targetScene; // used later for doors
     std::string modelID;

@@ -4,6 +4,7 @@
 #include "rlImGui.h"
 #include "raymath.h"
 
+#include <cmath>
 #include <cfloat>
 
 static void RenderSceneViewport(EditorContext& context);
@@ -14,10 +15,132 @@ static bool GetEntityPosition(const nlohmann::json& entity, Vector3& outPos);
 static BoundingBox GetEntityBounds(const nlohmann::json& entity);
 static void DrawEntityEditorOverlays(EditorContext& context);
 
+static Camera3D BuildScenePreviewCamera(EditorContext& context);
+static Vector3 GetCameraPreviewPlayerPosition(EditorContext& context);
+static void DrawInvisibleCubeEditorOverlays(EditorContext& context);
+static void DrawInvisibleCubeEditorOverlays(EditorContext& context)
+{
+    for (const auto& cube : context.scene.cubes)
+    {
+        if (cube.visible)
+            continue;
+
+        Vector3 pos = {
+            (float)cube.position.x,
+            (float)cube.position.y,
+            (float)cube.position.z
+        };
+
+        Color color = cube.solid ? SKYBLUE : PURPLE;
+
+        DrawCube(pos, 1.0f, 1.0f, 1.0f, Fade(color, 0.18f));
+        DrawCubeWires(pos, 1.0f, 1.0f, 1.0f, color);
+    }
+}
+static bool GetViewportMouseRay(
+    
+    EditorContext& context,
+    Ray& outRay,
+    ImVec2& outImageMin,
+    ImVec2& outImageMax
+);
+
+static bool GetGridCellFromRay(
+    EditorContext& context,
+    Ray ray,
+    int& outX,
+    int& outY,
+    int& outZ
+);
+static bool GetViewportMouseRay(
+    EditorContext& context,
+    Ray& outRay,
+    ImVec2& outImageMin,
+    ImVec2& outImageMax
+)
+{
+    outImageMin = ImGui::GetItemRectMin();
+    outImageMax = ImGui::GetItemRectMax();
+
+    Vector2 mousePos = GetMousePosition();
+
+    Vector2 relativePos = {
+        mousePos.x - outImageMin.x,
+        mousePos.y - outImageMin.y
+    };
+
+    float imageWidth = outImageMax.x - outImageMin.x;
+    float imageHeight = outImageMax.y - outImageMin.y;
+
+    if (relativePos.x < 0 || relativePos.y < 0 ||
+        relativePos.x > imageWidth || relativePos.y > imageHeight)
+    {
+        return false;
+    }
+
+    Vector2 textureMouse = {
+        relativePos.x * context.viewportTexture.texture.width / imageWidth,
+        relativePos.y * context.viewportTexture.texture.height / imageHeight
+    };
+
+    Camera3D activeCamera = context.previewSceneCamera
+        ? BuildScenePreviewCamera(context)
+        : context.editorCamera;
+
+    outRay = GetScreenToWorldRayEx(
+        textureMouse,
+        activeCamera,
+        context.viewportTexture.texture.width,
+        context.viewportTexture.texture.height
+    );
+
+    return true;
+}
+
+static bool GetGridCellFromRay(
+    EditorContext& context,
+    Ray ray,
+    int& outX,
+    int& outY,
+    int& outZ
+)
+{
+    float planeY = (float)context.gridPainterLayerY;
+
+    if (fabsf(ray.direction.y) < 0.0001f)
+        return false;
+
+    float t = (planeY - ray.position.y) / ray.direction.y;
+
+    if (t < 0.0f)
+        return false;
+
+    Vector3 hit = Vector3Add(
+        ray.position,
+        Vector3Scale(ray.direction, t)
+    );
+
+    outX = (int)roundf(hit.x);
+    outY = context.gridPainterLayerY;
+    outZ = (int)roundf(hit.z);
+
+    return true;
+}
 void DrawViewport(EditorContext& context)
 {
     ImGui::Begin("Viewport");
+    ImGui::Checkbox("Preview Scene Camera", &context.previewSceneCamera);
 
+    if (context.previewSceneCamera)
+    {
+        ImGui::SameLine();
+        ImGui::TextDisabled("Using Scene Settings camera");
+    }
+    else
+    {
+        ImGui::SameLine();
+        ImGui::TextDisabled("Using editor camera");
+    }
     ImVec2 size = ImGui::GetContentRegionAvail();
 
     if (size.x > 1 && size.y > 1 &&
@@ -37,44 +160,117 @@ void DrawViewport(EditorContext& context)
     {
         rlImGuiImageRenderTextureFit(&context.viewportTexture, false);
 
-        if (context.viewportHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (context.viewportHovered && !context.previewSceneCamera)
         {
-            ImVec2 imageMin = ImGui::GetItemRectMin();
-            ImVec2 imageMax = ImGui::GetItemRectMax();
+            Ray ray;
+            ImVec2 imageMin;
+            ImVec2 imageMax;
 
-            Vector2 mousePos = GetMousePosition();
-
-            Vector2 relativePos = {
-                mousePos.x - imageMin.x,
-                mousePos.y - imageMin.y
-            };
-
-            float imageWidth = imageMax.x - imageMin.x;
-            float imageHeight = imageMax.y - imageMin.y;
-
-            if (relativePos.x >= 0 && relativePos.y >= 0 &&
-                relativePos.x <= imageWidth && relativePos.y <= imageHeight)
+            if (GetViewportMouseRay(context, ray, imageMin, imageMax))
             {
-                Vector2 textureMouse = {
-                    relativePos.x * context.viewportTexture.texture.width / imageWidth,
-                    relativePos.y * context.viewportTexture.texture.height / imageHeight
-                };
+                if (context.gridPainterEnabled && IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+                {
+                    int gridX = 0;
+                    int gridY = 0;
+                    int gridZ = 0;
 
-                Ray ray = GetScreenToWorldRayEx(
-                    textureMouse,
-                    context.editorCamera,
-                    context.viewportTexture.texture.width,
-                    context.viewportTexture.texture.height
-                );
+                    if (GetGridCellFromRay(context, ray, gridX, gridY, gridZ))
+                    {
+                        if (context.gridPainterMode == GridPainterMode::Paint)
+                        {
+                            PaintCubeAt(context, gridX, gridY, gridZ);
+                        }
+                        else if (context.gridPainterMode == GridPainterMode::Erase)
+                        {
+                            EraseCubeAt(context, gridX, gridY, gridZ);
+                        }
+                        else if (context.gridPainterMode == GridPainterMode::Eyedropper)
+                        {
+                            int cubeIndex = FindCubeAt(context, gridX, gridY, gridZ);
 
-                context.selection = PickViewportSelection(context, ray);
+                            if (cubeIndex >= 0)
+                            {
+                                CopyCubeToTemplate(context, context.scene.cubes[cubeIndex]);
+                                context.selection = { SelectionType::GridCube, cubeIndex };
+                            }
+                        }
+                    }
+                }
+                else if (!context.gridPainterEnabled && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    context.selection = PickViewportSelection(context, ray);
+                }
+                if (context.gridPainterEnabled &&
+                    IsKeyDown(KEY_LEFT_CONTROL) &&
+                    IsKeyPressed(KEY_Z))
+                {
+                    UndoGridPainterAction(context);
+                }
             }
         }
     }
 
     ImGui::End();
 }
+static Vector3 GetCameraPreviewPlayerPosition(EditorContext& context)
+{
+    // Use the first spawn point as the fake player position for camera preview.
+    // This lets us preview followPlayer mode without actually running the game.
+    if (!context.scene.playerSpawns.empty())
+    {
+        const auto& firstSpawn = context.scene.playerSpawns.begin()->second;
 
+        return {
+            firstSpawn.x,
+            firstSpawn.y,
+            firstSpawn.z
+        };
+    }
+
+    // Fallback if the scene has no spawn points.
+    return { 0.0f, 1.0f, 0.0f };
+}
+
+static Camera3D BuildScenePreviewCamera(EditorContext& context)
+{
+    Camera3D camera = context.editorCamera;
+
+    camera.up = { 0.0f, 1.0f, 0.0f };
+    camera.fovy = 45.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
+
+    const SceneCameraData& cameraData = context.scene.camera;
+
+    if (cameraData.mode == "fixed")
+    {
+        camera.position = {
+            cameraData.positionX,
+            cameraData.positionY,
+            cameraData.positionZ
+        };
+
+        camera.target = {
+            cameraData.targetX,
+            cameraData.targetY,
+            cameraData.targetZ
+        };
+
+        return camera;
+    }
+
+    // followPlayer preview
+    Vector3 fakePlayerPos = GetCameraPreviewPlayerPosition(context);
+
+    camera.target = fakePlayerPos;
+
+    camera.position = {
+        fakePlayerPos.x + cameraData.positionX,
+        fakePlayerPos.y + cameraData.positionY,
+        fakePlayerPos.z + cameraData.positionZ
+    };
+
+    return camera;
+}
 static void RenderSceneViewport(EditorContext& context)
 {
     if (context.previewDirty)
@@ -92,7 +288,7 @@ static void RenderSceneViewport(EditorContext& context)
         return;
     }
 
-    if (context.viewportHovered) {
+    if (!context.previewSceneCamera && context.viewportHovered) {
         float wheel = GetMouseWheelMove();
         if (wheel != 0.0f)
         {
@@ -119,6 +315,9 @@ static void RenderSceneViewport(EditorContext& context)
         }
 
     }
+    Camera3D activeCamera = context.previewSceneCamera
+    ? BuildScenePreviewCamera(context)
+    : context.editorCamera;
     BeginTextureMode(context.viewportTexture);
     ClearBackground(SKYBLUE);
 
@@ -129,12 +328,40 @@ static void RenderSceneViewport(EditorContext& context)
     context.renderSystem.render(
         context.previewScene,
         context.resourceManager,
-        context.editorCamera,
+        activeCamera,
         options
     );
 
-    BeginMode3D(context.editorCamera);
+    BeginMode3D(activeCamera);
+    DrawInvisibleCubeEditorOverlays(context);
+    if (context.gridPainterEnabled)
+    {
+        // Cubes are centered on integer coordinates.
+        // Therefore cell borders are at integer + 0.5.
+        float y = (float)context.gridPainterLayerY + 0.51f;
 
+        for (int x = -20; x <= 20; x++)
+        {
+            float lineX = (float)x + 0.5f;
+
+            DrawLine3D(
+                { lineX, y, -20.5f },
+                { lineX, y,  20.5f },
+                Fade(WHITE, 0.25f)
+            );
+        }
+
+        for (int z = -20; z <= 20; z++)
+        {
+            float lineZ = (float)z + 0.5f;
+
+            DrawLine3D(
+                { -20.5f, y, lineZ },
+                {  20.5f, y, lineZ },
+                Fade(WHITE, 0.25f)
+            );
+        }
+    }
     DrawEntityEditorOverlays(context);
     DrawEditorSelectionOverlay(context);
 
