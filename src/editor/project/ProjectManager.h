@@ -8,3 +8,4 @@ void SaveProject(EditorContext& context);
 void RefreshProjectList(EditorContext& context);
 void CreateNewProject(EditorContext& context, const std::string& folderName, const std::string& userProjectName);
 void LoadLastProject(EditorContext& context);
+void BuildProject(EditorContext& context, const std::string& outputDir);
