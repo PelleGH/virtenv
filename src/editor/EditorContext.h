@@ -53,6 +53,7 @@ struct EditorContext
 {
     bool viewportHovered = false;
     bool previewDirty = false;
+    bool buildOutdated = false;
     
     nlohmann::json componentSchemas;
     

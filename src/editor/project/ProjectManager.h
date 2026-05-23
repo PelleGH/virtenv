@@ -13,3 +13,4 @@ void CreateNewScene(EditorContext& context, const std::string& sceneName);
 
 void SaveEditorSettings(EditorContext& context);
 void LoadEditorSettings(EditorContext& context);
+void BuildProject(EditorContext& context, const std::string& outputDir);

@@ -1,0 +1,8 @@
+{
+    "buildOutdated": true,
+    "projectName": "shayatest",
+    "scenes": [
+        "assets/scenes/room_01.json"
+    ],
+    "startingScene": "room_01"
+}

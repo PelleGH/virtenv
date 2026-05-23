@@ -45,12 +45,12 @@ static std::string getActiveProjectPath()
     return projectPath;
 }
 
-bool Engine::init()
+bool Engine::init(const std::string& overrideRoot)
 {
     InitWindow(1280, 720, "Virtenv");
     SetTargetFPS(60);
 
-    std::string activeProjectPath = getActiveProjectPath();
+    std::string activeProjectPath = overrideRoot.empty() ? getActiveProjectPath() : overrideRoot;
     assetRoot = activeProjectPath.empty() ? "" : activeProjectPath;
 
     //Reads and creates the models and texture for the world

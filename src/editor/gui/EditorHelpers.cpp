@@ -10,6 +10,7 @@ void MarkSceneChanged(EditorContext& context)
 {
     context.dirty = true;
     context.previewDirty = true;
+    context.buildOutdated = true;
 }
 
 void AddCube(EditorContext& context, const std::string& type)

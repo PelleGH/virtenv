@@ -16,6 +16,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <string>
+
 // Keeps track of open windows
 static bool showHierarchy = true;
 static bool showInspector = true;
@@ -63,6 +65,28 @@ static void DrawDockspace(EditorContext& context)
             if (ImGui::MenuItem("Save Project", "Ctrl+S"))
             {
                 SaveProject(context);
+            }
+
+            ImGui::Separator();
+
+            std::string buildLabel = "Build Game...";
+            if (context.buildOutdated)
+            {
+                buildLabel += " *(Outdated)*"; // Adds it directly to the name
+            }
+
+            // 2. Pass the combined string as the FIRST parameter
+            if (ImGui::MenuItem(buildLabel.c_str()))
+            {
+                if (!context.projectPath.empty())
+                {
+                    std::string outDir = context.projectPath + "Builds/" + context.projectName;
+                    BuildProject(context, outDir);
+                }
+                else
+                {
+                    std::cout << "Cannot build: No project loaded.\n";
+                }
             }
 
             ImGui::Separator();

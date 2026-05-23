@@ -68,3 +68,40 @@ target_compile_definitions(VirtenEditor PRIVATE NO_FONT_AWESOME)
 
 target_link_libraries(VirtenEditor PRIVATE raylib)
 target_link_libraries(VirtenEditor PRIVATE nlohmann_json::nlohmann_json)
+
+#game executable
+
+add_executable(Runtime
+    src/RuntimeMain.cpp
+    
+    src/engine/core/Engine.cpp
+    src/engine/scene/Scene.cpp
+    src/engine/scene/SceneLoader.cpp
+    src/engine/scene/SceneManager.cpp
+    src/engine/systems/RenderSystem.cpp
+    src/engine/systems/InputSystem.cpp
+    src/engine/systems/MovementSystem.cpp
+    src/engine/systems/CollisionSystem.cpp
+    src/engine/systems/CameraSystem.cpp
+    src/engine/systems/TriggerSystem.cpp
+    src/engine/systems/SpawnSystem.cpp
+    src/engine/systems/ConditionSystem.cpp
+    src/engine/systems/DialogueManager.cpp
+    src/engine/systems/CombatSystem.cpp
+    src/engine/systems/AISystem.cpp
+    src/engine/systems/ProjectileSystem.cpp
+    src/engine/managers/QuestManager.cpp
+    src/engine/ecs/EntityManager.cpp
+    src/engine/ecs/EntityFactory.cpp
+    src/engine/resource/ResourceManager.cpp
+    src/engine/systems/InteractionSystem.cpp
+    src/engine/systems/InventorySystem.cpp
+    src/engine/systems/InventoryUISystem.cpp
+)
+
+# The runtime only needs the src directory
+target_include_directories(Runtime PRIVATE src)
+
+# Link required libraries
+target_link_libraries(Runtime PRIVATE raylib)
+target_link_libraries(Runtime PRIVATE nlohmann_json::nlohmann_json)
