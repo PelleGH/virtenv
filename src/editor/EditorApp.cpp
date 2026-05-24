@@ -32,7 +32,7 @@ bool EditorApp::init()
     context.viewportTexture = LoadRenderTexture(1280, 720);
     context.viewportReady   = (context.viewportTexture.texture.id != 0);
     
-    context.resourceManager.LoadFromManifest("assets/assets.json");
+    /*context.resourceManager.LoadFromManifest("assets/assets.json");
     
     LoadLastProject(context);
 
@@ -66,7 +66,14 @@ bool EditorApp::init()
             context.currentSceneIndex = i;
             break;
         }
+    }*/
+
+    LoadLastProject(context);
+
+    if (context.projectName.empty()) {
+        RefreshProjectList(context);
     }
+    
     return context.viewportReady;
 }
 

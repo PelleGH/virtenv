@@ -4,17 +4,31 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+void ResourceManager::SetProjectPath(const std::string& projectName){
+    currentProjectPath = "Projects/" + projectName + "/assets/";
+}
+
+std::string ResourceManager::GetAssetPath(const std::string& localPath) const{
+    return currentProjectPath + localPath;
+}
+
 void ResourceManager::LoadTexture2D(const std::string& id, const std::string& filepath){
     if (textures.find(id) == textures.end()) {
-        textures[id] = LoadTexture(filepath.c_str());
-        std::cout << "Loaded texture: " << id << '\n';
+
+        std::string fullPath = GetAssetPath(filepath);
+
+        textures[id] = LoadTexture(fullPath.c_str());
+        std::cout << "Loaded texture: " << id << " from: " << fullPath << '\n';
     }
 }
 
 void ResourceManager::LoadModel3D(const std::string& id, const std::string& filepath) {
     if (models.find(id) == models.end()) {
-        models[id] = LoadModel(filepath.c_str());
-        std::cout << "Loaded 3D model: " << id << '\n';
+
+        std::string fullPath = GetAssetPath(filepath);
+
+        models[id] = LoadModel(fullPath.c_str());
+        std::cout << "Loaded 3D model: " << id << " from: " << fullPath << '\n';
     }
 }
 
@@ -54,7 +68,10 @@ bool ResourceManager::hasModel(const std::string& id) {
 
 // Opens "assets.json" and builds at start
 void ResourceManager::LoadFromManifest(const std::string& path){
-    std::ifstream file(path);
+
+    std::string fullPath = GetAssetPath(path); 
+    
+    std::ifstream file(fullPath);
     
     if (!file.is_open())
     {
