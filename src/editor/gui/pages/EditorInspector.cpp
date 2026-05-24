@@ -10,6 +10,97 @@
 
 static std::string HiddenId(const std::string& label);
 static void DrawFieldLabel(const std::string& label);
+static std::string FindCubeModelIdForTexture(const EditorContext& context, const std::string& textureId)
+{
+    const auto& manifest = context.resourceManager.GetManifestData();
+
+    if (!manifest.contains("cube_models") || !manifest["cube_models"].is_array())
+        return "";
+
+    for (const auto& cubeModel : manifest["cube_models"])
+    {
+        if (cubeModel.value("textureId", "") == textureId)
+            return cubeModel.value("id", "");
+    }
+
+    return "";
+}
+
+static std::string FindTextureIdForCubeModel(const EditorContext& context, const std::string& modelId)
+{
+    const auto& manifest = context.resourceManager.GetManifestData();
+
+    if (!manifest.contains("cube_models") || !manifest["cube_models"].is_array())
+        return "";
+
+    for (const auto& cubeModel : manifest["cube_models"])
+    {
+        if (cubeModel.value("id", "") == modelId)
+            return cubeModel.value("textureId", "");
+    }
+
+    return "";
+}
+static std::vector<std::string> GetProjectModelIds(const EditorContext& context)
+{
+    std::vector<std::string> ids;
+
+    for (const auto& [id, model] : context.resourceManager.GetAllModels())
+        ids.push_back(id);
+
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+
+static std::vector<std::string> GetProjectTextureIds(const EditorContext& context)
+{
+    std::vector<std::string> ids;
+
+    for (const auto& [id, texture] : context.resourceManager.GetAllTextures())
+        ids.push_back(id);
+
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+
+static bool DrawStringDropdownWithNone(
+    const std::string& label,
+    std::string& value,
+    const std::vector<std::string>& options
+)
+{
+    bool changed = false;
+
+    const char* preview = value.empty() ? "None" : value.c_str();
+
+    if (ImGui::BeginCombo(label.c_str(), preview))
+    {
+        if (ImGui::Selectable("None", value.empty()))
+        {
+            value.clear();
+            changed = true;
+        }
+
+        for (const std::string& option : options)
+        {
+            bool selected = value == option;
+
+            if (ImGui::Selectable(option.c_str(), selected))
+            {
+                value = option;
+                changed = true;
+            }
+
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return changed;
+}
+
 std::vector<std::string> GetSpawnIdsForScene(const std::string& scenePath)
 {
     SceneData targetData;
@@ -592,7 +683,37 @@ static void DrawJsonComponent(
         ImGui::PushID(fieldName.c_str());
 
         std::string typeOverride = GetFieldTypeOverride(context, componentName, fieldName);
+        if (componentName == "Renderer" && fieldName == "modelID" && visibleData[fieldName].is_string())
+        {
+            std::string modelId = visibleData[fieldName].get<std::string>();
 
+            if (DrawStringDropdownWithNone("modelID", modelId, GetProjectModelIds(context)))
+            {
+                visibleData[fieldName] = modelId;
+                changed = true;
+            }
+
+            drawnFields.insert(fieldName);
+            ImGui::PopID();
+            ImGui::Spacing();
+            continue;
+        }
+
+        if (componentName == "Renderer" && fieldName == "textureID" && visibleData[fieldName].is_string())
+        {
+            std::string textureId = visibleData[fieldName].get<std::string>();
+
+            if (DrawStringDropdownWithNone("textureID", textureId, GetProjectTextureIds(context)))
+            {
+                visibleData[fieldName] = textureId;
+                changed = true;
+            }
+
+            drawnFields.insert(fieldName);
+            ImGui::PopID();
+            ImGui::Spacing();
+            continue;
+        }
         if (DrawJsonField(context, fieldName, visibleData[fieldName], typeOverride))
             changed = true;
 
@@ -613,7 +734,35 @@ static void DrawJsonComponent(
         ImGui::PushID(fieldName.c_str());
 
         std::string typeOverride = GetFieldTypeOverride(context, componentName, fieldName);
+        if (componentName == "Renderer" && fieldName == "modelID" && fieldValue.is_string())
+        {
+            std::string modelId = fieldValue.get<std::string>();
 
+            if (DrawStringDropdownWithNone("modelID", modelId, GetProjectModelIds(context)))
+            {
+                fieldValue = modelId;
+                changed = true;
+            }
+
+            ImGui::PopID();
+            ImGui::Spacing();
+            continue;
+        }
+
+        if (componentName == "Renderer" && fieldName == "textureID" && fieldValue.is_string())
+        {
+            std::string textureId = fieldValue.get<std::string>();
+
+            if (DrawStringDropdownWithNone("textureID", textureId, GetProjectTextureIds(context)))
+            {
+                fieldValue = textureId;
+                changed = true;
+            }
+
+            ImGui::PopID();
+            ImGui::Spacing();
+            continue;
+        }
         if (DrawJsonField(context, fieldName, fieldValue, typeOverride))
             changed = true;
 
@@ -703,14 +852,22 @@ void DrawInspector(EditorContext& context)
 
         ImGui::SeparatorText("Appearance");
 
-        char modelBuffer[128];
-        strncpy(modelBuffer, cube.modelID.c_str(), sizeof(modelBuffer));
-        modelBuffer[sizeof(modelBuffer) - 1] = '\0';
+        std::string currentTextureId = FindTextureIdForCubeModel(context, cube.modelID);
+        std::vector<std::string> textureIds = GetProjectTextureIds(context);
 
-        if (ImGui::InputText("Model ID", modelBuffer, sizeof(modelBuffer)))
+        if (DrawStringDropdownWithNone("Texture ID", currentTextureId, textureIds))
         {
-            cube.modelID = modelBuffer;
-            MarkSceneChanged(context);
+            std::string matchingModelId = FindCubeModelIdForTexture(context, currentTextureId);
+
+            if (!matchingModelId.empty())
+            {
+                cube.modelID = matchingModelId;
+                MarkSceneChanged(context);
+            }
+            else
+            {
+                std::cout << "[Inspector] No cube model found for texture: " << currentTextureId << "\n";
+            }
         }
 
         ImGui::SeparatorText("Type");

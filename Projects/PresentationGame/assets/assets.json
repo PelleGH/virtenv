@@ -1,0 +1,25 @@
+{
+    "textures": [
+        { "id": "wall_tex", "path": "testSkins/wall_texture.jpg" },
+        { "id": "player_tex1", "path": "testSkins/player1.jpg" },
+        { "id": "player_tex2", "path": "testSkins/player2.jpg" },
+        { "id": "enemy_tex", "path": "testSkins/enemy.jpg" },
+        { "id": "enemy_tex2", "path": "testSkins/enemy2.jpg" },
+        { "id": "enemy_tex3", "path": "testSkins/enemy3.jpg" },
+        { "id": "npc_tex", "path": "testSkins/npc.jpg" }
+
+    ],
+    "cube_models": [
+        { "id": "wall_model", "textureId": "wall_tex", "size": 1.0 },
+        { "id": "player_skin1", "textureId": "player_tex1", "size": 1.0 },
+        { "id": "player_skin2", "textureId": "player_tex2", "size": 1.0 },
+        { "id": "test_cube_skin1", "textureId": "enemy_tex", "size": 1.0 },
+        { "id": "test_cube_skin2", "textureId": "enemy_tex2", "size": 1.0 },
+        { "id": "test_cube_skin3", "textureId": "enemy_tex3", "size": 1.0 },
+        { "id": "npc_skin", "textureId": "npc_tex", "size": 1.0 }
+    ],
+    "3Dmodels": [
+        { "id": "old_man_character_a", "path": "models/character-a.obj" },
+        { "id": "npc_character_o", "path": "models/character-o.obj" }
+    ]
+}

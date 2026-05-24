@@ -9,7 +9,7 @@
 class ResourceManager {
     public: 
         // For project handling
-        void SetProjectPath(const std::string& projectName);
+        void SetAssetRoot(const std::string& root);
         std::string GetAssetPath(const std::string& localPath) const;
 
         void LoadTexture2D(const std::string& id, const std::string& filepath);
@@ -34,11 +34,11 @@ class ResourceManager {
         const std::unordered_map<std::string, Texture2D>& GetAllTextures() const { return textures; }
         const std::unordered_map<std::string, Model>& GetAllModels() const { return models; }
         const std::unordered_map<std::string, ItemData>& GetAllItems() const { return itemDatabase; }
-
+        const nlohmann::json& GetManifestData() const { return manifestData; }
     private:
 
-        inline static std::string currentProjectPath = "";
-
+        std::string assetRoot = "";
+        nlohmann::json manifestData = nlohmann::json::object();
         std::unordered_map<std::string, Texture2D> textures;
         std::unordered_map<std::string, Model> models;
         std::unordered_map<std::string, ItemData> itemDatabase;

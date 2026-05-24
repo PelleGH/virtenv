@@ -4,6 +4,86 @@
 #include "imgui.h"
 #include <cstring>
 
+static std::vector<std::string> GetProjectTextureIds(const EditorContext& context)
+{
+    std::vector<std::string> ids;
+
+    for (const auto& [id, texture] : context.resourceManager.GetAllTextures())
+        ids.push_back(id);
+
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+
+static std::string FindCubeModelIdForTexture(const EditorContext& context, const std::string& textureId)
+{
+    const auto& manifest = context.resourceManager.GetManifestData();
+
+    if (!manifest.contains("cube_models") || !manifest["cube_models"].is_array())
+        return "";
+
+    for (const auto& cubeModel : manifest["cube_models"])
+    {
+        if (cubeModel.value("textureId", "") == textureId)
+            return cubeModel.value("id", "");
+    }
+
+    return "";
+}
+
+static std::string FindTextureIdForCubeModel(const EditorContext& context, const std::string& modelId)
+{
+    const auto& manifest = context.resourceManager.GetManifestData();
+
+    if (!manifest.contains("cube_models") || !manifest["cube_models"].is_array())
+        return "";
+
+    for (const auto& cubeModel : manifest["cube_models"])
+    {
+        if (cubeModel.value("id", "") == modelId)
+            return cubeModel.value("textureId", "");
+    }
+
+    return "";
+}
+
+static bool DrawStringDropdownWithNone(
+    const std::string& label,
+    std::string& value,
+    const std::vector<std::string>& options
+)
+{
+    bool changed = false;
+
+    const char* preview = value.empty() ? "None" : value.c_str();
+
+    if (ImGui::BeginCombo(label.c_str(), preview))
+    {
+        if (ImGui::Selectable("None", value.empty()))
+        {
+            value.clear();
+            changed = true;
+        }
+
+        for (const std::string& option : options)
+        {
+            bool selected = value == option;
+
+            if (ImGui::Selectable(option.c_str(), selected))
+            {
+                value = option;
+                changed = true;
+            }
+
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return changed;
+}
 
 static void DrawTemplateEditor(EditorContext& context, CubeTemplate& cubeTemplate)
 {
@@ -50,13 +130,22 @@ static void DrawTemplateEditor(EditorContext& context, CubeTemplate& cubeTemplat
     ImGui::Checkbox("Trigger", &cubeTemplate.trigger);
     ImGui::Checkbox("Visible In Game", &cubeTemplate.visible);
 
-    char modelBuffer[128];
-    strncpy(modelBuffer, cubeTemplate.modelID.c_str(), sizeof(modelBuffer));
-    modelBuffer[sizeof(modelBuffer) - 1] = '\0';
+    std::string currentTextureId = FindTextureIdForCubeModel(context, cubeTemplate.modelID);
+    std::vector<std::string> textureIds = GetProjectTextureIds(context);
 
-    if (ImGui::InputText("Model ID", modelBuffer, sizeof(modelBuffer)))
+    if (DrawStringDropdownWithNone("Texture ID", currentTextureId, textureIds))
     {
-        cubeTemplate.modelID = modelBuffer;
+        std::string matchingModelId = FindCubeModelIdForTexture(context, currentTextureId);
+
+        if (!matchingModelId.empty())
+        {
+            cubeTemplate.modelID = matchingModelId;
+        }
+        else
+        {
+            cubeTemplate.modelID.clear();
+            std::cout << "[GridPainter] No cube model found for texture: " << currentTextureId << "\n";
+        }
     }
 
     char targetSceneBuffer[256];
