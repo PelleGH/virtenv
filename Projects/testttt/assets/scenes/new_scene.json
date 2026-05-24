@@ -1,0 +1,29 @@
+{
+    "camera": {
+        "mode": "followPlayer",
+        "position": [
+            0.0,
+            10.0,
+            10.0
+        ],
+        "target": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "cubes": [],
+    "entities": [],
+    "name": "new_scene",
+    "playerSpawns": [
+        {
+            "id": "default",
+            "position": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "skinChoice": 0
+        }
+    ]
+}

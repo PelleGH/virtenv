@@ -1597,20 +1597,57 @@
             "trigger": false,
             "type": "wall",
             "visible": false
-        },
-        {
-            "position": [
-                3,
-                0,
-                -8
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
         }
     ],
-    "entities": [],
+    "entities": [
+        {
+            "Attack": {
+                "baseDamage": 5,
+                "cooldown": 2.0,
+                "damage": 5,
+                "enemyType": "enemy",
+                "isRanged": false,
+                "projectileSpeed": 5.0,
+                "range": 2.0
+            },
+            "Collider": {
+                "depth": 0.5,
+                "enabled": true,
+                "height": 0.5,
+                "isTrigger": false,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
+                "offsetZ": 0.0,
+                "width": 0.5
+            },
+            "Health": {
+                "current": 30,
+                "defense": 0,
+                "max": 30
+            },
+            "Renderer": {
+                "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "depth": 0.5,
+                "height": 0.5,
+                "modelID": "old_man_character_a",
+                "scale": 0.5,
+                "textureID": "",
+                "width": 0.5,
+                "zIndex": 0
+            },
+            "TransformComponent": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": -0.800000011920929
+            },
+            "name": "Enemy"
+        }
+    ],
     "name": "room_01",
     "playerSpawns": [
         {

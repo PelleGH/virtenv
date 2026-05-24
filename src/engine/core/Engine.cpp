@@ -3,14 +3,180 @@
 
 #include <chrono>
 #include <iostream>
-
+#include <chrono>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <vector>
+#include <unordered_map>
 #include <fstream>
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
+namespace
+{
+    bool g_profilerEnabled = false;
+    float g_profilerElapsed = 0.0f;
+    int g_profilerFrames = 0;
 
+    std::unordered_map<std::string, double> g_profilerTotalsMs;
+    std::vector<std::string> g_profilerLastReport;
+
+    void resetProfiler()
+    {
+        g_profilerElapsed = 0.0f;
+        g_profilerFrames = 0;
+        g_profilerTotalsMs.clear();
+    }
+
+    void beginProfilerFrame(float dt)
+    {
+        // F3 sometimes does not register on some keyboards/laptops,
+        // so P is a backup toggle.
+        if (IsKeyPressed(KEY_F3) || IsKeyPressed(KEY_P))
+        {
+            g_profilerEnabled = !g_profilerEnabled;
+            resetProfiler();
+
+            g_profilerLastReport.clear();
+            g_profilerLastReport.push_back(
+                g_profilerEnabled
+                    ? "Profiler enabled"
+                    : "Profiler disabled"
+            );
+
+            std::cout << "\n[Profiler] "
+                      << (g_profilerEnabled ? "Enabled" : "Disabled")
+                      << "\n";
+        }
+
+        if (!g_profilerEnabled)
+            return;
+
+        g_profilerElapsed += dt;
+        g_profilerFrames++;
+    }
+
+    template <typename Func>
+    void profileBlock(const std::string& name, Func&& func)
+    {
+        if (!g_profilerEnabled)
+        {
+            func();
+            return;
+        }
+
+        auto start = std::chrono::steady_clock::now();
+
+        func();
+
+        auto end = std::chrono::steady_clock::now();
+
+        double ms =
+            std::chrono::duration<double, std::milli>(end - start).count();
+
+        g_profilerTotalsMs[name] += ms;
+    }
+
+    void updateProfilerReportIfNeeded()
+    {
+        if (!g_profilerEnabled)
+            return;
+
+        if (g_profilerElapsed < 2.0f)
+            return;
+
+        g_profilerLastReport.clear();
+
+        std::ostringstream header;
+        header << "Virtenv profiler | Frames: "
+               << g_profilerFrames
+               << " | Avg FPS: "
+               << std::fixed << std::setprecision(1)
+               << (g_profilerFrames / g_profilerElapsed);
+
+        g_profilerLastReport.push_back(header.str());
+
+        std::vector<std::string> order =
+        {
+            "InputSystem",
+            "InteractionSystem",
+            "AISystem",
+            "MovementSystem",
+            "ProjectileSystem",
+            "ConditionSystem",
+            "CollisionSystem",
+            "TriggerSystem",
+            "DialogueManager",
+            "EventBus",
+            "CameraSystem",
+            "SceneManager",
+            "Scene cleanup",
+            "RenderSystem",
+            "InventoryUI",
+            "Dialogue render"
+        };
+
+        for (const std::string& name : order)
+        {
+            auto it = g_profilerTotalsMs.find(name);
+            if (it == g_profilerTotalsMs.end())
+                continue;
+
+            double averageMs = it->second / g_profilerFrames;
+
+            std::ostringstream line;
+            line << std::left << std::setw(18) << name
+                 << ": "
+                 << std::fixed << std::setprecision(4)
+                 << averageMs
+                 << " ms/frame";
+
+            g_profilerLastReport.push_back(line.str());
+        }
+
+        // Also print to console, if a console is visible.
+        std::cout << "\n========== Virtenv profiler ==========\n";
+        for (const std::string& line : g_profilerLastReport)
+            std::cout << line << "\n";
+        std::cout << "======================================\n";
+
+        resetProfiler();
+    }
+
+    void drawProfilerOverlay()
+    {
+        const int x = 10;
+        int y = 10;
+        const int fontSize = 18;
+        const int lineHeight = 22;
+
+        DrawText("Press F3 or P to toggle profiler", x, y, fontSize, DARKGRAY);
+        y += lineHeight;
+
+        if (!g_profilerEnabled)
+        {
+            DrawText("Profiler: OFF", x, y, fontSize, GRAY);
+            return;
+        }
+
+        DrawText("Profiler: ON", x, y, fontSize, GREEN);
+        y += lineHeight;
+
+        for (const std::string& line : g_profilerLastReport)
+        {
+            DrawText(line.c_str(), x, y, fontSize, BLACK);
+            y += lineHeight;
+        }
+
+        if (g_profilerLastReport.empty())
+        {
+            DrawText("Collecting data...", x, y, fontSize, BLACK);
+        }
+    }
+}
 static const std::string EDITOR_SETTINGS_PATH =
     "src/editor/config/EditorSettings.json";
 
@@ -170,67 +336,127 @@ void Engine::run()
 
 void Engine::update(float dt)
 {
+    beginProfilerFrame(dt);
+
     bool gameplayPaused = dialogueManager.isActive();
-    //std::cout << "Updating engine. dt: " << dt << '\n';
-    inputSystem.update(sceneManager.getCurrentScene(), eventBus);
-    //debugNPCInteraction();
-    
+
+    profileBlock("InputSystem", [this]()
+    {
+        inputSystem.update(sceneManager.getCurrentScene(), eventBus);
+    });
+
     if (IsKeyPressed(KEY_K))
     {
         questManager.onEvent("enemy_killed", "enemy", 1);
     }
-    
+
     if (!gameplayPaused)
     {
-        interactionSystem.update(sceneManager.getCurrentScene(), eventBus);
+        profileBlock("InteractionSystem", [this]()
+        {
+            interactionSystem.update(sceneManager.getCurrentScene(), eventBus);
+        });
 
-        aiSystem.update(sceneManager.getCurrentScene(), eventBus, dt);
+        profileBlock("AISystem", [this, dt]()
+        {
+            aiSystem.update(sceneManager.getCurrentScene(), eventBus, dt);
+        });
 
-        movementSystem.update(sceneManager.getCurrentScene(), dt);
-        projectileSystem.update(sceneManager.getCurrentScene(), dt);
+        profileBlock("MovementSystem", [this, dt]()
+        {
+            movementSystem.update(sceneManager.getCurrentScene(), dt);
+        });
 
-        conditionalSystem.update(
-            sceneManager.getCurrentScene(),
-            conditionManager
-        );
+        profileBlock("ProjectileSystem", [this, dt]()
+        {
+            projectileSystem.update(sceneManager.getCurrentScene(), dt);
+        });
 
-        collisionSystem.update(sceneManager.getCurrentScene(), eventBus);
+        profileBlock("ConditionSystem", [this]()
+        {
+            conditionalSystem.update(
+                sceneManager.getCurrentScene(),
+                conditionManager
+            );
+        });
 
-        triggerSystem.update(
-            sceneManager.getCurrentScene(),
-            eventBus
-        );
+        profileBlock("CollisionSystem", [this]()
+        {
+            collisionSystem.update(sceneManager.getCurrentScene(), eventBus);
+        });
+
+        profileBlock("TriggerSystem", [this]()
+        {
+            triggerSystem.update(
+                sceneManager.getCurrentScene(),
+                eventBus
+            );
+        });
     }
-    dialogueManager.update();
-    eventBus.dispatch();
-    cameraSystem.update(sceneManager.getCurrentScene(), camera);
 
-    if (IsKeyPressed(KEY_NINE)) 
+    profileBlock("DialogueManager", [this]()
     {
-        sceneManager.getCurrentScene().saveState(); //saves all entities with componenents to saved_entities.json for test
+        dialogueManager.update();
+    });
+
+    profileBlock("EventBus", [this]()
+    {
+        eventBus.dispatch();
+    });
+
+    profileBlock("CameraSystem", [this]()
+    {
+        cameraSystem.update(sceneManager.getCurrentScene(), camera);
+    });
+
+    if (IsKeyPressed(KEY_NINE))
+    {
+        sceneManager.getCurrentScene().saveState();
     }
+
     if (IsKeyPressed(KEY_Q))
     {
         conditionManager.debugUnlocked =
             !conditionManager.debugUnlocked;
     }
 
-    sceneManager.update(dt);
-    sceneManager.applyPendingSceneChange();
+    profileBlock("SceneManager", [this, dt]()
+    {
+        sceneManager.update(dt);
+        sceneManager.applyPendingSceneChange();
+    });
 
-    sceneManager.getCurrentScene().cleanupDestroyedEntities();
+    profileBlock("Scene cleanup", [this]()
+    {
+        sceneManager.getCurrentScene().cleanupDestroyedEntities();
+    });
 }
 
 void Engine::render()
 {
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    renderSystem.render(sceneManager.getCurrentScene(), resourceManager, camera);
-    inventoryUISystem.render(sceneManager.getCurrentScene(), resourceManager);
-    dialogueManager.render();
+
+    profileBlock("RenderSystem", [this]()
+    {
+        renderSystem.render(sceneManager.getCurrentScene(), resourceManager, camera);
+    });
+
+    profileBlock("InventoryUI", [this]()
+    {
+        inventoryUISystem.render(sceneManager.getCurrentScene(), resourceManager);
+    });
+
+    profileBlock("Dialogue render", [this]()
+    {
+        dialogueManager.render();
+    });
+
+    updateProfilerReportIfNeeded();
+    drawProfilerOverlay();
+
     EndDrawing();
 }
-
 void Engine::shutdown()
 {
     sceneManager.shutdown();

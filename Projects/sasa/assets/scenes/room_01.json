@@ -1,0 +1,150 @@
+{
+    "camera": {
+        "mode": "fixed",
+        "position": [
+            0.0,
+            5.0,
+            4.199999809265137
+        ],
+        "target": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "cubes": [
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        },
+        {
+            "modelID": "test_cube_skin2",
+            "position": [
+                0,
+                1,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor",
+            "visible": true
+        }
+    ],
+    "entities": [],
+    "name": "room_01",
+    "playerSpawns": [
+        {
+            "id": "spawn_0",
+            "position": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "skinChoice": 0
+        }
+    ]
+}

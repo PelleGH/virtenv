@@ -1,10 +1,10 @@
 {
     "camera": {
-        "mode": "followPlayer",
+        "mode": "fixed",
         "position": [
             0.0,
-            5.0,
-            5.0
+            10.0,
+            10.0
         ],
         "target": [
             0.0,
@@ -14,75 +14,356 @@
     },
     "cubes": [
         {
+            "modelID": "wall_model",
             "position": [
+                -4,
                 0,
-                0,
-                0
+                -4
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
+                -4,
                 0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
                 0,
                 -1
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                1,
-                0,
-                -1
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                1,
+                -4,
                 0,
                 0
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                1,
+                -4,
                 0,
                 1
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
+                -4,
                 0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
                 0,
                 1
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -3,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
@@ -93,32 +374,282 @@
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
                 -1,
                 0,
-                0
+                2
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
                 -1,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -1,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
                 0,
                 -1
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                0
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
@@ -129,8 +660,95 @@
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
@@ -141,8 +759,95 @@
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                0,
+                4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                0,
+                -4
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                0,
+                -3
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                0,
+                -2
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                0,
+                -1
+            ],
+            "solid": false,
+            "trigger": false,
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
@@ -153,1511 +858,682 @@
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                5,
-                0,
-                0
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                0,
-                0
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
-                0,
-                0
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
+                4,
                 0,
                 1
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                7,
+                4,
                 0,
                 2
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                7,
-                0,
-                -1
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
-                0,
-                -2
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
+                4,
                 0,
                 3
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                7,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
+                4,
                 0,
                 4
             ],
             "solid": false,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "floor"
         },
         {
             "modelID": "wall_model",
             "position": [
-                7,
-                0,
-                5
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                0,
-                7
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                0,
-                8
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                0,
-                7
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                0,
-                8
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                0,
-                9
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                0,
-                9
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
-                9
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
-                8
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
-                7
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
-                6
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                0,
+                -4,
+                1,
                 -4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                12,
-                0,
-                -2
+                -4,
+                1,
+                4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                13,
-                0,
-                -2
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                0,
-                -3
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                0,
+                -3,
+                1,
                 -4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                14,
-                0,
+                -3,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -2,
+                1,
                 -4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                14,
-                0,
-                -3
+                -2,
+                1,
+                4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                14,
-                0,
-                -2
+                -1,
+                1,
+                -4
             ],
-            "solid": false,
+            "solid": true,
             "trigger": false,
-            "type": "floor",
-            "visible": true
+            "type": "wall"
         },
         {
             "modelID": "wall_model",
             "position": [
-                14,
+                -1,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                1,
+                -4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                1,
+                -4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                1,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                1,
+                -4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                2,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                1,
+                -4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                3,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                -4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                4
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
                 1,
                 -3
             ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                -3
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                -2
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                -2
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                -1
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                -1
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                0
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                1
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                1
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                2
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                2
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                -4,
+                1,
+                3
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                4,
+                1,
+                3
+            ],
+            "solid": true,
+            "trigger": false,
+            "type": "wall"
+        },
+        {
+            "modelID": "wall_model",
+            "position": [
+                0,
+                1,
+                4
+            ],
             "solid": false,
-            "targetScene": "new_scene",
-            "targetSpawn": "default",
+            "targetScene": "room_04",
+            "targetSpawn": "from_north",
             "trigger": true,
-            "type": "floor",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                0
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                3
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                6
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                7
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                8
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                9
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                10
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                1,
-                10
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                10
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                1,
-                10
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                10
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                9
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                8
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                8
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                7
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                7
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
-                1,
-                7
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                7
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                6
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                3
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                5,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
+            "type": "door"
         },
         {
             "modelID": "wall_model",
             "position": [
                 4,
                 1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                3,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                2,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                2,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                1,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                0,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -1,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -2,
-                1,
-                2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -2,
-                1,
-                1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -2,
-                1,
                 0
             ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -2,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -2,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                -1,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                0,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                1,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                2,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                2,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                3,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                4,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                5,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                -3
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                6,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                7,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                -5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                1,
-                -5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                -5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                14,
-                1,
-                -5
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                15,
-                1,
-                -4
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                15,
-                1,
-                -3
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                15,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                15,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                14,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                13,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                12,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                11,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                10,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                9,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                -2
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
-        },
-        {
-            "modelID": "wall_model",
-            "position": [
-                8,
-                1,
-                -1
-            ],
-            "solid": true,
-            "trigger": false,
-            "type": "wall",
-            "visible": false
+            "solid": false,
+            "targetScene": "room_02",
+            "targetSpawn": "from_west",
+            "trigger": true,
+            "type": "door"
         }
     ],
     "entities": [
         {
             "Attack": {
-                "baseDamage": 5,
-                "cooldown": 2.0,
-                "damage": 5,
-                "enemyType": "enemy",
-                "isRanged": false,
-                "projectileSpeed": 5.0,
-                "range": 2.0
-            },
-            "Collider": {
-                "depth": 0.5,
-                "enabled": true,
-                "height": 0.5,
-                "isTrigger": false,
-                "offsetX": 0.0,
-                "offsetY": 0.0,
-                "offsetZ": 0.0,
-                "width": 0.5
+                "cooldown": 1.5,
+                "damage": 20,
+                "enemyType": "goblin",
+                "isRanged": true,
+                "projectileSpeed": 4.0,
+                "range": 8.0
             },
             "Health": {
-                "current": 30,
-                "defense": 0,
-                "max": 30
+                "current": 150,
+                "max": 150
+            },
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "TransformComponent": {
+                "x": -2.0,
+                "y": 1.0,
+                "z": -2.0,
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "name": "Goblin",
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
+            }
+        },
+        {
+            "DialogueSource": {
+                "dialogueSetId": "old_man"
+            },
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "old_man",
+                        "type": "StartDialogue"
+                    }
+                ],
+                "interactionRadius": 1.0
+            },
+            "Renderer": {
+                "modelID": "old_man_character_a",
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "TransformComponent": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "name": "Old Man",
+            "Collider": {
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7,
+                "isTrigger": false,
+                "enabled": true
+            }
+        },
+        {
+            "DialogueSource": {
+                "dialogueSetId": "test_npc"
+            },
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "test_npc",
+                        "type": "StartDialogue"
+                    }
+                ],
+                "interactionRadius": 1.0
+            },
+            "Renderer": {
+                "modelID": "old_man_character_a",
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "TransformComponent": {
+                "x": -1.0,
+                "y": 1.0,
+                "z": 1.0,
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7
+            },
+            "name": "Test Npc",
+            "Collider": {
+                "width": 0.7,
+                "height": 0.7,
+                "depth": 0.7,
+                "isTrigger": false,
+                "enabled": true
+            }
+        },
+        {
+            "Attack": {
+                "cooldown": 1.5,
+                "damage": 20,
+                "enemyType": "slime",
+                "isRanged": false,
+                "projectileSpeed": 4.0,
+                "range": 1.0
+            },
+            "Health": {
+                "current": 150,
+                "max": 150
+            },
+            "Renderer": {
+                "modelID": "npc_character_o",
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "TransformComponent": {
+                "x": 2.0,
+                "y": 1.0,
+                "z": 2.0,
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0
+            },
+            "name": "Slime",
+            "Collider": {
+                "width": 1.0,
+                "height": 1.0,
+                "depth": 1.0,
+                "isTrigger": false,
+                "enabled": true
+            }
+        },
+        {
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "iron_sword",
+                        "type": "PickupItem"
+                    }
+                ],
+                "interactionRadius": 0.75
             },
             "Renderer": {
                 "color": [
-                    255,
-                    255,
+                    0,
+                    0,
                     255,
                     255
-                ],
-                "depth": 0.5,
-                "height": 0.5,
-                "modelID": "old_man_character_a",
-                "scale": 0.5,
-                "textureID": "",
-                "width": 0.5,
-                "zIndex": 0
+                ]
             },
             "TransformComponent": {
+                "depth": 0.1,
+                "height": 0.1,
+                "width": 0.1,
                 "x": 0.0,
                 "y": 1.0,
-                "z": -0.800000011920929
+                "z": -2.0
+            }
+        },
+        {
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "steel_armor",
+                        "type": "PickupItem"
+                    }
+                ],
+                "interactionRadius": 0.75
             },
-            "name": "Enemy"
+            "Renderer": {
+                "color": [
+                    0,
+                    0,
+                    0,
+                    255
+                ]
+            },
+            "TransformComponent": {
+                "depth": 0.1,
+                "height": 0.1,
+                "width": 0.1,
+                "x": 2.0,
+                "y": 1.0,
+                "z": -2.5
+            }
+        },
+        {
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "health_potion",
+                        "type": "PickupItem"
+                    }
+                ],
+                "interactionRadius": 1.0
+            },
+            "Renderer": {
+                "color": [
+                    220,
+                    20,
+                    60,
+                    255
+                ]
+            },
+            "TransformComponent": {
+                "depth": 0.3,
+                "height": 0.4,
+                "width": 0.3,
+                "x": -3.0,
+                "y": 1.0,
+                "z": 3.0
+            }
         }
     ],
     "name": "room_01",
     "playerSpawns": [
         {
-            "id": "spawn_0",
+            "id": "default",
             "position": [
                 0.0,
                 1.0,
                 0.0
             ],
-            "skinChoice": 0
+            "skinChoice": 1
+        },
+        {
+            "id": "from_north",
+            "position": [
+                0.0,
+                1.0,
+                -3.0
+            ],
+            "skinChoice": 1
+        },
+        {
+            "id": "from_south",
+            "position": [
+                0.0,
+                1.0,
+                3.0
+            ],
+            "skinChoice": 1
+        },
+        {
+            "id": "from_west",
+            "position": [
+                -3.0,
+                1.0,
+                0.0
+            ],
+            "skinChoice": 1
+        },
+        {
+            "id": "from_east",
+            "position": [
+                3.0,
+                1.0,
+                0.0
+            ],
+            "skinChoice": 1
         }
     ]
 }

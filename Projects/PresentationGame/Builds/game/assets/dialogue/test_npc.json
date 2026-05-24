@@ -1,0 +1,16 @@
+{
+  "id": "test_npc",
+  "defaultStartNode": "intro",
+
+  "nodes": {
+    "intro": {
+      "text": "Test dialogue for NPC to ensure that the program can differentiate between whom is closest",
+      "choices": [
+        {
+          "text": "Goodbye.",
+          "next": "end"
+        }
+      ]
+    }
+  }
+}

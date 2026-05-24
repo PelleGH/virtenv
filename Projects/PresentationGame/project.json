@@ -1,5 +1,5 @@
 {
-    "buildOutdated": true,
+    "buildOutdated": false,
     "projectName": "game",
     "scenes": [
         "assets/scenes/new_scene.json",

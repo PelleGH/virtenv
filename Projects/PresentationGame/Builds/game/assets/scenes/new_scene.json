@@ -327,7 +327,53 @@
             "visible": false
         }
     ],
-    "entities": [],
+    "entities": [
+        {
+            "Collider": {
+                "depth": 0.5,
+                "enabled": true,
+                "height": 0.5,
+                "isTrigger": false,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
+                "offsetZ": 0.0,
+                "width": 0.5
+            },
+            "DialogueSource": {
+                "dialogueSetId": "old_man"
+            },
+            "Interactable": {
+                "actions": [
+                    {
+                        "target": "old_man",
+                        "type": "StartDialogue"
+                    }
+                ],
+                "interactionRadius": 1.0
+            },
+            "Renderer": {
+                "color": [
+                    255,
+                    255,
+                    255,
+                    255
+                ],
+                "depth": 0.5,
+                "height": 0.5,
+                "modelID": "npc_character_o",
+                "scale": 0.5,
+                "textureID": "",
+                "width": 0.5,
+                "zIndex": 0
+            },
+            "TransformComponent": {
+                "x": 0.0,
+                "y": 1.0,
+                "z": 2.000000238418579
+            },
+            "name": "NPC"
+        }
+    ],
     "name": "new_scene",
     "playerSpawns": [
         {
