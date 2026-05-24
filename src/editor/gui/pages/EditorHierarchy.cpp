@@ -36,7 +36,7 @@ void DrawHierarchy(EditorContext& context)
 
             if (ImGui::Selectable(context.scenePaths[i].c_str(), selected))
             {
-                LoadEditorScene(context, i);
+                RequestLoadEditorScene(context, i);
             }
 
             if (selected)

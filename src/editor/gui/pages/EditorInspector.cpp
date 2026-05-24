@@ -749,6 +749,8 @@ void DrawInspector(EditorContext& context)
 
         if (ImGui::Checkbox("Solid", &cube.solid)) MarkSceneChanged(context);
         if (ImGui::Checkbox("Trigger", &cube.trigger)) MarkSceneChanged(context);
+        if (ImGui::Checkbox("Visible In Game", &cube.visible)) MarkSceneChanged(context);
+        
         if (cube.type == "door" || cube.trigger)
         {
             ImGui::SeparatorText("Scene Transition");
@@ -767,11 +769,13 @@ void DrawInspector(EditorContext& context)
 
                 for (const auto& scenePath : context.scenePaths)
                 {
-                    bool selected = cube.targetScene == scenePath;
+                    std::string sceneName = std::filesystem::path(scenePath).stem().string();
 
-                    if (ImGui::Selectable(scenePath.c_str(), selected))
+                    bool selected = cube.targetScene == sceneName;
+
+                    if (ImGui::Selectable(sceneName.c_str(), selected))
                     {
-                        cube.targetScene = scenePath;
+                        cube.targetScene = sceneName;
                         cube.targetSpawn.clear();
                         MarkSceneChanged(context);
                     }
@@ -785,7 +789,23 @@ void DrawInspector(EditorContext& context)
 
             if (!cube.targetScene.empty())
             {
-                std::vector<std::string> spawnIds = GetSpawnIdsForScene(cube.targetScene);
+                std::string targetScenePath;
+
+                for (const auto& scenePath : context.scenePaths)
+                {
+                    if (std::filesystem::path(scenePath).stem().string() == cube.targetScene)
+                    {
+                        targetScenePath = scenePath;
+                        break;
+                    }
+                }
+
+                std::vector<std::string> spawnIds;
+
+                if (!targetScenePath.empty())
+                {
+                    spawnIds = GetSpawnIdsForScene(targetScenePath);
+                }
 
                 const char* currentTargetSpawn =
                     cube.targetSpawn.empty() ? "None" : cube.targetSpawn.c_str();

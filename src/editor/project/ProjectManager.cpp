@@ -6,7 +6,9 @@
 #include <fstream>
 #include <filesystem>
 #include <nlohmann/json.hpp>
-#include <cstdlib>
+
+static const std::string EDITOR_SETTINGS_PATH =
+    "src/editor/config/EditorSettings.json";
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -29,7 +31,7 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
     context.projectPath = projectFolder;
     context.projectName = projectData.value("projectName", chosenProjectFolder);
     context.buildOutdated = projectData.value("buildOutdated", true);
-
+    SaveEditorSettings(context);
     context.scenePaths.clear();
 
     if (projectData.contains("scenes")) {
@@ -49,8 +51,8 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
         }
     }
 
-    std::string startScene = projectData.value("startingScene", "room_01");
-    context.currentScenePath = projectFolder + "assets/scenes/" + startScene + ".json";
+    context.startingScene = projectData.value("startingScene", "room_01");
+    context.currentScenePath = projectFolder + "assets/scenes/" + context.startingScene + ".json";
 
     if (!SceneLoader::loadFromFile(context.currentScenePath, context.scene)) {
         std::cout << "[Editor] ERROR: Could not load starting scene: " << context.currentScenePath << std::endl;
@@ -86,11 +88,10 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
     context.dirty = false;
 
     std::cout << "[Editor] Successfully loaded project: " << context.projectName << std::endl;
-    json settings;
-    settings["lastProject"] = chosenProjectFolder;
+    context.gridPainterUndoStack.clear();
 
-    std::ofstream settingsFile("EditorSettings.json");
-    settingsFile << settings.dump(4);
+    SaveEditorSettings(context);
+    
 }
 
 void SaveProject(EditorContext& context) {
@@ -119,7 +120,13 @@ void SaveProject(EditorContext& context) {
 
     json projectData;
     projectData["projectName"] = context.projectName;
-    projectData["startingScene"] = fs::path(context.currentScenePath).stem().string();
+
+    if (context.startingScene.empty())
+    {
+        context.startingScene = fs::path(context.currentScenePath).stem().string();
+    }
+
+    projectData["startingScene"] = context.startingScene;
     projectData["buildOutdated"] = context.buildOutdated;
     projectData["scenes"] = json::array();
 
@@ -140,8 +147,6 @@ void SaveProject(EditorContext& context) {
     context.previewDirty = false;
 
     std::cout << "[Editor] Saved project: " << context.projectName << std::endl;
-
-    context.dirty = false;
 }
 void RefreshProjectList(EditorContext& context) {
     context.availableProjects.clear();
@@ -180,6 +185,8 @@ void CreateNewProject(EditorContext& context, const std::string& folderName, con
     context.projectPath = projectFolder;
     context.projectName = userProjectName.empty() ? folderName : userProjectName;
     context.currentScenePath = projectFolder + "assets/scenes/room_01.json";
+    context.startingScene = "room_01";
+    context.buildOutdated = true;
 
     // create empty/default scene
     context.scene = SceneData{};
@@ -190,6 +197,7 @@ void CreateNewProject(EditorContext& context, const std::string& folderName, con
     json projectJson;
     projectJson["projectName"] = context.projectName;
     projectJson["startingScene"] = "room_01";
+    projectJson["buildOutdated"] = context.buildOutdated;
     projectJson["scenes"] = json::array({ "assets/scenes/room_01.json" });
 
     std::ofstream file(projectFolder + "project.json");
@@ -204,13 +212,15 @@ void CreateNewProject(EditorContext& context, const std::string& folderName, con
     context.previewDirty = false;
 
     RefreshProjectList(context);
-
+    SaveEditorSettings(context);
     std::cout << "[Editor] Created new empty project: " << context.projectName << std::endl;
 }
 
 void LoadLastProject(EditorContext& context)
 {
-    std::ifstream file("EditorSettings.json");
+    LoadEditorSettings(context);
+
+    std::ifstream file(EDITOR_SETTINGS_PATH);
     if (!file.is_open())
         return;
 
@@ -305,4 +315,145 @@ void BuildProject(EditorContext& context, const std::string& outputDir)
     catch (const fs::filesystem_error& e) {
         std::cout << "[Builder] File system error: " << e.what() << '\n';
     }
+}
+
+void SaveEditorSettings(EditorContext& context)
+{
+    json settings;
+
+    std::string lastProject = "";
+
+    if (!context.projectPath.empty())
+    {
+        fs::path projectPath = fs::path(context.projectPath).lexically_normal();
+
+        if (projectPath.has_filename())
+        {
+            lastProject = projectPath.filename().string();
+        }
+        else
+        {
+            lastProject = projectPath.parent_path().filename().string();
+        }
+    }
+
+    settings["lastProject"] = lastProject;
+
+    settings["cubeTemplates"] = json::array();
+
+    for (int i = 0; i < 5; i++)
+    {
+        const CubeTemplate& t = context.cubeTemplates[i];
+
+        settings["cubeTemplates"].push_back({
+            { "name", t.name },
+            { "type", t.type },
+            { "solid", t.solid },
+            { "trigger", t.trigger },
+            { "visible", t.visible },
+            { "targetScene", t.targetScene },
+            { "targetSpawn", t.targetSpawn },
+            { "modelID", t.modelID }
+        });
+    }
+
+    std::ofstream settingsFile(EDITOR_SETTINGS_PATH);
+    settingsFile << settings.dump(4);
+}
+
+void LoadEditorSettings(EditorContext& context)
+{
+    std::ifstream file(EDITOR_SETTINGS_PATH);
+
+    if (!file.is_open())
+        return;
+
+    json settings;
+    file >> settings;
+
+    if (!settings.contains("cubeTemplates"))
+        return;
+
+    const auto& templatesJson = settings["cubeTemplates"];
+
+    for (int i = 0; i < 5 && i < (int)templatesJson.size(); i++)
+    {
+        const auto& t = templatesJson[i];
+
+        context.cubeTemplates[i].name = t.value("name", context.cubeTemplates[i].name);
+        context.cubeTemplates[i].type = t.value("type", context.cubeTemplates[i].type);
+        context.cubeTemplates[i].solid = t.value("solid", context.cubeTemplates[i].solid);
+        context.cubeTemplates[i].trigger = t.value("trigger", context.cubeTemplates[i].trigger);
+        context.cubeTemplates[i].visible = t.value("visible", context.cubeTemplates[i].visible);
+        context.cubeTemplates[i].targetScene = t.value("targetScene", context.cubeTemplates[i].targetScene);
+        context.cubeTemplates[i].targetSpawn = t.value("targetSpawn", context.cubeTemplates[i].targetSpawn);
+        context.cubeTemplates[i].modelID = t.value("modelID", context.cubeTemplates[i].modelID);
+    }
+}
+void CreateNewScene(EditorContext& context, const std::string& sceneName)
+{
+    if (context.projectPath.empty())
+    {
+        std::cout << "[Editor] ERROR: No project loaded." << std::endl;
+        return;
+    }
+
+    if (sceneName.empty())
+    {
+        std::cout << "[Editor] ERROR: Scene name is empty." << std::endl;
+        return;
+    }
+
+    std::string scenesFolder = context.projectPath + "assets/scenes/";
+    fs::create_directories(scenesFolder);
+
+    std::string scenePath = scenesFolder + sceneName + ".json";
+
+    if (fs::exists(scenePath))
+    {
+        std::cout << "[Editor] ERROR: Scene already exists: " << scenePath << std::endl;
+        return;
+    }
+
+    SceneData newScene;
+    newScene.name = sceneName;
+
+    newScene.camera.mode = "followPlayer";
+    newScene.camera.positionX = 0.0f;
+    newScene.camera.positionY = 10.0f;
+    newScene.camera.positionZ = 10.0f;
+    newScene.camera.targetX = 0.0f;
+    newScene.camera.targetY = 0.0f;
+    newScene.camera.targetZ = 0.0f;
+
+    PlayerSpawn defaultSpawn;
+    defaultSpawn.x = 0.0f;
+    defaultSpawn.y = 1.0f;
+    defaultSpawn.z = 0.0f;
+    defaultSpawn.skinChoice = 0;
+
+    newScene.playerSpawns["default"] = defaultSpawn;
+
+    if (!SceneLoader::saveToFile(scenePath, newScene))
+    {
+        std::cout << "[Editor] ERROR: Failed to create scene: " << scenePath << std::endl;
+        return;
+    }
+
+    context.scenePaths.push_back(scenePath);
+    context.currentScenePath = scenePath;
+    context.currentSceneIndex = (int)context.scenePaths.size() - 1;
+
+    context.scene = newScene;
+    context.previewScene.loadFromData(context.scene);
+
+    context.selection = {};
+    context.sceneLoaded = true;
+    context.dirty = true;
+    context.previewDirty = false;
+    context.gridPainterUndoStack.clear();
+
+    SaveProject(context);
+
+    std::cout << "[Editor] Created new scene: " << sceneName << std::endl;
 }

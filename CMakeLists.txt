@@ -17,6 +17,8 @@ add_executable(VirtenEditor
     src/editor/gui/pages/EditorInspector.cpp
     src/editor/gui/pages/EditorViewport.cpp
     src/editor/gui/pages/ProjectLauncherPanel.cpp
+    src/editor/gui/pages/EditorGridPainter.cpp
+    src/editor/gui/pages/EditorSceneSettingsPanel.cpp
     src/editor/project/ProjectManager.cpp
     
     src/engine/core/Engine.cpp

@@ -11,23 +11,37 @@
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
+static const std::string EDITOR_SETTINGS_PATH =
+    "src/editor/config/EditorSettings.json";
+
 static std::string getActiveProjectPath()
 {
-    std::ifstream file("EditorSettings.json");
+    std::ifstream file(EDITOR_SETTINGS_PATH);
     if (!file.is_open())
+    {
+        std::cout << "[Engine] No editor settings found at: "
+                  << EDITOR_SETTINGS_PATH << std::endl;
         return "";
+    }
 
     json settings;
     file >> settings;
 
     std::string lastProject = settings.value("lastProject", "");
     if (lastProject.empty())
+    {
+        std::cout << "[Engine] No lastProject in editor settings." << std::endl;
         return "";
+    }
 
     std::string projectPath = "Projects/" + lastProject + "/";
     if (!fs::exists(projectPath + "project.json"))
+    {
+        std::cout << "[Engine] Project not found: " << projectPath << std::endl;
         return "";
+    }
 
+    std::cout << "[Engine] Active project: " << projectPath << std::endl;
     return projectPath;
 }
 

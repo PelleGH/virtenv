@@ -22,7 +22,33 @@ struct EditorSelection
     SelectionType type = SelectionType::None;
     int index = -1;
 };
+enum class GridPainterMode
+{
+    Paint,
+    Erase,
+    Eyedropper
+};
+struct GridPainterUndoAction
+{
+    bool hadCubeBefore = false;
+    GridCube cubeBefore;
 
+    bool hadCubeAfter = false;
+    GridCube cubeAfter;
+};
+struct CubeTemplate
+{
+    std::string name = "Template";
+
+    std::string type = "wall";
+    bool solid = true;
+    bool trigger = false;
+    bool visible = true;
+
+    std::string targetScene = "";
+    std::string targetSpawn = "";
+    std::string modelID = "";
+};
 struct EditorContext
 {
     bool viewportHovered = false;
@@ -40,7 +66,7 @@ struct EditorContext
     std::string projectPath = ""; 
     std::string projectName = "No Project Loaded";
     std::vector<std::string> availableProjects;
- 
+    std::string startingScene;
     std::string currentScenePath = "assets/scenes/room_01.json";
     std::vector<std::string> scenePaths;
     int currentSceneIndex = 0;
@@ -51,6 +77,31 @@ struct EditorContext
     RenderTexture2D viewportTexture{};
     bool viewportReady = false;
 
+    bool previewSceneCamera = false;
+
     bool sceneLoaded = false;
     bool dirty = false;
+
+    //for scene switching (saving)
+    bool showUnsavedScenePopup = false;
+    int pendingSceneIndex = -1;
+
+    //for editor saving
+    bool showUnsavedExitPopup = false;
+    bool exitRequested = false;
+
+    bool gridPainterEnabled = false;
+    int gridPainterLayerY = 0;
+    int selectedCubeTemplate = 0;
+    GridPainterMode gridPainterMode = GridPainterMode::Paint;
+
+    CubeTemplate cubeTemplates[5] = {
+        { "Floor", "floor", false, false, true, "", "", "" },
+        { "Wall", "wall", true, false, true, "", "", "wall_model" },
+        { "Door", "door", false, true, true, "", "", "wall_model" },
+        { "Trigger", "trigger", false, true, true, "", "", "" },
+        { "Custom", "wall", true, false, true, "", "", "wall_model" }
+    };
+    std::vector<GridPainterUndoAction> gridPainterUndoStack;
 };
+

@@ -4,6 +4,7 @@
 #include "editor/project/ProjectManager.h"
 #include "engine/scene/SceneLoader.h"
 #include "pages/ProjectLauncherPanel.h"
+#include "pages/EditorSceneSettingsPanel.h"
 
 #include "imgui.h"
 #include "raylib.h"
@@ -23,6 +24,9 @@ static bool showInspector = true;
 static bool showAssets = true;
 static bool showViewport = true;
 static bool showProjectLauncher = true;
+static bool showSceneSettings = true;
+
+static bool showGridPainter = true;
 
 static void DrawDockspace(EditorContext& context)
 {
@@ -89,7 +93,7 @@ static void DrawDockspace(EditorContext& context)
 
             if (ImGui::MenuItem("Exit"))
             {
-                exit(0);
+                RequestEditorExit(context);
             }
 
             ImGui::EndMenu();
@@ -103,6 +107,13 @@ static void DrawDockspace(EditorContext& context)
         }
         if (ImGui::BeginMenu("Add"))
         {
+            if (ImGui::MenuItem("Scene"))
+            {
+                CreateNewScene(context, "new_scene");
+            }
+
+            ImGui::Separator();
+
             if (ImGui::BeginMenu("Cube"))
             {
                 if (ImGui::MenuItem("Floor"))
@@ -124,17 +135,17 @@ static void DrawDockspace(EditorContext& context)
             {
                 if (ImGui::MenuItem("NPC"))
                 {
-                    // Add entity later
+                    AddEntity(context, "NPC");
                 }
 
                 if (ImGui::MenuItem("Enemy"))
                 {
-                    // Add entity later
+                    AddEntity(context, "Enemy");
                 }
 
                 if (ImGui::MenuItem("Pickup"))
                 {
-                    // Add entity later
+                    AddEntity(context, "Pickup");
                 }
 
                 ImGui::EndMenu();
@@ -152,6 +163,8 @@ static void DrawDockspace(EditorContext& context)
             ImGui::MenuItem("Inspector", NULL, &showInspector);
             ImGui::MenuItem("Assets", NULL, &showAssets);
             ImGui::MenuItem("Viewport", NULL, &showViewport);
+            ImGui::MenuItem("Grid Painter", NULL, &showGridPainter);
+            ImGui::MenuItem("Scene Settings", NULL, &showSceneSettings);
             ImGui::EndMenu();
         }
 
@@ -163,7 +176,6 @@ static void DrawDockspace(EditorContext& context)
 
     ImGui::End();
 }
-
 
 
 void DrawEditorUI(EditorContext& context)
@@ -178,7 +190,10 @@ void DrawEditorUI(EditorContext& context)
     if (showViewport){
         DrawViewport(context);
     }
-
+    if (showGridPainter)
+    {
+        DrawGridPainter(context);
+    }
     if (showHierarchy){
         DrawHierarchy(context);
     }
@@ -190,4 +205,11 @@ void DrawEditorUI(EditorContext& context)
     if (showProjectLauncher){
         DrawProjectLauncher(context);
     }
+
+    if (showSceneSettings)
+    {
+        DrawSceneSettingsPanel(context);
+    }
+    DrawUnsavedScenePopup(context);
+    DrawUnsavedExitPopup(context);
 }

@@ -8,8 +8,7 @@ using json = nlohmann::json;
 
 bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
 {
-    outData.entities.clear();
-    outData.playerSpawns.clear();
+    outData = SceneData{};
     std::ifstream file(path);
 
     if (!file.is_open())
@@ -73,6 +72,7 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
         cube.type = cubeJson["type"];
         cube.solid = cubeJson["solid"];
         cube.trigger = cubeJson["trigger"];
+        cube.visible = cubeJson.value("visible", true);
 
         if (cubeJson.contains("targetScene")) // "door" cube that leads to another scene (just a flag for now)
             cube.targetScene = cubeJson["targetScene"];
@@ -82,8 +82,14 @@ bool SceneLoader::loadFromFile(const std::string& path, SceneData& outData)
         if (cubeJson.contains("modelID"))
         {
             cube.modelID = cubeJson["modelID"];
-        }else{
+        }
+        else if (cube.type == "wall" || cube.type == "door")
+        {
             cube.modelID = "wall_model";
+        }
+        else
+        {
+            cube.modelID = "";
         }
         
         outData.cubes.push_back(cube);
@@ -146,7 +152,7 @@ bool SceneLoader::saveToFile(const std::string& path, const SceneData& data)
         cubeJson["type"] = cube.type;
         cubeJson["solid"] = cube.solid;
         cubeJson["trigger"] = cube.trigger;
-
+        cubeJson["visible"] = cube.visible;
         if (!cube.targetScene.empty())
             cubeJson["targetScene"] = cube.targetScene;
 

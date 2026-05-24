@@ -1,0 +1,9 @@
+{
+    "buildOutdated": false,
+    "projectName": "game",
+    "scenes": [
+        "assets/scenes/new_scene.json",
+        "assets/scenes/room_01.json"
+    ],
+    "startingScene": "room_01"
+}
