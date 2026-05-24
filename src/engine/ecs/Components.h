@@ -3,6 +3,7 @@
 #include <vector>
 #include "Entity.h"
 #include "raylib.h"
+#include <nlohmann/json.hpp>
 
 // CORE ENGINE COMPONENTS
 
@@ -151,6 +152,9 @@ struct ItemData {
     int damageBonus = 0;
     int healthBonus = 0;
     int defenseBonus = 0;
+
+    // Saves the original code
+    nlohmann::json rawData;
 };
 
 struct Inventory {

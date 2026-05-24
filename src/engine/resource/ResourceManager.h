@@ -8,6 +8,10 @@
 
 class ResourceManager {
     public: 
+        // For project handling
+        void SetProjectPath(const std::string& projectName);
+        std::string GetAssetPath(const std::string& localPath) const;
+
         void LoadTexture2D(const std::string& id, const std::string& filepath);
         void LoadModel3D(const std::string& id, const std::string& filepath);
 
@@ -26,7 +30,15 @@ class ResourceManager {
         ItemData getItem(const std::string& id);
         bool loadItems(const std::string& path);
 
+        // Getters for lists
+        const std::unordered_map<std::string, Texture2D>& GetAllTextures() const { return textures; }
+        const std::unordered_map<std::string, Model>& GetAllModels() const { return models; }
+        const std::unordered_map<std::string, ItemData>& GetAllItems() const { return itemDatabase; }
+
     private:
+
+        inline static std::string currentProjectPath = "";
+
         std::unordered_map<std::string, Texture2D> textures;
         std::unordered_map<std::string, Model> models;
         std::unordered_map<std::string, ItemData> itemDatabase;

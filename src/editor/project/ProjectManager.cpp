@@ -16,6 +16,18 @@ using json = nlohmann::json;
 void LoadProject(EditorContext& context, const std::string& chosenProjectFolder) {
     std::cout << "[Editor] Loading Project..." << std::endl;
 
+    // Clear memory from old models and textures
+    context.resourceManager.clear();
+
+    // Update the search way to project
+    context.resourceManager.SetProjectPath(chosenProjectFolder);
+
+    // Load the new projects assets json
+    context.resourceManager.LoadFromManifest("assets.json");
+
+    // Load our items
+    context.resourceManager.loadItems("items.json");
+
     std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     std::string settingsPath = projectFolder + "project.json";
 

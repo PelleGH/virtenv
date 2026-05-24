@@ -976,5 +976,68 @@ if (context.selection.type == SelectionType::Entity)
             i++;
         }
     }
+    if (context.selection.type == SelectionType::AssetTexture)
+    {
+        ImGui::Text("Asset: Texture2D");
+        ImGui::Separator();
+        
+        // Get texture from resource with saved id
+        std::string id = context.selection.assetId;
+        Texture2D tex = context.resourceManager.GetTexture(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+
+        ImGui::SeparatorText("Properties");
+        ImGui::Text("Resolution: %d x %d px", tex.width, tex.height);
+    }
+
+    if (context.selection.type == SelectionType::AssetModel)
+    {
+        ImGui::Text("Asset: 3D Model");
+        ImGui::Separator();
+        
+        // Get model from resource with saved id
+        std::string id = context.selection.assetId;
+        Model model = context.resourceManager.GetModel(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+
+        ImGui::SeparatorText("Properties");
+        ImGui::Text("Meshes: %d", model.meshCount);
+        ImGui::Text("Materials: %d", model.materialCount);
+    }
+
+    if (context.selection.type == SelectionType::AssetItem)
+    {
+        ImGui::Text("Asset: Item Data");
+        ImGui::Separator();
+        
+        // Get item from resource with saved id
+        std::string id = context.selection.assetId;
+        ItemData item = context.resourceManager.getItem(id);
+        
+        ImGui::Text("ID: %s", id.c_str());
+
+        ImGui::SeparatorText("Properties");
+        ImGui::Text("Name: %s", item.name.c_str());
+
+        ImGui::Text("Damage Bonus: %d", item.damageBonus);
+        ImGui::Text("Health Bonus: %d", item.healthBonus);
+        ImGui::Text("Defense Bonus: %d", item.defenseBonus);
+
+        ImGui::SeparatorText("Raw JSON");
+
+        // Scrollable window, (0,150) = 0 means that it fills the window meanwhile 150 is the height
+        ImGui::BeginChild("ItemJsonBox", ImVec2(0, 150), true);
+
+        if (!item.rawData.is_null()) {
+
+            // TextWrapped limits the text to the window bounds
+            // .dump convert the json memory to readable text
+            ImGui::TextWrapped("%s", item.rawData.dump(2).c_str());
+        }
+        
+        ImGui::EndChild();
+    }
     ImGui::End();
 }
