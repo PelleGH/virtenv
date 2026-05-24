@@ -1,0 +1,14 @@
+{
+    "defaultStartNode": "intro",
+    "nodes": {
+        "intro": {
+            "choices": [
+                {
+                    "next": "end",
+                    "text": "wow."
+                }
+            ],
+            "text": "You finished the game!"
+        }
+    }
+}

@@ -1,7 +1,0 @@
-{
-    "projectName": "My First Project",
-    "scenes": [
-        "assets/scenes/room_01.json"
-    ],
-    "startingScene": "room_01"
-}

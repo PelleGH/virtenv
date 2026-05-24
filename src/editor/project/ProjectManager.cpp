@@ -12,7 +12,219 @@ static const std::string EDITOR_SETTINGS_PATH =
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
+static std::string MakeAssetIdFromPath(const fs::path& relativePath)
+{
+    std::string id = relativePath.stem().string();
 
+    for (char& c : id)
+    {
+        if (std::isalnum((unsigned char)c))
+            c = (char)std::tolower((unsigned char)c);
+        else
+            c = '_';
+    }
+
+    if (id.empty())
+        id = "asset";
+
+    return id;
+}
+
+static bool JsonArrayContainsPath(const json& array, const std::string& path)
+{
+    if (!array.is_array())
+        return false;
+
+    for (const auto& item : array)
+    {
+        if (item.value("path", "") == path)
+            return true;
+    }
+
+    return false;
+}
+
+static bool JsonArrayContainsId(const json& array, const std::string& id)
+{
+    if (!array.is_array())
+        return false;
+
+    for (const auto& item : array)
+    {
+        if (item.value("id", "") == id)
+            return true;
+    }
+
+    return false;
+}
+
+static std::string MakeUniqueAssetId(const json& manifest, const std::string& baseId)
+{
+    std::string id = baseId;
+    int counter = 2;
+
+    auto idExists = [&](const std::string& candidate)
+    {
+        return JsonArrayContainsId(manifest.value("textures", json::array()), candidate) ||
+               JsonArrayContainsId(manifest.value("cube_models", json::array()), candidate) ||
+               JsonArrayContainsId(manifest.value("3Dmodels", json::array()), candidate);
+    };
+
+    while (idExists(id))
+    {
+        id = baseId + "_" + std::to_string(counter);
+        counter++;
+    }
+
+    return id;
+}
+
+void RescanProjectAssets(EditorContext& context)
+{
+    if (context.projectPath.empty())
+    {
+        std::cout << "[Editor] ERROR: No project loaded, cannot rescan assets.\n";
+        return;
+    }
+
+    fs::path assetsRoot = fs::path(context.projectPath) / "assets";
+    fs::path manifestPath = assetsRoot / "assets.json";
+
+    fs::create_directories(assetsRoot);
+
+    json manifest;
+
+    if (fs::exists(manifestPath))
+    {
+        std::ifstream in(manifestPath);
+        if (in.is_open())
+            in >> manifest;
+    }
+
+    if (!manifest.contains("textures") || !manifest["textures"].is_array())
+        manifest["textures"] = json::array();
+
+    if (!manifest.contains("cube_models") || !manifest["cube_models"].is_array())
+        manifest["cube_models"] = json::array();
+
+    if (!manifest.contains("3Dmodels") || !manifest["3Dmodels"].is_array())
+        manifest["3Dmodels"] = json::array();
+
+    int addedTextures = 0;
+    int addedCubeModels = 0;
+    int addedModels = 0;
+
+    for (const auto& entry : fs::recursive_directory_iterator(assetsRoot))
+    {
+        if (!entry.is_regular_file())
+            continue;
+
+        fs::path filePath = entry.path();
+        fs::path relativePath = fs::relative(filePath, assetsRoot);
+
+        std::string relative = relativePath.generic_string();
+        std::string ext = filePath.extension().string();
+
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+            [](unsigned char c) { return (char)std::tolower(c); });
+
+        if (relative == "assets.json" ||
+            relative == "items.json" ||
+            relative == "quests.json")
+        {
+            continue;
+        }
+
+        if (relative.rfind("scenes/", 0) == 0 ||
+            relative.rfind("dialogue/", 0) == 0)
+        {
+            continue;
+        }
+
+        bool isTexture =
+            ext == ".png" ||
+            ext == ".jpg" ||
+            ext == ".jpeg" ||
+            ext == ".bmp" ||
+            ext == ".tga";
+
+        bool isModel =
+            ext == ".obj" ||
+            ext == ".gltf" ||
+            ext == ".glb";
+
+        if (isTexture)
+        {
+            if (!JsonArrayContainsPath(manifest["textures"], relative))
+            {
+                std::string textureId = MakeUniqueAssetId(
+                    manifest,
+                    MakeAssetIdFromPath(relativePath)
+                );
+
+                manifest["textures"].push_back({
+                    { "id", textureId },
+                    { "path", relative }
+                });
+
+                addedTextures++;
+
+                std::string cubeModelId = textureId + "_cube";
+
+                if (!JsonArrayContainsId(manifest["cube_models"], cubeModelId))
+                {
+                    manifest["cube_models"].push_back({
+                        { "id", cubeModelId },
+                        { "textureId", textureId },
+                        { "size", 1.0f }
+                    });
+
+                    addedCubeModels++;
+                }
+            }
+        }
+        else if (isModel)
+        {
+            if (!JsonArrayContainsPath(manifest["3Dmodels"], relative))
+            {
+                std::string modelId = MakeUniqueAssetId(
+                    manifest,
+                    MakeAssetIdFromPath(relativePath)
+                );
+
+                manifest["3Dmodels"].push_back({
+                    { "id", modelId },
+                    { "path", relative }
+                });
+
+                addedModels++;
+            }
+        }
+    }
+
+    std::ofstream out(manifestPath);
+    if (!out.is_open())
+    {
+        std::cout << "[Editor] ERROR: Could not write asset manifest: "
+                << manifestPath << "\n";
+        return;
+    }
+
+    out << manifest.dump(4);
+    out.close(); // IMPORTANT: finish writing before trying to read it again
+
+    context.resourceManager.clear();
+    context.resourceManager.SetAssetRoot(context.projectPath + "assets/");
+    context.resourceManager.LoadFromManifest("assets.json");
+    context.resourceManager.loadItems("items.json");
+
+    context.buildOutdated = true;
+
+    std::cout << "[Editor] Asset rescan complete. Added "
+              << addedTextures << " textures, "
+              << addedCubeModels << " cube models, "
+              << addedModels << " 3D models.\n";
+}
 void LoadProject(EditorContext& context, const std::string& chosenProjectFolder) {
     std::cout << "[Editor] Loading Project..." << std::endl;
 
@@ -193,7 +405,9 @@ void CreateNewProject(EditorContext& context, const std::string& folderName, con
     }
 
     fs::create_directories(projectFolder + "assets/scenes");
-    
+    fs::create_directories(projectFolder + "assets/textures");
+    fs::create_directories(projectFolder + "assets/models");
+    fs::create_directories(projectFolder + "assets/dialogue");
     json assetManifest;
     assetManifest["textures"] = json::array();
     assetManifest["cube_models"] = json::array();
@@ -427,16 +641,28 @@ void CreateNewScene(EditorContext& context, const std::string& sceneName)
     std::string scenesFolder = context.projectPath + "assets/scenes/";
     fs::create_directories(scenesFolder);
 
-    std::string scenePath = scenesFolder + sceneName + ".json";
+    std::string finalSceneName = sceneName;
+    std::string scenePath = scenesFolder + finalSceneName + ".json";
 
     if (fs::exists(scenePath))
     {
-        std::cout << "[Editor] ERROR: Scene already exists: " << scenePath << std::endl;
-        return;
+        int counter = 2;
+
+        do
+        {
+            char buffer[256];
+            snprintf(buffer, sizeof(buffer), "%s_%02d", sceneName.c_str(), counter);
+
+            finalSceneName = buffer;
+            scenePath = scenesFolder + finalSceneName + ".json";
+
+            counter++;
+        }
+        while (fs::exists(scenePath));
     }
 
     SceneData newScene;
-    newScene.name = sceneName;
+    newScene.name = finalSceneName;
 
     newScene.camera.mode = "followPlayer";
     newScene.camera.positionX = 0.0f;
@@ -475,5 +701,5 @@ void CreateNewScene(EditorContext& context, const std::string& sceneName)
 
     SaveProject(context);
 
-    std::cout << "[Editor] Created new scene: " << sceneName << std::endl;
+    std::cout << "[Editor] Created new scene: " << finalSceneName << std::endl;
 }

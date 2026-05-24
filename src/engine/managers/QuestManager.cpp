@@ -1,5 +1,6 @@
 #include "QuestManager.h"
 
+#include <utility>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -129,6 +130,16 @@ void QuestManager::completeQuest(const std::string& questId)
     if (!quest.rewardItem.empty())
     {
         std::cout << "Reward: " << quest.rewardItem << '\n';
+
+        if (conditionManager != nullptr)
+        {
+            conditionManager->inventoryItems.insert(quest.rewardItem);
+        }
+
+        if (rewardCallback)
+        {
+            rewardCallback(quest.rewardItem);
+        }
     }
 }
 
@@ -147,4 +158,8 @@ bool QuestManager::isQuestCompleted(const std::string& questId) const
 void QuestManager::setConditionManager(ConditionManager* manager)
 {
     conditionManager = manager;
+}
+void QuestManager::setRewardCallback(std::function<void(const std::string&)> callback)
+{
+    rewardCallback = std::move(callback);
 }

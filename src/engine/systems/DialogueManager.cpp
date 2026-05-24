@@ -2,14 +2,22 @@
 #include "raylib.h"
 #include <fstream>
 #include <iostream>
+void DialogueManager::setAssetRoot(const std::string& root)
+{
+    assetRoot = root;
 
+    if (!assetRoot.empty() && assetRoot.back() != '/' && assetRoot.back() != '\\')
+    {
+        assetRoot += "/";
+    }
+}
 void DialogueManager::setQuestManager(QuestManager* manager)
 {
     questManager = manager;
 }
 bool DialogueManager::loadDialogue(const std::string& dialogueSetId)
 {
-    std::string path = "assets/dialogue/" + dialogueSetId + ".json";
+    std::string path = assetRoot + "dialogue/" + dialogueSetId + ".json";
 
     std::ifstream file(path);
     if (!file.is_open())

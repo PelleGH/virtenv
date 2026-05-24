@@ -36,11 +36,12 @@ public:
 
     bool isQuestActive(const std::string& questId) const;
     bool isQuestCompleted(const std::string& questId) const;
-
+    void setRewardCallback(std::function<void(const std::string&)> callback);
     void setConditionManager(ConditionManager* manager);
     
     QuestStatus getQuestStatus(const std::string& questId) const;
 private:
     std::unordered_map<std::string, Quest> quests;
     ConditionManager* conditionManager = nullptr;
+    std::function<void(const std::string&)> rewardCallback;
 };

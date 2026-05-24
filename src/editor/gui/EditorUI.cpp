@@ -156,6 +156,15 @@ static void DrawDockspace(EditorContext& context)
 
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Assets"))
+        {
+            if (ImGui::MenuItem("Rescan Project Assets"))
+            {
+                RescanProjectAssets(context);
+            }
+
+            ImGui::EndMenu();
+        }
         if (ImGui::BeginMenu("View"))
         {
             // Gives the button check-marks

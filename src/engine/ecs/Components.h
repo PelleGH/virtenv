@@ -135,7 +135,12 @@ enum class BuffType {
     SpeedBoost,
     DamageUp
 };
-
+enum class ItemType {
+    Equipment,
+    Consumable,
+    Quest,
+    Misc
+};
 enum class EquipSlot {
     None,
     Weapon,
@@ -144,16 +149,16 @@ enum class EquipSlot {
 };
 
 struct ItemData {
-    std::string id;         
-    std::string name;       
+    std::string id;
+    std::string name;
+
+    ItemType type = ItemType::Misc;
     EquipSlot slot = EquipSlot::None;
-    
-    //Stats it gives when equipped
+
     int damageBonus = 0;
     int healthBonus = 0;
     int defenseBonus = 0;
 
-    // Saves the original code
     nlohmann::json rawData;
 };
 
