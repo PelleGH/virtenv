@@ -19,8 +19,9 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
     // Clear memory from old models and textures
     context.resourceManager.clear();
 
+    std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     // Update the search way to project
-    context.resourceManager.SetProjectPath(chosenProjectFolder);
+    context.resourceManager.SetAssetRoot(projectFolder + "assets/");
 
     // Load the new projects assets json
     context.resourceManager.LoadFromManifest("assets.json");
@@ -28,7 +29,6 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
     // Load our items
     context.resourceManager.loadItems("items.json");
 
-    std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     std::string settingsPath = projectFolder + "project.json";
 
     std::ifstream file(settingsPath);
@@ -193,7 +193,26 @@ void CreateNewProject(EditorContext& context, const std::string& folderName, con
     }
 
     fs::create_directories(projectFolder + "assets/scenes");
+    
+    json assetManifest;
+    assetManifest["textures"] = json::array();
+    assetManifest["cube_models"] = json::array();
+    assetManifest["3Dmodels"] = json::array();
 
+    std::ofstream assetsFile(projectFolder + "assets/assets.json");
+    assetsFile << assetManifest.dump(4);
+
+    json itemsJson;
+    itemsJson["items"] = json::array();
+
+    std::ofstream itemsFile(projectFolder + "assets/items.json");
+    itemsFile << itemsJson.dump(4);
+
+    json questsJson;
+    questsJson["quests"] = json::array();
+
+    std::ofstream questsFile(projectFolder + "assets/quests.json");
+    questsFile << questsJson.dump(4);
     context.projectPath = projectFolder;
     context.projectName = userProjectName.empty() ? folderName : userProjectName;
     context.currentScenePath = projectFolder + "assets/scenes/room_01.json";
@@ -307,17 +326,6 @@ void BuildProject(EditorContext& context, const std::string& outputDir)
         if (fs::exists(assetsSrc)) {
             fs::copy(assetsSrc, assetsDest, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
         }
-        
-        std::string engineAssetsSrc = "src/engine/assets";
-    std::string engineAssetsDest = outputDir + "/src/engine/assets";
-    
-    if (fs::exists(engineAssetsSrc)) {
-        fs::create_directories(outputDir + "/src/engine"); 
-        
-        fs::copy(engineAssetsSrc, engineAssetsDest, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
-    } else {
-        std::cout << "[Builder] WARNING: Engine assets not found!\n";
-    }
 
         std::cout << "[Builder] Build successful! Game at: " << exeDestination << "\n";
 

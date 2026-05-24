@@ -52,9 +52,10 @@ bool Engine::init(const std::string& overrideRoot)
 
     std::string activeProjectPath = overrideRoot.empty() ? getActiveProjectPath() : overrideRoot;
     assetRoot = activeProjectPath.empty() ? "" : activeProjectPath;
+    resourceManager.SetAssetRoot(assetRoot + "assets/");
 
     //Reads and creates the models and texture for the world
-    resourceManager.LoadFromManifest("assets/assets.json");
+    resourceManager.LoadFromManifest("assets.json");
     sceneManager.init(resourceManager);
 
     cameraSystem.init(camera);
@@ -139,7 +140,7 @@ bool Engine::init(const std::string& overrideRoot)
 
     bool sceneLoaded = sceneManager.loadScene(assetRoot + "assets/scenes/" + startScene + ".json");
 
-    resourceManager.loadItems("assets/items.json"); 
+    resourceManager.loadItems("items.json");
     inventorySystem.initialize(sceneManager.getCurrentScene(), eventBus, resourceManager);
 
     combatSystem.initialize(sceneManager.getCurrentScene(), eventBus);

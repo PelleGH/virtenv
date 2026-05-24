@@ -1,5 +1,5 @@
 {
-    "buildOutdated": false, //metadata leakage, affects nothing tho
+    "buildOutdated": false,
     "projectName": "shayas test",
     "scenes": [
         "assets/scenes/room_01.json",

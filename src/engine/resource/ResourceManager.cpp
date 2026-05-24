@@ -4,14 +4,20 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-void ResourceManager::SetProjectPath(const std::string& projectName){
-    currentProjectPath = "Projects/" + projectName + "/assets/";
+void ResourceManager::SetAssetRoot(const std::string& root)
+{
+    assetRoot = root;
+
+    if (!assetRoot.empty() && assetRoot.back() != '/' && assetRoot.back() != '\\')
+    {
+        assetRoot += "/";
+    }
 }
 
-std::string ResourceManager::GetAssetPath(const std::string& localPath) const{
-    return currentProjectPath + localPath;
+std::string ResourceManager::GetAssetPath(const std::string& localPath) const
+{
+    return assetRoot + localPath;
 }
-
 void ResourceManager::LoadTexture2D(const std::string& id, const std::string& filepath){
     if (textures.find(id) == textures.end()) {
 
@@ -75,11 +81,11 @@ void ResourceManager::LoadFromManifest(const std::string& path){
     
     if (!file.is_open())
     {
-        std::cerr << "ERROR: Could not find manifest file: " << path << std::endl;
+        std::cerr << "ERROR: Could not find manifest file: " << fullPath << std::endl;
         return;
     }
-    nlohmann::json data;
-    file >> data;
+    file >> manifestData;
+    nlohmann::json& data = manifestData;
 
     // Loads all textures
     for (auto& tex : data["textures"])
@@ -124,6 +130,7 @@ void ResourceManager::clear() {
     textures.clear();
     models.clear();
     itemDatabase.clear();
+    manifestData = nlohmann::json::object();
 }
 
 bool ResourceManager::loadItems(const std::string& path) {

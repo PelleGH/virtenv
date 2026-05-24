@@ -1597,17 +1597,6 @@
             "trigger": false,
             "type": "wall",
             "visible": false
-        },
-        {
-            "position": [
-                3,
-                0,
-                -8
-            ],
-            "solid": false,
-            "trigger": false,
-            "type": "floor",
-            "visible": true
         }
     ],
     "entities": [],
