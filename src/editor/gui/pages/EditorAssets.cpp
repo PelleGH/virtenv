@@ -3,7 +3,18 @@
 
 void DrawAssets(EditorContext& context)
 {
-    ImGui::Begin("Assets", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
+    // In order to know which project specific assets window belong to
+    std::string assetsTitle = "Assets";
+
+    if (!context.projectName.empty()) {
+        assetsTitle = assetsTitle + " (" + context.projectName + ")";
+    }
+
+    // ### acts like a hidden ID for ImGUi to remember that the assets window is the same,
+    // even when the name changes
+    assetsTitle = assetsTitle + "###AssetsWindow";
+
+    ImGui::Begin(assetsTitle.c_str(), NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 
     if (ImGui::TreeNode("Textures")) {
 

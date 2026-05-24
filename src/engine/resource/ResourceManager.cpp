@@ -123,10 +123,14 @@ void ResourceManager::clear() {
     for (auto& [id, mod] : models) UnloadModel(mod);
     textures.clear();
     models.clear();
+    itemDatabase.clear();
 }
 
 bool ResourceManager::loadItems(const std::string& path) {
-    std::ifstream file(path);
+
+    std::string fullPath = GetAssetPath(path); 
+
+    std::ifstream file(fullPath);
     if (!file.is_open()) return false;
 
     nlohmann::json data;
@@ -145,6 +149,8 @@ bool ResourceManager::loadItems(const std::string& path) {
         item.damageBonus = itemJson.value("damageBonus", 0);
         item.healthBonus = itemJson.value("healthBonus", 0);
         item.defenseBonus = itemJson.value("defenseBonus", 0);
+
+        item.rawData = itemJson;
 
         itemDatabase[item.id] = item;
     }

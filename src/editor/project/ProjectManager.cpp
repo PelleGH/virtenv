@@ -22,6 +22,9 @@ void LoadProject(EditorContext& context, const std::string& chosenProjectFolder)
     // Load the new projects assets json
     context.resourceManager.LoadFromManifest("assets.json");
 
+    // Load our items
+    context.resourceManager.loadItems("items.json");
+
     std::string projectFolder = "Projects/" + chosenProjectFolder + "/";
     std::string settingsPath = projectFolder + "project.json";
 
