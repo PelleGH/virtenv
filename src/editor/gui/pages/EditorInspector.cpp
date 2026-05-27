@@ -1,7 +1,8 @@
 #include "../EditorPanels.h"
 #include "imgui.h"
 #include "../../../engine/scene/SceneLoader.h"
-
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -10,6 +11,810 @@
 
 static std::string HiddenId(const std::string& label);
 static void DrawFieldLabel(const std::string& label);
+using json = nlohmann::json;
+
+static void CopyStringToBuffer(char* buffer, size_t bufferSize, const std::string& value)
+{
+    snprintf(buffer, bufferSize, "%s", value.c_str());
+}
+
+static bool InputJsonString(json& object, const char* fieldName, const char* label, size_t bufferSize = 256)
+{
+    std::string current = object.value(fieldName, "");
+
+    std::vector<char> buffer(bufferSize);
+    CopyStringToBuffer(buffer.data(), buffer.size(), current);
+
+    if (ImGui::InputText(label, buffer.data(), buffer.size()))
+    {
+        object[fieldName] = std::string(buffer.data());
+        return true;
+    }
+
+    return false;
+}
+
+static bool InputPlainString(std::string& value, const char* label, size_t bufferSize = 256)
+{
+    std::vector<char> buffer(bufferSize);
+    CopyStringToBuffer(buffer.data(), buffer.size(), value);
+
+    if (ImGui::InputText(label, buffer.data(), buffer.size()))
+    {
+        value = std::string(buffer.data());
+        return true;
+    }
+
+    return false;
+}
+
+static std::string MakeUniqueDialogueNodeId(const json& nodes, const std::string& baseId)
+{
+    if (!nodes.contains(baseId))
+        return baseId;
+
+    int counter = 1;
+
+    while (true)
+    {
+        std::string candidate = baseId + "_" + std::to_string(counter);
+
+        if (!nodes.contains(candidate))
+            return candidate;
+
+        counter++;
+    }
+}
+
+static bool RenameDialogueNode(json& data, const std::string& oldId, const std::string& newId)
+{
+    if (oldId == newId)
+        return false;
+
+    if (newId.empty())
+        return false;
+
+    if (!data.contains("nodes") || !data["nodes"].is_object())
+        return false;
+
+    json& nodes = data["nodes"];
+
+    if (!nodes.contains(oldId))
+        return false;
+
+    if (nodes.contains(newId))
+        return false;
+
+    nodes[newId] = nodes[oldId];
+    nodes.erase(oldId);
+
+    if (data.value("defaultStartNode", "") == oldId)
+    {
+        data["defaultStartNode"] = newId;
+    }
+
+    for (auto& [nodeId, node] : nodes.items())
+    {
+        if (!node.contains("choices") || !node["choices"].is_array())
+            continue;
+
+        for (auto& choice : node["choices"])
+        {
+            if (choice.value("next", "") == oldId)
+            {
+                choice["next"] = newId;
+            }
+        }
+    }
+
+    return true;
+}
+
+static bool DrawStringDropdownWithNone(
+    const std::string& label,
+    std::string& value,
+    const std::vector<std::string>& options
+)
+{
+    bool changed = false;
+
+    const char* preview = value.empty() ? "None" : value.c_str();
+
+    if (ImGui::BeginCombo(label.c_str(), preview))
+    {
+        if (ImGui::Selectable("None", value.empty()))
+        {
+            value.clear();
+            changed = true;
+        }
+
+        for (const std::string& option : options)
+        {
+            bool selected = value == option;
+
+            if (ImGui::Selectable(option.c_str(), selected))
+            {
+                value = option;
+                changed = true;
+            }
+
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return changed;
+}
+static json LoadEditorJsonFile(const std::string& path, const std::string& rootArrayName)
+{
+    std::ifstream file(path);
+
+    if (!file.is_open())
+    {
+        json data;
+        data[rootArrayName] = json::array();
+        return data;
+    }
+
+    json data;
+
+    try
+    {
+        file >> data;
+    }
+    catch (const json::exception& e)
+    {
+        std::cout << "[Editor] Failed to parse " << path << ": " << e.what() << '\n';
+        data[rootArrayName] = json::array();
+    }
+
+    if (!data.contains(rootArrayName) || !data[rootArrayName].is_array())
+    {
+        data[rootArrayName] = json::array();
+    }
+
+    return data;
+}
+
+static bool SaveEditorJsonFile(const std::string& path, const json& data)
+{
+    std::ofstream file(path);
+
+    if (!file.is_open())
+    {
+        std::cout << "[Editor] Failed to save json file: " << path << '\n';
+        return false;
+    }
+
+    file << data.dump(4);
+    return true;
+}
+
+
+static void DrawEditableItem(EditorContext& context)
+{
+    const std::string path = context.projectPath + "assets/items.json";
+    json data = LoadEditorJsonFile(path, "items");
+
+    for (auto& item : data["items"])
+    {
+        if (item.value("id", "") != context.selection.assetId)
+            continue;
+
+        char idBuf[128];
+        char nameBuf[128];
+        char slotBuf[64];
+        char typeBuf[64];
+
+        CopyStringToBuffer(typeBuf, sizeof(typeBuf), item.value("type", "Misc"));
+        CopyStringToBuffer(idBuf, sizeof(idBuf), item.value("id", ""));
+        CopyStringToBuffer(nameBuf, sizeof(nameBuf), item.value("name", ""));
+        CopyStringToBuffer(slotBuf, sizeof(slotBuf), item.value("slot", "None"));
+
+        int damageBonus = item.value("damageBonus", 0);
+        int healthBonus = item.value("healthBonus", 0);
+        int defenseBonus = item.value("defenseBonus", 0);
+
+        ImGui::Text("Asset: Item Data");
+        ImGui::Separator();
+
+        bool changed = false;
+
+        changed |= ImGui::InputText("ID", idBuf, sizeof(idBuf));
+        changed |= ImGui::InputText("Name", nameBuf, sizeof(nameBuf));
+        const char* itemTypes[] = { "Equipment", "Consumable", "Quest", "Misc" };
+        int typeIndex = 3;
+
+        std::string currentType = item.value("type", "Misc");
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (currentType == itemTypes[i])
+            {
+                typeIndex = i;
+                break;
+            }
+        }
+
+        if (ImGui::Combo("Type", &typeIndex, itemTypes, 4))
+        {
+            CopyStringToBuffer(typeBuf, sizeof(typeBuf), itemTypes[typeIndex]);
+            changed = true;
+        }
+        const char* slots[] = { "None", "Weapon", "Armor", "Consumable" };
+        int slotIndex = 0;
+        std::string currentSlot = item.value("slot", "None");
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (currentSlot == slots[i])
+            {
+                slotIndex = i;
+                break;
+            }
+        }
+
+        if (ImGui::Combo("Slot", &slotIndex, slots, 4))
+        {
+            CopyStringToBuffer(slotBuf, sizeof(slotBuf), slots[slotIndex]);
+            changed = true;
+        }
+
+        changed |= ImGui::InputInt("Damage Bonus", &damageBonus);
+        changed |= ImGui::InputInt("Health Bonus", &healthBonus);
+        changed |= ImGui::InputInt("Defense Bonus", &defenseBonus);
+        ImGui::Separator();
+
+        if (ImGui::Button("Delete Item"))
+        {
+            std::string deletedId = context.selection.assetId;
+
+            for (auto it = data["items"].begin(); it != data["items"].end(); ++it)
+            {
+                if (it->value("id", "") == deletedId)
+                {
+                    data["items"].erase(it);
+                    break;
+                }
+            }
+
+            if (SaveEditorJsonFile(path, data))
+            {
+                context.resourceManager.loadItems("items.json");
+                context.selection.type = SelectionType::None;
+                context.selection.assetId.clear();
+                context.dirty = true;
+                context.buildOutdated = true;
+            }
+
+            return;
+        }
+        if (changed)
+        {
+            item["id"] = std::string(idBuf);
+            item["name"] = std::string(nameBuf);
+            item["type"] = std::string(typeBuf);
+            item["slot"] = std::string(slotBuf);
+            item["damageBonus"] = damageBonus;
+            item["healthBonus"] = healthBonus;
+            item["defenseBonus"] = defenseBonus;
+
+            if (SaveEditorJsonFile(path, data))
+            {
+                context.selection.assetId = std::string(idBuf);
+                context.resourceManager.loadItems("items.json");
+                context.dirty = true;
+                context.buildOutdated = true;
+            }
+        }
+
+        ImGui::SeparatorText("Raw JSON");
+        ImGui::BeginChild("ItemJsonBox", ImVec2(0, 150), true);
+        ImGui::TextWrapped("%s", item.dump(2).c_str());
+        ImGui::EndChild();
+
+        return;
+    }
+
+    ImGui::Text("Selected item no longer exists.");
+}
+static std::vector<std::string> GetProjectItemIds(const EditorContext& context)
+{
+    std::vector<std::string> ids;
+
+    for (const auto& [id, item] : context.resourceManager.GetAllItems())
+        ids.push_back(id);
+
+    std::sort(ids.begin(), ids.end());
+    return ids;
+}
+static void DrawEditableQuest(EditorContext& context)
+{
+    const std::string path = context.projectPath + "assets/quests.json";
+    json data = LoadEditorJsonFile(path, "quests");
+
+    for (auto& quest : data["quests"])
+    {
+        if (quest.value("id", "") != context.selection.assetId)
+            continue;
+
+        char idBuf[128];
+        char nameBuf[128];
+        char eventBuf[128];
+        char targetBuf[128];
+        char rewardBuf[128];
+
+        CopyStringToBuffer(idBuf, sizeof(idBuf), quest.value("id", ""));
+        CopyStringToBuffer(nameBuf, sizeof(nameBuf), quest.value("name", ""));
+        CopyStringToBuffer(eventBuf, sizeof(eventBuf), quest.value("requiredEvent", "enemy_killed"));
+        CopyStringToBuffer(targetBuf, sizeof(targetBuf), quest.value("targetId", ""));
+        CopyStringToBuffer(rewardBuf, sizeof(rewardBuf), quest.value("rewardItem", ""));
+
+        int requiredAmount = quest.value("requiredAmount", 1);
+
+        ImGui::Text("Asset: Quest Data");
+        ImGui::Separator();
+
+        bool changed = false;
+
+        changed |= ImGui::InputText("ID", idBuf, sizeof(idBuf));
+        changed |= ImGui::InputText("Name", nameBuf, sizeof(nameBuf));
+
+        const char* eventTypes[] = {
+            "enemy_killed",
+            "quest_completed",
+            "item_collected",
+            "dialogue_finished"
+        };
+
+        int eventIndex = 0;
+        std::string currentEvent = quest.value("requiredEvent", "enemy_killed");
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (currentEvent == eventTypes[i])
+            {
+                eventIndex = i;
+                break;
+            }
+        }
+
+        if (ImGui::Combo("Required Event", &eventIndex, eventTypes, 4))
+        {
+            CopyStringToBuffer(eventBuf, sizeof(eventBuf), eventTypes[eventIndex]);
+            changed = true;
+        }
+
+        changed |= ImGui::InputText("Target ID", targetBuf, sizeof(targetBuf));
+        changed |= ImGui::InputInt("Required Amount", &requiredAmount);
+        std::string rewardItem = quest.value("rewardItem", "");
+        std::vector<std::string> itemIds = GetProjectItemIds(context);
+
+        if (DrawStringDropdownWithNone("Reward Item", rewardItem, itemIds))
+        {
+            CopyStringToBuffer(rewardBuf, sizeof(rewardBuf), rewardItem);
+            changed = true;
+        }
+
+        if (requiredAmount < 1)
+            requiredAmount = 1;
+
+        if (changed)
+        {
+            quest["id"] = std::string(idBuf);
+            quest["name"] = std::string(nameBuf);
+            quest["requiredEvent"] = std::string(eventBuf);
+            quest["targetId"] = std::string(targetBuf);
+            quest["requiredAmount"] = requiredAmount;
+            quest["rewardItem"] = std::string(rewardBuf);
+
+            if (SaveEditorJsonFile(path, data))
+            {
+                context.selection.assetId = std::string(idBuf);
+                context.dirty = true;
+                context.buildOutdated = true;
+            }
+        }
+        ImGui::Separator();
+
+        if (ImGui::Button("Delete Quest"))
+        {
+            std::string deletedId = context.selection.assetId;
+
+            for (auto it = data["quests"].begin(); it != data["quests"].end(); ++it)
+            {
+                if (it->value("id", "") == deletedId)
+                {
+                    data["quests"].erase(it);
+                    break;
+                }
+            }
+
+            if (SaveEditorJsonFile(path, data))
+            {
+                context.selection.type = SelectionType::None;
+                context.selection.assetId.clear();
+                context.dirty = true;
+                context.buildOutdated = true;
+            }
+
+            return;
+        }
+        ImGui::SeparatorText("Raw JSON");
+        ImGui::BeginChild("QuestJsonBox", ImVec2(0, 150), true);
+        ImGui::TextWrapped("%s", quest.dump(2).c_str());
+        ImGui::EndChild();
+
+        return;
+    }
+
+    ImGui::Text("Selected quest no longer exists.");
+}
+static void DrawEditableDialogue(EditorContext& context)
+{
+    std::string path =
+        context.projectPath + "assets/dialogue/" + context.selection.assetId + ".json";
+
+    json data;
+
+    {
+        std::ifstream file(path);
+
+        if (file.is_open())
+        {
+            try
+            {
+                file >> data;
+            }
+            catch (const json::exception& e)
+            {
+                ImGui::Text("Failed to parse dialogue JSON: %s", e.what());
+                return;
+            }
+        }
+        else
+        {
+            ImGui::Text("Could not open dialogue file.");
+            return;
+        }
+    }
+
+    if (!data.contains("defaultStartNode") || !data["defaultStartNode"].is_string())
+    {
+        data["defaultStartNode"] = "intro";
+    }
+
+    if (!data.contains("nodes") || !data["nodes"].is_object())
+    {
+        data["nodes"] = json::object();
+    }
+
+    if (data["nodes"].empty())
+    {
+        data["nodes"]["intro"] = {
+            {"text", "Hello."},
+            {"choices", json::array({
+                {
+                    {"text", "Goodbye."},
+                    {"next", "end"}
+                }
+            })}
+        };
+        data["defaultStartNode"] = "intro";
+        SaveEditorJsonFile(path, data);
+    }
+
+    bool changed = false;
+
+    ImGui::Text("Asset: Dialogue Data");
+    ImGui::Separator();
+
+    ImGui::Text("Dialogue ID: %s", context.selection.assetId.c_str());
+
+    std::string defaultStartNode = data.value("defaultStartNode", "intro");
+    if (InputPlainString(defaultStartNode, "Default Start Node"))
+    {
+        data["defaultStartNode"] = defaultStartNode;
+        changed = true;
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::Button("+ Add Node"))
+    {
+        std::string newNodeId = MakeUniqueDialogueNodeId(data["nodes"], "new_node");
+
+        data["nodes"][newNodeId] = {
+            {"text", "New dialogue text."},
+            {"choices", json::array({
+                {
+                    {"text", "Continue."},
+                    {"next", "end"}
+                }
+            })}
+        };
+
+        changed = true;
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Delete Dialogue"))
+    {
+        std::filesystem::remove(path);
+
+        context.selection.type = SelectionType::None;
+        context.selection.assetId.clear();
+        context.dirty = true;
+        context.buildOutdated = true;
+
+        return;
+    }
+
+    ImGui::SeparatorText("Nodes");
+
+    std::vector<std::string> nodeIds;
+
+    for (auto& [nodeId, node] : data["nodes"].items())
+    {
+        nodeIds.push_back(nodeId);
+    }
+
+    for (const std::string& nodeId : nodeIds)
+    {
+        if (!data["nodes"].contains(nodeId))
+            continue;
+
+        json& node = data["nodes"][nodeId];
+
+        if (!node.contains("choices") || !node["choices"].is_array())
+        {
+            node["choices"] = json::array();
+            changed = true;
+        }
+
+        std::string header = nodeId;
+
+        if (nodeId == data.value("defaultStartNode", ""))
+        {
+            header += "  [START]";
+        }
+
+        if (ImGui::TreeNode(header.c_str()))
+        {
+            std::string editedNodeId = nodeId;
+            std::string nodeIdLabel = "Node ID###node_id_" + nodeId;
+
+            if (InputPlainString(editedNodeId, nodeIdLabel.c_str()))
+            {
+                if (RenameDialogueNode(data, nodeId, editedNodeId))
+                {
+                    changed = true;
+                    ImGui::TreePop();
+                    break;
+                }
+            }
+
+            std::string makeStartLabel = "Set As Start###set_start_" + nodeId;
+            if (ImGui::Button(makeStartLabel.c_str()))
+            {
+                data["defaultStartNode"] = nodeId;
+                changed = true;
+            }
+
+            ImGui::SameLine();
+
+            std::string deleteNodeLabel = "Delete Node###delete_node_" + nodeId;
+            if (ImGui::Button(deleteNodeLabel.c_str()))
+            {
+                data["nodes"].erase(nodeId);
+
+                if (data.value("defaultStartNode", "") == nodeId)
+                {
+                    if (!data["nodes"].empty())
+                    {
+                        data["defaultStartNode"] = data["nodes"].begin().key();
+                    }
+                    else
+                    {
+                        data["defaultStartNode"] = "intro";
+                    }
+                }
+
+                for (auto& [otherNodeId, otherNode] : data["nodes"].items())
+                {
+                    if (!otherNode.contains("choices") || !otherNode["choices"].is_array())
+                        continue;
+
+                    for (auto& choice : otherNode["choices"])
+                    {
+                        if (choice.value("next", "") == nodeId)
+                        {
+                            choice["next"] = "end";
+                        }
+                    }
+                }
+
+                changed = true;
+                ImGui::TreePop();
+                break;
+            }
+
+            ImGui::Separator();
+
+            std::string textLabel = "Text###text_" + nodeId;
+            changed |= InputJsonString(node, "text", textLabel.c_str(), 512);
+
+            ImGui::SeparatorText("Choices");
+
+            json& choices = node["choices"];
+
+            for (int i = 0; i < static_cast<int>(choices.size()); i++)
+            {
+                json& choice = choices[i];
+
+                std::string choiceHeader =
+                    "Choice " + std::to_string(i + 1) + "###choice_" + nodeId + "_" + std::to_string(i);
+
+                if (ImGui::TreeNode(choiceHeader.c_str()))
+                {
+                    std::string choiceTextLabel =
+                        "Choice Text###choice_text_" + nodeId + "_" + std::to_string(i);
+
+                    changed |= InputJsonString(choice, "text", choiceTextLabel.c_str(), 256);
+
+                    std::string currentNext = choice.value("next", "end");
+                    std::vector<std::string> nextOptions = nodeIds;
+                    nextOptions.push_back("end");
+
+                    std::string nextLabel =
+                        "Next Node###next_node_" + nodeId + "_" + std::to_string(i);
+
+                    if (DrawStringDropdownWithNone(nextLabel.c_str(), currentNext, nextOptions))
+                    {
+                        if (currentNext.empty())
+                            currentNext = "end";
+
+                        choice["next"] = currentNext;
+                        changed = true;
+                    }
+
+                    std::string startQuest = choice.value("startQuest", "");
+                    std::vector<std::string> questIds;
+
+                    const std::string questsPath = context.projectPath + "assets/quests.json";
+                    json questData = LoadEditorJsonFile(questsPath, "quests");
+
+                    for (const auto& quest : questData["quests"])
+                    {
+                        std::string questId = quest.value("id", "");
+                        if (!questId.empty())
+                            questIds.push_back(questId);
+                    }
+
+                    std::sort(questIds.begin(), questIds.end());
+
+                    std::string startQuestLabel =
+                        "Start Quest###start_quest_" + nodeId + "_" + std::to_string(i);
+
+                    if (DrawStringDropdownWithNone(startQuestLabel.c_str(), startQuest, questIds))
+                    {
+                        if (startQuest.empty())
+                            choice.erase("startQuest");
+                        else
+                            choice["startQuest"] = startQuest;
+
+                        changed = true;
+                    }
+
+                    bool hasQuestCondition = choice.contains("showIfQuestStatus");
+
+                    std::string checkboxLabel =
+                        "Show Only If Quest Status###quest_cond_" + nodeId + "_" + std::to_string(i);
+
+                    if (ImGui::Checkbox(checkboxLabel.c_str(), &hasQuestCondition))
+                    {
+                        if (hasQuestCondition)
+                        {
+                            choice["showIfQuestStatus"] = {
+                                {"questId", ""},
+                                {"status", "NotStarted"}
+                            };
+                        }
+                        else
+                        {
+                            choice.erase("showIfQuestStatus");
+                        }
+
+                        changed = true;
+                    }
+
+                    if (hasQuestCondition)
+                    {
+                        json& condition = choice["showIfQuestStatus"];
+
+                        std::string conditionQuestId = condition.value("questId", "");
+                        std::string questConditionLabel =
+                            "Quest###quest_condition_id_" + nodeId + "_" + std::to_string(i);
+
+                        if (DrawStringDropdownWithNone(questConditionLabel.c_str(), conditionQuestId, questIds))
+                        {
+                            condition["questId"] = conditionQuestId;
+                            changed = true;
+                        }
+
+                        const char* statuses[] = { "NotStarted", "Active", "Completed" };
+                        int statusIndex = 0;
+
+                        std::string currentStatus = condition.value("status", "NotStarted");
+
+                        for (int s = 0; s < 3; s++)
+                        {
+                            if (currentStatus == statuses[s])
+                            {
+                                statusIndex = s;
+                                break;
+                            }
+                        }
+
+                        std::string statusLabel =
+                            "Status###quest_condition_status_" + nodeId + "_" + std::to_string(i);
+
+                        if (ImGui::Combo(statusLabel.c_str(), &statusIndex, statuses, 3))
+                        {
+                            condition["status"] = statuses[statusIndex];
+                            changed = true;
+                        }
+                    }
+
+                    std::string deleteChoiceLabel =
+                        "Delete Choice###delete_choice_" + nodeId + "_" + std::to_string(i);
+
+                    if (ImGui::Button(deleteChoiceLabel.c_str()))
+                    {
+                        choices.erase(choices.begin() + i);
+                        changed = true;
+                        ImGui::TreePop();
+                        break;
+                    }
+
+                    ImGui::TreePop();
+                }
+            }
+
+            std::string addChoiceLabel = "+ Add Choice###add_choice_" + nodeId;
+
+            if (ImGui::Button(addChoiceLabel.c_str()))
+            {
+                choices.push_back({
+                    {"text", "New choice."},
+                    {"next", "end"}
+                });
+
+                changed = true;
+            }
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (changed)
+    {
+        if (SaveEditorJsonFile(path, data))
+        {
+            context.dirty = true;
+            context.buildOutdated = true;
+        }
+    }
+
+    ImGui::SeparatorText("Raw JSON");
+
+    ImGui::BeginChild("DialogueJsonBox", ImVec2(0, 220), true);
+    ImGui::TextWrapped("%s", data.dump(2).c_str());
+    ImGui::EndChild();
+}
 static std::string FindCubeModelIdForTexture(const EditorContext& context, const std::string& textureId)
 {
     const auto& manifest = context.resourceManager.GetManifestData();
@@ -63,43 +868,7 @@ static std::vector<std::string> GetProjectTextureIds(const EditorContext& contex
     return ids;
 }
 
-static bool DrawStringDropdownWithNone(
-    const std::string& label,
-    std::string& value,
-    const std::vector<std::string>& options
-)
-{
-    bool changed = false;
 
-    const char* preview = value.empty() ? "None" : value.c_str();
-
-    if (ImGui::BeginCombo(label.c_str(), preview))
-    {
-        if (ImGui::Selectable("None", value.empty()))
-        {
-            value.clear();
-            changed = true;
-        }
-
-        for (const std::string& option : options)
-        {
-            bool selected = value == option;
-
-            if (ImGui::Selectable(option.c_str(), selected))
-            {
-                value = option;
-                changed = true;
-            }
-
-            if (selected)
-                ImGui::SetItemDefaultFocus();
-        }
-
-        ImGui::EndCombo();
-    }
-
-    return changed;
-}
 
 std::vector<std::string> GetSpawnIdsForScene(const std::string& scenePath)
 {
@@ -1166,35 +1935,16 @@ if (context.selection.type == SelectionType::Entity)
 
     if (context.selection.type == SelectionType::AssetItem)
     {
-        ImGui::Text("Asset: Item Data");
-        ImGui::Separator();
-        
-        // Get item from resource with saved id
-        std::string id = context.selection.assetId;
-        ItemData item = context.resourceManager.getItem(id);
-        
-        ImGui::Text("ID: %s", id.c_str());
+        DrawEditableItem(context);
+    }
 
-        ImGui::SeparatorText("Properties");
-        ImGui::Text("Name: %s", item.name.c_str());
-
-        ImGui::Text("Damage Bonus: %d", item.damageBonus);
-        ImGui::Text("Health Bonus: %d", item.healthBonus);
-        ImGui::Text("Defense Bonus: %d", item.defenseBonus);
-
-        ImGui::SeparatorText("Raw JSON");
-
-        // Scrollable window, (0,150) = 0 means that it fills the window meanwhile 150 is the height
-        ImGui::BeginChild("ItemJsonBox", ImVec2(0, 150), true);
-
-        if (!item.rawData.is_null()) {
-
-            // TextWrapped limits the text to the window bounds
-            // .dump convert the json memory to readable text
-            ImGui::TextWrapped("%s", item.rawData.dump(2).c_str());
-        }
-        
-        ImGui::EndChild();
+    if (context.selection.type == SelectionType::AssetQuest)
+    {
+        DrawEditableQuest(context);
+    }
+    if (context.selection.type == SelectionType::AssetDialogue)
+    {
+        DrawEditableDialogue(context);
     }
     ImGui::End();
 }

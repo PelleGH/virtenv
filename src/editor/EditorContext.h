@@ -17,7 +17,9 @@ enum class SelectionType
     SpawnPoint,
     AssetTexture,
     AssetModel,
-    AssetItem
+    AssetItem,
+    AssetQuest,
+    AssetDialogue
 };
 
 struct EditorSelection

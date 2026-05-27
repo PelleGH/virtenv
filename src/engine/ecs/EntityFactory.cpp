@@ -224,6 +224,17 @@ json EntityFactory::serialize(Entity entity){
             {"speed", v.speed}
         };
     }
+    if (componentStorage.HasComponent<ConditionalBlocker>(entity)) {
+        const auto& blocker = componentStorage.GetComponent<ConditionalBlocker>(entity);
+        j["ConditionalBlocker"]["conditions"] = json::array();
+
+        for (const auto& condition : blocker.conditions) {
+            j["ConditionalBlocker"]["conditions"].push_back({
+                {"type", condition.type},
+                {"id", condition.id}
+            });
+        }
+    }
     return j;
 }
 
@@ -342,8 +353,21 @@ Entity EntityFactory::deserialize(const json& j){
     {
         componentStorage.AddComponent(entity, Velocity{0.0f, 0.0f, 1.5f});
     }
-    
+    if (j.contains("ConditionalBlocker")) {
+        ConditionalBlocker blocker;
+        const auto& blockerJson = j["ConditionalBlocker"];
 
+        if (blockerJson.contains("conditions") && blockerJson["conditions"].is_array()) {
+            for (const auto& conditionJson : blockerJson["conditions"]) {
+                Condition condition;
+                condition.type = conditionJson.value("type", "");
+                condition.id = conditionJson.value("id", "");
+                blocker.conditions.push_back(condition);
+            }
+        }
+
+        componentStorage.AddComponent(entity, blocker);
+    }
     // Deserialize Interaction
     if (j.contains("Interactable")) {
         Interactable interactable;

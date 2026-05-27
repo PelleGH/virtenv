@@ -12,7 +12,7 @@ public:
     bool loadDialogue(const std::string& dialogueId);
     void startDialogue(const std::string& dialogueId);
     bool isActive() const { return active; }
-
+    void setAssetRoot(const std::string& root);
     void update();
     void render();
 
@@ -25,6 +25,6 @@ private:
     std::string currentDialogueId;
     std::string currentNodeId;
     nlohmann::json dialogueData;
-
+    std::string assetRoot = "";
     QuestManager* questManager = nullptr;
 };

@@ -53,7 +53,7 @@ bool Engine::init(const std::string& overrideRoot)
     std::string activeProjectPath = overrideRoot.empty() ? getActiveProjectPath() : overrideRoot;
     assetRoot = activeProjectPath.empty() ? "" : activeProjectPath;
     resourceManager.SetAssetRoot(assetRoot + "assets/");
-
+    dialogueManager.setAssetRoot(assetRoot + "assets/");
     //Reads and creates the models and texture for the world
     resourceManager.LoadFromManifest("assets.json");
     sceneManager.init(resourceManager);
@@ -61,7 +61,33 @@ bool Engine::init(const std::string& overrideRoot)
     cameraSystem.init(camera);
 
     questManager.setConditionManager(&conditionManager);
-    questManager.loadQuests(assetRoot + "assets/quests.json");
+
+    questManager.setRewardCallback([this](const std::string& itemId)
+    {
+        conditionManager.inventoryItems.insert(itemId);
+
+        Scene& scene = sceneManager.getCurrentScene();
+        ComponentStorage& components = scene.getComponentStorage();
+        Entity player = scene.getPlayer();
+
+        if (scene.getEntityManager().isAlive(player) &&
+            components.HasComponent<Inventory>(player))
+        {
+            auto& inventory = components.GetComponent<Inventory>(player);
+
+            if (inventory.items.size() < inventory.maxSlots)
+            {
+                inventory.items.push_back(itemId);
+                std::cout << "Quest reward added to inventory: " << itemId << '\n';
+            }
+            else
+            {
+                std::cout << "Quest reward unlocked, but inventory is full: " << itemId << '\n';
+            }
+        }
+    });
+
+    questManager.loadQuests(resourceManager.GetAssetPath("quests.json"));
     dialogueManager.setQuestManager(&questManager);
 
     eventBus.subscribe<SceneTransitionEvent>([this](const SceneTransitionEvent& event)

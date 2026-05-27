@@ -118,5 +118,18 @@
       "hasSpawned": false
     },
     "hiddenFields": ["hasSpawned"]
+  },
+  "ConditionalBlocker": {
+  "order": 90,
+  "fieldOrder": ["conditions"],
+  "default": {
+    "conditions": [
+      {
+        "type": "HasItem",
+        "id": "small_key"
+      }
+    ]
   }
 }
+}
+

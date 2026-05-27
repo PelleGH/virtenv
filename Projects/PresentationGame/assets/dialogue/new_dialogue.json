@@ -1,0 +1,15 @@
+{
+    "defaultStartNode": "intro",
+    "nodes": {
+        "intro": {
+            "choices": [
+                {
+                    "next": "end",
+                    "text": "Goodbye."
+                }
+            ],
+            "text": "Hello."
+        }
+    },
+    "start": "start"
+}

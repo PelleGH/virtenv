@@ -16,6 +16,11 @@ bool EditorApp::init()
 
     rlImGuiSetup(true);
 
+    constexpr float editorUiScale = 1.75f;
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.ScaleAllSizes(editorUiScale);
+    style.FontScaleMain = editorUiScale;
+
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
