@@ -21,6 +21,7 @@ If this doesnt run properly, try the specified command below:
 ## Requirements
 
 - CMake
+- VS Studio 2022 (It needs the compiler from it)
 
 ## Build and Run
 
